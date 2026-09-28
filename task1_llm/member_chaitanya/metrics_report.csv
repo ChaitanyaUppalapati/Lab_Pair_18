@@ -1,0 +1,1 @@
+run_id,checkpoint,train_ce_loss,val_ce_loss,perplexity,bits_per_char,generalization_gap,top1_next_char_acc,distinct_1,distinct_2,distinct_3,repeated_4gram_rate,max_grad_norm,mean_grad_norm,loss_spikes,nan_count,param_count,train_tokens_per_sec,gen_tokens_per_sec,peak_memory_mb,total_train_time_s,hardware

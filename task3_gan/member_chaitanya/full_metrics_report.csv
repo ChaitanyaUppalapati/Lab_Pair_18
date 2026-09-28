@@ -1,0 +1,1 @@
+run_id,checkpoint,direction,fid,kid_mean,kid_std,gen_precision,gen_recall,density,coverage,cycle_l1,lpips,content_cosine_sim,final_g_loss,final_d_loss,cycle_loss,identity_loss,max_grad_norm,nan_count,human_style,human_content,human_artifacts,inter_rater_kappa,pct_agreement,param_count,train_time_s,images_per_sec,peak_memory_mb,kaggle_public,kaggle_private,kaggle_rank,hardware

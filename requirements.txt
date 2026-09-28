@@ -1,0 +1,15 @@
+# Pin exact versions once the team agrees (then record them via reproducibility/capture_manifest.py)
+torch
+torchvision
+numpy
+pandas
+matplotlib
+pyyaml
+tqdm
+datasets          # TinyStories / yelp_polarity download
+scikit-learn      # Task 2 metrics
+statsmodels       # McNemar test
+nltk              # stopwords, stemming/lemmatization
+torchmetrics[image]  # FID / KID (evaluation only)
+lpips             # LPIPS (evaluation only)
+psutil
