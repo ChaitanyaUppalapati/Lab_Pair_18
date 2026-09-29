@@ -1,0 +1,30 @@
+run_id: smoke_run01
+data:
+  dataset_name: synthetic-smoke-only
+  text_field: text
+  train_examples: 64
+  val_examples: 16
+  context_length: 32
+  seed: 26617
+  special_tokens: ["<PAD>", "<UNK>", "<BOS>", "<EOS>"]
+model:
+  n_layers: 2
+  d_model: 48
+  n_heads: 4
+  d_ff: 128
+  dropout: 0.1
+training:
+  batch_size: 16
+  learning_rate: 0.001
+  weight_decay: 0.01
+  epochs: 1
+  warmup_ratio: 0.1
+  min_lr_ratio: 0.1
+  grad_clip: 1.0
+  num_workers: 0
+  device: cpu
+  log_every: 1
+generation:
+  prompts: ["Once upon a time", "Lily found", "The dragon"]
+  temperatures: [0.7, 1.0, 1.2]
+  max_new_tokens: 40

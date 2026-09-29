@@ -1,0 +1,8 @@
+[2026-09-28 22:16:15,213] [INFO] run_id=smoke_run01 config=task1_llm/member_aswin/configs/smoke.yaml device=cpu
+[2026-09-28 22:16:15,214] [INFO] data smoke_only=True train=64 val=16 vocab=40
+[2026-09-28 22:16:15,668] [INFO] epoch=1 step=1 loss=3.704705 lr=0.00100000 grad_norm=1.470672
+[2026-09-28 22:16:15,673] [INFO] epoch=1 step=2 loss=3.607107 lr=0.00077500 grad_norm=1.376588
+[2026-09-28 22:16:15,678] [INFO] epoch=1 step=3 loss=3.543642 lr=0.00032500 grad_norm=1.319821
+[2026-09-28 22:16:15,683] [INFO] epoch=1 step=4 loss=3.490545 lr=0.00010000 grad_norm=1.338184
+[2026-09-28 22:16:15,687] [INFO] epoch_complete=1 train_loss=3.586500 val_loss=3.466497 val_accuracy=0.207031
+[2026-09-28 22:16:15,774] [INFO] finished elapsed_s=0.048 tokens_per_s=42704.00 checkpoint=task1_llm/member_aswin/checkpoints/smoke_run01/best_model.pt

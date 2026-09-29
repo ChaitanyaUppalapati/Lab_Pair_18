@@ -1,0 +1,35 @@
+[greedy] Prompt: Once upon a time
+Once upon a time
+
+[temperature_0.7] Prompt: Once upon a time
+Once upon a timeMvLxbL EswEBnIexoex,eLlpecMxyMEAehd
+
+[temperature_1.0] Prompt: Once upon a time
+Once upon a timeMnpA voepnhoshe e.cNIOt
+
+[temperature_1.2] Prompt: Once upon a time
+Once upon a timeiLcvabTfTirNt
+
+[greedy] Prompt: Lily found
+Lily found  a
+
+[temperature_0.7] Prompt: Lily found
+Lily foundrphs
+
+[temperature_1.0] Prompt: Lily found
+Lily foundppyTLnt
+
+[temperature_1.2] Prompt: Lily found
+Lily foundhiAdyTEosbvdkfcownfoTkNByBlhud
+
+[greedy] Prompt: The dragon
+The dragon  a
+
+[temperature_0.7] Prompt: The dragon
+The dragon tdfkyaIifBsaSdixgv .thAes kMBxotk.nLk
+
+[temperature_1.0] Prompt: The dragon
+The dragonicuLg.rfBLMighIdNrv M w.hBxiTgxnu,M,n
+
+[temperature_1.2] Prompt: The dragon
+The dragoncoclSSNxE soppASBEatxug vyLIbemv

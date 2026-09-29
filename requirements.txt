@@ -13,3 +13,5 @@ nltk              # stopwords, stemming/lemmatization
 torchmetrics[image]  # FID / KID (evaluation only)
 lpips             # LPIPS (evaluation only)
 psutil
+jupyterlab       # run the required Task 1 notebooks
+ipykernel        # select the project environment in Jupyter
