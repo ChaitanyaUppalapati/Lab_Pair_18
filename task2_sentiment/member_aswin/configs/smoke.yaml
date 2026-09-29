@@ -1,0 +1,50 @@
+# Smoke Test Configuration: Fast 1-epoch verification on tiny data slice
+model_name: "smoke_baseline"
+run_id: "smoke_test_run01"
+member: "aswin"
+task: "task2_sentiment"
+
+# Reproducibility
+seed: 42
+
+# Data parameters
+data:
+  dataset_name: "fancyzhx/yelp_polarity"
+  train_split_ratio: 0.8
+  val_split_ratio: 0.2
+  subsample_train: 500
+  subsample_val: 100
+  subsample_test: 100
+  max_vocab_size: 2000
+  min_freq: 2
+  max_seq_len: 128
+  processed_dir: "task2_sentiment/member_aswin/data_processed"
+
+# Model architecture
+architecture:
+  model_type: "baseline_mean_pooling"
+  embedding_dim: 64
+  hidden_dim: 64
+  dropout: 0.2
+  output_dim: 1
+
+# Optimization & Training
+training:
+  batch_size: 32
+  epochs: 1
+  learning_rate: 0.002
+  weight_decay: 0.0001
+  optimizer: "AdamW"
+  scheduler: "ReduceLROnPlateau"
+  scheduler_patience: 1
+  scheduler_factor: 0.5
+  early_stopping_patience: 1
+  device: "cpu"
+
+# Output Paths
+paths:
+  checkpoint_dir: "task2_sentiment/member_aswin/checkpoints/baseline"
+  best_checkpoint: "task2_sentiment/member_aswin/checkpoints/baseline/smoke_best_model.pt"
+  output_dir: "task2_sentiment/member_aswin/outputs"
+  log_file: "reproducibility/raw_logs/task2_sentiment/aswin/smoke_test_run01.log"
+  local_log: "task2_sentiment/member_aswin/logs/smoke_test_run01.log"

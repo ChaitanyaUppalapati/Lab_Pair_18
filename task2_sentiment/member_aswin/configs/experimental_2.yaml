@@ -1,0 +1,52 @@
+# Experimental Model 2 Configuration: Multi-Scale 1D TextCNN
+model_name: "experimental_2"
+run_id: "experimental_2_run01"
+member: "aswin"
+task: "task2_sentiment"
+
+# Reproducibility
+seed: 42
+
+# Data parameters
+data:
+  dataset_name: "fancyzhx/yelp_polarity"
+  train_split_ratio: 0.8
+  val_split_ratio: 0.2
+  subsample_train: 25000
+  subsample_val: 5000
+  subsample_test: 5000
+  max_vocab_size: 30000
+  min_freq: 3
+  max_seq_len: 256
+  processed_dir: "task2_sentiment/member_aswin/data_processed"
+
+# Model architecture
+architecture:
+  model_type: "text_cnn"
+  embedding_dim: 128
+  num_filters: 100
+  filter_sizes: [3, 4, 5]
+  dense_dim: 128
+  dropout: 0.4
+  output_dim: 1
+
+# Optimization & Training
+training:
+  batch_size: 64
+  epochs: 5
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  optimizer: "AdamW"
+  scheduler: "ReduceLROnPlateau"
+  scheduler_patience: 1
+  scheduler_factor: 0.5
+  early_stopping_patience: 2
+  device: "mps"
+
+# Output Paths
+paths:
+  checkpoint_dir: "task2_sentiment/member_aswin/checkpoints/experimental_2"
+  best_checkpoint: "task2_sentiment/member_aswin/checkpoints/experimental_2/best_model.pt"
+  output_dir: "task2_sentiment/member_aswin/outputs"
+  log_file: "reproducibility/raw_logs/task2_sentiment/aswin/experimental_2_run01.log"
+  local_log: "task2_sentiment/member_aswin/logs/experimental_2_run01.log"
