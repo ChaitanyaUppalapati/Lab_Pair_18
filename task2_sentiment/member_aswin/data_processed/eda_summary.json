@@ -1,0 +1,35 @@
+{
+  "dataset": "fancyzhx/yelp_polarity",
+  "train_size": 25000,
+  "test_size": 5000,
+  "train_missing_values": 0,
+  "train_empty_strings": 0,
+  "train_duplicates": 0,
+  "test_missing_values": 0,
+  "test_empty_strings": 0,
+  "test_duplicates": 0,
+  "train_class_balance": {
+    "0": 12500,
+    "1": 12500
+  },
+  "test_class_balance": {
+    "0": 2500,
+    "1": 2500
+  },
+  "train_word_length": {
+    "mean": 133.28664,
+    "std": 123.4331806181401,
+    "median": 96.0,
+    "min": 1,
+    "max": 982,
+    "p90": 285.0,
+    "p95": 377.0,
+    "p99": 612.0
+  },
+  "train_char_length": {
+    "mean": 727.67136,
+    "std": 674.11538394829,
+    "median": 527.0,
+    "p95": 2055.0
+  }
+}
