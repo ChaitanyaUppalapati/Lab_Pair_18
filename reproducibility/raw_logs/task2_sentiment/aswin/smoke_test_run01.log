@@ -1,0 +1,48 @@
+[2026-09-28 18:58:26] [INFO] ============================================================
+[2026-09-28 18:58:26] [INFO] Starting Training for Model: smoke_baseline (Run ID: smoke_test_run01)
+[2026-09-28 18:58:26] [INFO] Loaded config from: task2_sentiment/member_aswin/configs/smoke.yaml
+[2026-09-28 18:58:26] [INFO] Random seed: 42
+[2026-09-28 18:58:26] [INFO] Hardware compute device selected: cpu
+[2026-09-28 18:58:26] [INFO] Loading Yelp Polarity dataset from Hugging Face...
+[2026-09-28 18:58:32] [INFO] Subsampling training set to 500 examples (stratified, seed=42)...
+[2026-09-28 18:58:32] [INFO] Subsampling test set to 100 examples (stratified, seed=42)...
+[2026-09-28 18:58:33] [INFO] EDA Completed: Train=500, Test=100, Duplicates=0
+[2026-09-28 18:58:33] [INFO] Word length mean=145.5, 95th pct=427.3
+[2026-09-28 18:58:33] [INFO] Split sizes: Train=400, Val=100, Test=100
+[2026-09-28 18:58:33] [INFO] Tokenizing training set and building vocabulary (from scratch on train split only)...
+[2026-09-28 18:58:33] [INFO] Vocabulary successfully built! Total vocab size: 2000 tokens.
+[2026-09-28 18:58:33] [INFO] Model architecture: baseline_mean_pooling
+[2026-09-28 18:58:33] [INFO] Total trainable parameters: 132,225
+[2026-09-28 18:58:33] [INFO] Beginning training loop...
+[2026-09-28 18:58:33] [INFO] Epoch 01/01 [0.1s] - Train Loss: 0.6930, Train Acc: 0.5050 | Val Loss: 0.6923, Val Acc: 0.5000
+[2026-09-28 18:58:33] [INFO] Saved new best checkpoint at epoch 1 (Val Loss: 0.6923) -> task2_sentiment/member_aswin/checkpoints/baseline/smoke_best_model.pt
+[2026-09-28 18:58:33] [INFO] Training Complete in 0.10 seconds.
+[2026-09-28 18:58:33] [INFO] Throughput: 4157.61 examples/sec | Peak Memory: 863.48 MB
+[2026-09-28 18:58:33] [INFO] Best validation loss 0.6923 achieved at epoch 1.
+[2026-09-28 18:58:34] [INFO] Saved training curves to task2_sentiment/member_aswin/outputs/plots/smoke_baseline_training_curves.png
+[2026-09-28 18:58:35] [INFO] Successfully recorded reproducibility manifest.
+[2026-09-28 18:58:35] [INFO] ============================================================
+[2026-09-28 18:59:01] [INFO] ============================================================
+[2026-09-28 18:59:01] [INFO] Starting Evaluation for Model: smoke_baseline (Run ID: smoke_test_run01)
+[2026-09-28 18:59:01] [INFO] Loading Yelp Polarity dataset from Hugging Face...
+[2026-09-28 18:59:07] [INFO] Subsampling training set to 500 examples (stratified, seed=42)...
+[2026-09-28 18:59:07] [INFO] Subsampling test set to 100 examples (stratified, seed=42)...
+[2026-09-28 18:59:08] [INFO] EDA Completed: Train=500, Test=100, Duplicates=0
+[2026-09-28 18:59:08] [INFO] Word length mean=145.5, 95th pct=427.3
+[2026-09-28 18:59:08] [INFO] Split sizes: Train=400, Val=100, Test=100
+[2026-09-28 18:59:08] [INFO] Tokenizing training set and building vocabulary (from scratch on train split only)...
+[2026-09-28 18:59:08] [INFO] Vocabulary successfully built! Total vocab size: 2000 tokens.
+[2026-09-28 18:59:08] [INFO] Loading checkpoint weights from: task2_sentiment/member_aswin/checkpoints/baseline/smoke_best_model.pt
+[2026-09-28 18:59:08] [INFO] Executing inference on the untouched test set...
+[2026-09-28 18:59:08] [INFO] Computing metrics, bootstrap confidence intervals, and calibration statistics...
+[2026-09-28 18:59:08] [INFO] Test Accuracy: 0.5000 [95% CI: 0.4100 - 0.6000]
+[2026-09-28 18:59:08] [INFO] Macro-F1:      0.3333 [95% CI: 0.2908 - 0.3750]
+[2026-09-28 18:59:08] [INFO] ROC-AUC:       0.8316
+[2026-09-28 18:59:08] [INFO] PR-AUC:        0.8399
+[2026-09-28 18:59:08] [INFO] MCC:           0.0000 [95% CI: 0.0000 - 0.0000]
+[2026-09-28 18:59:08] [INFO] Brier Score:   0.2495
+[2026-09-28 18:59:08] [INFO] ECE:           0.0081
+[2026-09-28 18:59:08] [INFO] Confusion Matrix: TN=0, FP=50, FN=0, TP=50
+[2026-09-28 18:59:08] [INFO] Saved test predictions to: task2_sentiment/member_aswin/outputs/predictions/smoke_baseline_test_predictions.csv
+[2026-09-28 18:59:09] [INFO] Successfully recorded metrics in task2_sentiment/member_aswin/metrics_report.csv
+[2026-09-28 18:59:09] [INFO] ============================================================

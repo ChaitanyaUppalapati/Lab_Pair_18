@@ -1,0 +1,52 @@
+[2026-09-28 19:01:02] [INFO] ============================================================
+[2026-09-28 19:01:02] [INFO] Starting Training for Model: experimental_1 (Run ID: experimental_1_run01)
+[2026-09-28 19:01:02] [INFO] Loaded config from: task2_sentiment/member_aswin/configs/experimental_1.yaml
+[2026-09-28 19:01:02] [INFO] Random seed: 42
+[2026-09-28 19:01:02] [INFO] Hardware compute device selected: mps
+[2026-09-28 19:01:02] [INFO] Loading Yelp Polarity dataset from Hugging Face...
+[2026-09-28 19:01:06] [INFO] Subsampling training set to 25000 examples (stratified, seed=42)...
+[2026-09-28 19:01:06] [INFO] Subsampling test set to 5000 examples (stratified, seed=42)...
+[2026-09-28 19:01:07] [INFO] EDA Completed: Train=25000, Test=5000, Duplicates=0
+[2026-09-28 19:01:07] [INFO] Word length mean=133.3, 95th pct=377.0
+[2026-09-28 19:01:07] [INFO] Split sizes: Train=20000, Val=5000, Test=5000
+[2026-09-28 19:01:07] [INFO] Tokenizing training set and building vocabulary (from scratch on train split only)...
+[2026-09-28 19:01:08] [INFO] Vocabulary successfully built! Total vocab size: 18766 tokens.
+[2026-09-28 19:01:08] [INFO] Model architecture: bigru
+[2026-09-28 19:01:08] [INFO] Total trainable parameters: 2,665,985
+[2026-09-28 19:01:09] [INFO] Beginning training loop...
+[2026-09-28 19:11:08] [INFO] Epoch 01/05 [599.7s] - Train Loss: 0.3875, Train Acc: 0.8060 | Val Loss: 0.2268, Val Acc: 0.9066
+[2026-09-28 19:11:08] [INFO] Saved new best checkpoint at epoch 1 (Val Loss: 0.2268) -> task2_sentiment/member_aswin/checkpoints/experimental_1/best_model.pt
+[2026-09-28 19:49:29] [INFO] Epoch 02/05 [2301.1s] - Train Loss: 0.1541, Train Acc: 0.9417 | Val Loss: 0.2808, Val Acc: 0.8982
+[2026-09-28 19:52:32] [INFO] Epoch 03/05 [182.5s] - Train Loss: 0.0924, Train Acc: 0.9668 | Val Loss: 0.2624, Val Acc: 0.9048
+[2026-09-28 19:53:17] [INFO] Epoch 04/05 [44.9s] - Train Loss: 0.0479, Train Acc: 0.9851 | Val Loss: 0.3523, Val Acc: 0.9026
+[2026-09-28 19:54:35] [INFO] Epoch 05/05 [78.7s] - Train Loss: 0.0274, Train Acc: 0.9917 | Val Loss: 0.4430, Val Acc: 0.8998
+[2026-09-28 19:54:35] [INFO] Training Complete in 3206.96 seconds.
+[2026-09-28 19:54:35] [INFO] Throughput: 31.18 examples/sec | Peak Memory: 437.03 MB
+[2026-09-28 19:54:35] [INFO] Best validation loss 0.2268 achieved at epoch 1.
+[2026-09-28 19:54:36] [INFO] Saved training curves to task2_sentiment/member_aswin/outputs/plots/experimental_1_training_curves.png
+[2026-09-28 19:54:37] [INFO] Successfully recorded reproducibility manifest.
+[2026-09-28 19:54:37] [INFO] ============================================================
+[2026-09-28 19:54:53] [INFO] ============================================================
+[2026-09-28 19:54:53] [INFO] Starting Evaluation for Model: experimental_1 (Run ID: experimental_1_run01)
+[2026-09-28 19:54:53] [INFO] Loading Yelp Polarity dataset from Hugging Face...
+[2026-09-28 19:54:58] [INFO] Subsampling training set to 25000 examples (stratified, seed=42)...
+[2026-09-28 19:54:58] [INFO] Subsampling test set to 5000 examples (stratified, seed=42)...
+[2026-09-28 19:54:58] [INFO] EDA Completed: Train=25000, Test=5000, Duplicates=0
+[2026-09-28 19:54:58] [INFO] Word length mean=133.3, 95th pct=377.0
+[2026-09-28 19:54:58] [INFO] Split sizes: Train=20000, Val=5000, Test=5000
+[2026-09-28 19:54:58] [INFO] Tokenizing training set and building vocabulary (from scratch on train split only)...
+[2026-09-28 19:54:59] [INFO] Vocabulary successfully built! Total vocab size: 18766 tokens.
+[2026-09-28 19:54:59] [INFO] Loading checkpoint weights from: task2_sentiment/member_aswin/checkpoints/experimental_1/best_model.pt
+[2026-09-28 19:54:59] [INFO] Executing inference on the untouched test set...
+[2026-09-28 19:55:02] [INFO] Computing metrics, bootstrap confidence intervals, and calibration statistics...
+[2026-09-28 19:55:04] [INFO] Test Accuracy: 0.9194 [95% CI: 0.9116 - 0.9272]
+[2026-09-28 19:55:04] [INFO] Macro-F1:      0.9194 [95% CI: 0.9116 - 0.9272]
+[2026-09-28 19:55:04] [INFO] ROC-AUC:       0.9756
+[2026-09-28 19:55:04] [INFO] PR-AUC:        0.9766
+[2026-09-28 19:55:04] [INFO] MCC:           0.8391 [95% CI: 0.8236 - 0.8549]
+[2026-09-28 19:55:04] [INFO] Brier Score:   0.0610
+[2026-09-28 19:55:04] [INFO] ECE:           0.0190
+[2026-09-28 19:55:04] [INFO] Confusion Matrix: TN=2334, FP=166, FN=237, TP=2263
+[2026-09-28 19:55:04] [INFO] Saved test predictions to: task2_sentiment/member_aswin/outputs/predictions/experimental_1_test_predictions.csv
+[2026-09-28 19:55:05] [INFO] Successfully recorded metrics in task2_sentiment/member_aswin/metrics_report.csv
+[2026-09-28 19:55:05] [INFO] ============================================================
