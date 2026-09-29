@@ -1,0 +1,13 @@
+{
+  "system": "Darwin",
+  "os_version": "macOS (Apple Silicon)",
+  "python_version": "3.12.7",
+  "pytorch_version": "2.10.0",
+  "device_used": "mps",
+  "cpu": "Apple M4 (10 cores: 4 performance, 6 efficiency)",
+  "gpu": "Apple M4 Integrated GPU (10-core GPU, Metal Performance Shaders)",
+  "gpu_memory": "16 GB Unified Memory",
+  "ram_total": "16.0 GB Unified Memory",
+  "cuda_version": null,
+  "mps_available": true
+}
