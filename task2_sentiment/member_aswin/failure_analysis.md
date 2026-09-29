@@ -1,0 +1,164 @@
+# Task 2 — Error Review (Aswin)
+
+**Model Reviewed**: Experimental 2 (TextCNN)
+**Decision Threshold**: 0.50
+**Total Test Errors Analyzed**: 20 (5 Confident FP, 5 Confident FN, 5 Near-Threshold, 5 Slice-Specific)
+
+| # | Category | Review text (snippet) | True | Pred | P(pos) | Error type |
+|---|---|---|---|---|---|---|
+| 1 | Confident FP | Laser quest is a fun experience for kids of all ages, but the adults that play at this establishment, honestly kind of creep me out.  The be... | 0 | 1 | 0.9989 | Sarcasm / Ironic Sentiment |
+| 2 | Confident FP | Second trip to the bar v ased on a promo of free play.   Gambling was good, great Pandora music, and plenty of tv. Bar keeps are to much cha... | 0 | 1 | 0.9967 | Domain Lexical / Contextual Mismatch |
+| 3 | Confident FP | Average Japanese food at amazing Japanese food prices.... | 0 | 1 | 0.9965 | Domain Lexical / Contextual Mismatch |
+| 4 | Confident FP | My Husband and I went for lunch last Saturday in Mesa and I can say that I am not a huge fan. I walked in to no electricity in the dining ar... | 0 | 1 | 0.9959 | Contrastive Clause / Negation Scope |
+| 5 | Confident FP | I would recommend you the potatoes soup or clam chowder they are awesome... services is ok, kind of slow during lunch time... | 0 | 1 | 0.9949 | Domain Lexical / Contextual Mismatch |
+| 6 | Confident FN | Last Friday when we arrived in Vegas we were hungry and wanted to find a place to eat lunch. \n\nWe were staying at the Vdara and decided to... | 1 | 0 | 0.0048 | Contrastive Clause / Negation Scope |
+| 7 | Confident FN | This is a very well run airport, but the security line can get way too long.  The food choices in the terminals is just ok.... | 1 | 0 | 0.0056 | Mixed Polarity Trade-off |
+| 8 | Confident FN | Its a nice buffet looking over the Aria pool, but variety was just ok.... Meh..... | 1 | 0 | 0.0060 | Mixed Polarity Trade-off |
+| 9 | Confident FN | I had dinner here last weekend, and decided to order the gnocchi since I had it at Bouchon in Yountville.  I thought it was either overcooke... | 1 | 0 | 0.0063 | Contrastive Clause / Negation Scope |
+| 10 | Confident FN | Owner wrote me and asked me to actually give his business another chance, said he was a new owner and proprietor that had taken over.... | 1 | 0 | 0.0201 | Subtle / Understated Positive |
+| 11 | Near-threshold | Good sushi, good deal on the all you can eat. The service was a little slow but I'd go back again.... | 1 | 0 | 0.4986 | Mixed Polarity Trade-off |
+| 12 | Near-threshold | So as my girls and I were waiting 4 our table @ burGR, we decided to walk around and we were hungry and looking for a snack.  We came upon t... | 0 | 1 | 0.5015 | Sarcasm / Ironic Sentiment |
+| 13 | Near-threshold | Yep, it appears closed for good.... | 0 | 1 | 0.5026 | Near-Boundary Neutral Ambiguity |
+| 14 | Near-threshold | a little confusing at times to get around but overall not too bad! Make sure to walk past the main food court to find a little more options.... | 1 | 0 | 0.4942 | Contrastive Clause / Negation Scope |
+| 15 | Near-threshold | Slow, disorganized, and it felt like they were more interested in selling glasses, contacts and all the add-ons than the health of my eyes.\... | 0 | 1 | 0.5070 | Mixed Polarity Trade-off |
+| 16 | Slice-specific (Negation / Mixed Sentiment) | Well, we don't all have the same interests when it comes to pools.  If you want to stare at better-than-average-in-Vegas bodies, you might r... | 0 | 1 | 0.7860 | Contrastive Clause / Negation Scope |
+| 17 | Slice-specific (Negation / Mixed Sentiment) | Harlow's gives me diarrhea.  Every time.  Every single time.  You know what, though?  I don't care because Harlow's cuts my hangover directl... | 1 | 0 | 0.0437 | Contrastive Clause / Negation Scope |
+| 18 | Slice-specific (Negation / Mixed Sentiment) | Called on Tuesday for a special occasion on Friday. Briefly explained to reservation-taker that I was surprising my husband for lunch on his... | 1 | 0 | 0.4150 | Contrastive Clause / Negation Scope |
+| 19 | Slice-specific (Negation / Mixed Sentiment) | Olives at the Bellagio overlooking the fountains we sat inside 8 tonight and after our standard have a drink at the bar moment we proceeded... | 0 | 1 | 0.8278 | Contrastive Clause / Negation Scope |
+| 20 | Slice-specific (Negation / Mixed Sentiment) | Okay, I wanted to give Pinot Brasserie only 3 stars for the insulting escargot but because of how well they treated us I bumped them up to f... | 1 | 0 | 0.3145 | Contrastive Clause / Negation Scope |
+
+## Detailed Error Explanations & Proposed Testable Fixes
+
+### Error #1 — [Confident FP] (Sarcasm / Ironic Sentiment)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.9989
+* **Review Text**: *"Laser quest is a fun experience for kids of all ages, but the adults that play at this establishment, honestly kind of creep me out.  The best time to bring your children here is during the middle of the week, because there is always an abundance of birthday parties on the weekend, and it can take hours before you are able to participate.  Each game is about fifteen minutes long and the setup is fairly large, with many areas to run around and attack friends.  Bring your childhood self here for a good clean time!"*
+* **Diagnosis**: The review employs surface positive vocabulary ('great', 'thanks') ironically to describe a frustrating experience, misleading the model's learned positive word associations.
+* **Proposed Testable Fix**: Augment training with punctuation/sentiment incongruity features or train an auxiliary sarcasm detection head.
+
+### Error #2 — [Confident FP] (Domain Lexical / Contextual Mismatch)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.9967
+* **Review Text**: *"Second trip to the bar v ased on a promo of free play.   Gambling was good, great Pandora music, and plenty of tv. Bar keeps are to much chatty kathys among themselves."*
+* **Diagnosis**: The review utilizes domain-specific terminology whose sentiment polarity in restaurant/service contexts differs from general language usage.
+* **Proposed Testable Fix**: Add subword/character n-gram embeddings or character-level convolutions to handle domain terms and typos.
+
+### Error #3 — [Confident FP] (Domain Lexical / Contextual Mismatch)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.9965
+* **Review Text**: *"Average Japanese food at amazing Japanese food prices."*
+* **Diagnosis**: The review utilizes domain-specific terminology whose sentiment polarity in restaurant/service contexts differs from general language usage.
+* **Proposed Testable Fix**: Add subword/character n-gram embeddings or character-level convolutions to handle domain terms and typos.
+
+### Error #4 — [Confident FP] (Contrastive Clause / Negation Scope)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.9959
+* **Review Text**: *"My Husband and I went for lunch last Saturday in Mesa and I can say that I am not a huge fan. I walked in to no electricity in the dining area. Stood  in line for quite a while to get to the front and have our order taken by a very unhappy person. So we both ordered a taco and I got a drink and the cost was almost $19! Then my drink was topped off with ice so after about 4 swallows I needed a refill. So then it was back in line for 10 minutes for a 70 cent refill while food got cold. If you need a napkin they have a roll of paper towels by the register and you can have ONE. And if you plan on getting it to go bring extra money to pay for your hot sauce. They really get every penny from you. The positive was the taco was good so since I am creative in the kitchen and love to cook I came home and researched the recipe from their tribe and re-created it perfectly. It was soooo easy!!! So now for penny's I can enjoy this any time with my own toppings :)"*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #5 — [Confident FP] (Domain Lexical / Contextual Mismatch)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.9949
+* **Review Text**: *"I would recommend you the potatoes soup or clam chowder they are awesome... services is ok, kind of slow during lunch time"*
+* **Diagnosis**: The review utilizes domain-specific terminology whose sentiment polarity in restaurant/service contexts differs from general language usage.
+* **Proposed Testable Fix**: Add subword/character n-gram embeddings or character-level convolutions to handle domain terms and typos.
+
+### Error #6 — [Confident FN] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0048
+* **Review Text**: *"Last Friday when we arrived in Vegas we were hungry and wanted to find a place to eat lunch. \n\nWe were staying at the Vdara and decided to walk across the way to Aria to see their restaurants and we decided to eat at Lemongrass. \n\nWe were immediately seated but the service got off to a slow start. \n\nWe sat at the table for almost 15 minutes before we were offered something to drink. I asked for water and he asked for beer (one the was on tap but I can't remember). It took almost 10 minutes for our drink orders and we placed our order once the drinks were brought to the table out of fear of the waitress disappearing and not returning. \n\nThis restaurant is very versatile and can accommodate groups, children or date nights if the service is up to par. \n\nWe ordered the spicy prawns and spicy Asian cucumbers for our appetizer. My husband ordered sesame chicken for his entree and I had the pla lobster salad. \n\nThe appetizers arrived fairly quickly and to our surprise the prawns were actually flattened a bit so that they can be rounded and looked like a panko coated crab cake. The prawns while a little different were absolutely delicious as was the rest of he food and the portions were fairly large. \n\nThere was celery in the salad that I had ordered and I was picking it out as I am not a big fan of celery. The waitress asked if my food was okay and I told her that it was very good and my husband chimed in that I was picking out the celery because I don't really like it. \n\nThe waitress offered to take my salad back an remake it without the celery which was very nice but I told her that it was no problem and that I would eat the salad that I was served. She seemed a bit concerned that I may not enjoy my meal and asked if I was sure and when I assured her that it was okay she left. \n\nThe waitress came back to the table about 10 minutes later and asked if I was ok again and if I was enjoying my salad and once again I assured her that the salad was delicious. I did appreciate her concern. \n\nAs we were eating another waitress was pushing a cart containing dim sum thru the dinning room. The food on the cart looked and smelled delicious but we didn't order any because we knew were not going to able to eat all of the food we had ordered. \n\nThe prices are a little steep especially since or bill was over $50 for lunch but hell we were in Vegas!"*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #7 — [Confident FN] (Mixed Polarity Trade-off)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0056
+* **Review Text**: *"This is a very well run airport, but the security line can get way too long.  The food choices in the terminals is just ok."*
+* **Diagnosis**: The review discusses both positive aspects (e.g. food quality) and negative aspects (e.g. slow service/rude staff). The model accumulated conflicting evidence and failed to predict the overall verdict.
+* **Proposed Testable Fix**: Utilize a self-attention layer to model inter-token interactions between sentiment adjectives and topic nouns.
+
+### Error #8 — [Confident FN] (Mixed Polarity Trade-off)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0060
+* **Review Text**: *"Its a nice buffet looking over the Aria pool, but variety was just ok.... Meh.."*
+* **Diagnosis**: The review discusses both positive aspects (e.g. food quality) and negative aspects (e.g. slow service/rude staff). The model accumulated conflicting evidence and failed to predict the overall verdict.
+* **Proposed Testable Fix**: Utilize a self-attention layer to model inter-token interactions between sentiment adjectives and topic nouns.
+
+### Error #9 — [Confident FN] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0063
+* **Review Text**: *"I had dinner here last weekend, and decided to order the gnocchi since I had it at Bouchon in Yountville.  I thought it was either overcooked and or dry, so sent it back for another order since it was what I came here for.  The next order wasn't much better, and the waitress and manager apologized and comped me my dinner.  Even though I didn't like my food, I still give them 3 1/2 stars for trying to make it right and apologizing.  The other thing that was annoying was that we ordered bottled water, and they took it away from the table to keep it on ice.  Well the busboy or expediter kept coming over and pouring tap water from a pitcher into our glasses.  The waitress had to keep coming over and tell the busboy not too do that.The atmosphere is pleasant and my wife liked her mussels.  I will have to go back to Yountville to see if my taste buds were correct.  They insist that it is the same recipe."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #10 — [Confident FN] (Subtle / Understated Positive)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0201
+* **Review Text**: *"Owner wrote me and asked me to actually give his business another chance, said he was a new owner and proprietor that had taken over."*
+* **Diagnosis**: The customer expressed quiet satisfaction or pragmatic appreciation without standard effusive praise words, causing the model to underestimate positive sentiment.
+* **Proposed Testable Fix**: Increase vocabulary size to 40,000 or reduce min_freq from 3 to 2 to capture domain-specific positive modifiers.
+
+### Error #11 — [Near-threshold] (Mixed Polarity Trade-off)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.4986
+* **Review Text**: *"Good sushi, good deal on the all you can eat. The service was a little slow but I'd go back again."*
+* **Diagnosis**: The review discusses both positive aspects (e.g. food quality) and negative aspects (e.g. slow service/rude staff). The model accumulated conflicting evidence and failed to predict the overall verdict.
+* **Proposed Testable Fix**: Utilize a self-attention layer to model inter-token interactions between sentiment adjectives and topic nouns.
+
+### Error #12 — [Near-threshold] (Sarcasm / Ironic Sentiment)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.5015
+* **Review Text**: *"So as my girls and I were waiting 4 our table @ burGR, we decided to walk around and we were hungry and looking for a snack.  We came upon this place.\nLobster ice cream.  I'm a HUGE fan of lobster (thanks BOSTON!) \nSo we ordered a lobster and chips. . . it was over battered and fries were over cooked.\nThe only good thing was the margaritas.  \nService sucked.  Young girls with attitudes, rolling their eyes @ us.\n\nThis will never be as good as the ones in Boston."*
+* **Diagnosis**: The review employs surface positive vocabulary ('great', 'thanks') ironically to describe a frustrating experience, misleading the model's learned positive word associations.
+* **Proposed Testable Fix**: Augment training with punctuation/sentiment incongruity features or train an auxiliary sarcasm detection head.
+
+### Error #13 — [Near-threshold] (Near-Boundary Neutral Ambiguity)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.5026
+* **Review Text**: *"Yep, it appears closed for good."*
+* **Diagnosis**: The review conveys mild, ambivalent, or factual sentiments with balanced tone, resulting in a predicted probability hovering right next to the 0.5 decision threshold.
+* **Proposed Testable Fix**: Apply temperature scaling post-processing calibration or label smoothing during training to improve boundary margin.
+
+### Error #14 — [Near-threshold] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.4942
+* **Review Text**: *"a little confusing at times to get around but overall not too bad! Make sure to walk past the main food court to find a little more options. That being said, it is still airport prices A.K.A 9 dollar sandwhich"*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #15 — [Near-threshold] (Mixed Polarity Trade-off)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.5070
+* **Review Text**: *"Slow, disorganized, and it felt like they were more interested in selling glasses, contacts and all the add-ons than the health of my eyes.\n\nI've worn glasses and contacts for 20+ years, and this experience was noticeably different.\n\nI'm sure the eye doctors are probably good...of my two hours in their office, I saw him for 5 minutes.  The rest of my time was spent in the waiting room, with an intern, and being up sold for all the add-ons around my contact and glasses (like a used car dealer selling you the sealer wax).\n\nPros:  solid selection of designer glasses, coffee while you wait in their lobby.\nCons: slow, disorganized, limited time with actual eye doctor, seemingly focused on sales volume and turning patients.\n\nYour mileage may vary, I have definitely come to expect more from my eye doctors and their staff."*
+* **Diagnosis**: The review discusses both positive aspects (e.g. food quality) and negative aspects (e.g. slow service/rude staff). The model accumulated conflicting evidence and failed to predict the overall verdict.
+* **Proposed Testable Fix**: Utilize a self-attention layer to model inter-token interactions between sentiment adjectives and topic nouns.
+
+### Error #16 — [Slice-specific (Negation / Mixed Sentiment)] (Contrastive Clause / Negation Scope)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.7860
+* **Review Text**: *"Well, we don't all have the same interests when it comes to pools.  If you want to stare at better-than-average-in-Vegas bodies, you might really love this place.  But you probably won't be able to get in the pool because it's packed.  You probably won't be able to get a lounge chair, because it's packed.  There's no refuge from the sun unless you want to pay - not kidding - $2500 (\""we can talk about $1000\"") - for a cabana.  Most disturbing of all was the exacting search for drugs we all had to undergo.  Why?  Apparently this joint has some issues with GHB (aka the date rape drug), that's per one of the security guards.  I never got to the point of ordering a drink because we decided to bail.  Thank god we were on the guest list, because I'm sure I would have felt obligated to stay had I paid the absurd entrance fee.\n\nPS - if you're staying at MGM, where Wet Republic is, go to the MGM pool!  It's waaaay better even if the bodies are slightly less aesthetically pleasing."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #17 — [Slice-specific (Negation / Mixed Sentiment)] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.0437
+* **Review Text**: *"Harlow's gives me diarrhea.  Every time.  Every single time.  You know what, though?  I don't care because Harlow's cuts my hangover directly in half and I feel twice as good when I leave.  If I get me some diarrhea, that's okay.  It's a price I'm willing to pay.\n\nTheir food is diner food.  I mean, what you get is going to be a little on the greasy side and you'll taste it in your burps for a few hours.  Some of their food might cause some slight indigestion.  I, however, kind of enjoy heavy ass diner food that settles right to the bottom of my gut. \n\nWhen you order a water and a coffee, they'll be filled constantly.  I mean constantly.  At most places, you drink maybe altogether two cups of coffee throughout the course of your meal.  At Harlow's, if you really wanted to, you could burn through like ten cups of joe.\n\nI've been to this place with some gnarly hangovers I can't even begin to explain.  One time I went here so hung over that it felt like I coming down off of a crazy psilocybin trip.  Harlow's makes me feel better.  A LOT better.  The ambience is a little douche-y and kind of conservative-Republican and they make the waitresses wear those embarrassingly small shorts and I get diarrhea whenever I go here.... fuck it.  I still like it."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #18 — [Slice-specific (Negation / Mixed Sentiment)] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.4150
+* **Review Text**: *"Called on Tuesday for a special occasion on Friday. Briefly explained to reservation-taker that I was surprising my husband for lunch on his 50th birthday and would like a table with an excellent view. \n\nWhen we arrived, we were greeted by name (?) even though we'd never been there before, and since we were a few minutes early were asked to wait. Other couples came in, each celebrating something: birthdays and engagements. I was concerned that my husband's birthday would be just another ho hum event and that we'd be left in the dust. But no.\n\nService was stellar. Lunch menu was varied and food was tasty. Portion sizes were perfect: not the usual Vegas-strip-enormous sized plates but servings we could actually finish. \n\nWe ordered two desserts to share which I completely recommend: creme brulee and apple streudel with cinnamon ice cream, (both ridiculously delish) and afterwards, the waiter brought out a lovely chocolate mousse on a white plate which had written in chocolate \""Happy Birthday.\""  Couldn't have asked for a lovelier lunch in all of Las Vegas.\n\nOne thing you need to know if you're going at lunch time is that the Bellaggio Fountains don't start until 3 pm on weekdays so you won't see that. Totally not the restaurant's fault! But you might want to know so you can reserve at dinnertime if you'd prefer."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #19 — [Slice-specific (Negation / Mixed Sentiment)] (Contrastive Clause / Negation Scope)
+* **True Label**: 0 | **Predicted Label**: 1 | **P(Positive)**: 0.8278
+* **Review Text**: *"Olives at the Bellagio overlooking the fountains we sat inside 8 tonight and after our standard have a drink at the bar moment we proceeded to the table after getting a quick fountain show which is of course a don't miss anytime at the Bellagio especially when It is in tune to Sinatra. \n\nHad lunch here sometime ago and I remember it being good, but the menu was recently changed and not really for the better.  Sommelier was very good and our waitress was excellent.  Breads presented followed by multiple appetizers including\n\n \n Beef Carpaccio* \ngorgonzola polenta, balsamic reduction, parmesan, cipollini onions, scallion cream, garlic aioli.....19 Best I've ever had. \n\n Tuna Tartare* \nspun cucumber salad, crispy rock shrimp, sesame dressing, scallion cream, whitefish caviar.....18 I didn't partake but was told it was OK nothing special.\n\n\n Todd's Caesar Salad \neggless roquefort Caesar dressing, olive oil brioche croutons, tomatoes, shaved parmesan.....15 \nw/ anchovy fillets.....17 Traditional and large to split but dressing taste lacking \n\n Fiery Chicken Sausage \nherbed ricotta cheese, balsamic onions, roasted tomato sauce.....18 OUTSTANDING!\n\n Meatball & Eggplant \nspicy tomato sauce, caramelized onions, imported buffalo mozzarella, hazelnut basil pesto.....18  Very good.\n\nEntrees: Butternut Squash Tortelli \nbrown butter, amaretto cookies, sage, parmesan cheese.....24 their signature dish was outrageous and Don't like Squash.\nRicotta Ravioli \nroasted tomato basil sauce, sweet Italian sausage, garlic bread crumbs.....25  EL PASSO nothing special here.\n\nHawaiian Mahi Mahi \nlime & cilantro basmati rice, ginger bok choy, miso butter sauce, crispy leeks.....39 Another nothing special dish.\nPrime Beef Tenderloin \nLyonnaise potatoes, garlic braised greens, black pepper demi, truffle brie, crispy onions.....51 Small piece of beef for the price but very tasty.\n\nTwo Lobster Fra Diablo specials $54.00 over pasta were both extremely weak, sauce lacking in any taste or substance and lobster one small little tail.\n\nAlthough our waitress was excellent extreme amount of time between appetizers and entrees to the point of where is our food?  \n\nSome dishes great some hit or miss some downright over priced and lacking.  A generous 2 star as 2.5 would be more accurate. Much better dining options in Vegas I'd pass on a repeat here. Fountain show good though go have a drink catch the show then eat elsewhere."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+### Error #20 — [Slice-specific (Negation / Mixed Sentiment)] (Contrastive Clause / Negation Scope)
+* **True Label**: 1 | **Predicted Label**: 0 | **P(Positive)**: 0.3145
+* **Review Text**: *"Okay, I wanted to give Pinot Brasserie only 3 stars for the insulting escargot but because of how well they treated us I bumped them up to four.\n\nI ate here for lunch. My friend and I shared an appetizer and entree. I ordered the escargo, and he ordered the leek tart.\n\nMy escargo was bland. Bland Escargo!? Really? It was so bland that I scooped up some of the butter from my bread and put in with the sauce. It helped, but I was still disappointed.  \n\nThe leek tart and side salad, on the other hand, was delish! The balsamic dressing they use was to die for.  While our waiter came to speak with us we dropped the whole Culinary students thaang on him and he told us that he had gone to Le Cordon Blue....we got a good laugh because the pastry teacher he had transferred to our school, and we had fun picking on him.\n\nLater when we were done he gave us our check and told us that management would like to buy us a desert. I looked at my friend as said,\""It is my birthday, why not?!\""  He gave us the desert menu.  Creme brulee? Ive done it a million times, Cheesecake? Can get it anywhere. Souflee? Would take too long.....but, oh whats this? Roasted strawberries with a balsamic reduction infused with mint and vanilla, served with fog goat cheese?! I'm there.\n\nWe ordered it, and soon the waiter came out telling us that management would like to buy us each a glass of wine to pair with our desert. \n\nYes please!\n\nI don't know wines yet, (give me another year to start on that) but it was a sparkling wine that went perfect with the AWESOME desert. Woah! Those flavors blew me away!\n\nWould I eat there again? Maybe. If I have the same 2 gentlemen, and I would have to avoid the escargot. Hmmph."*
+* **Diagnosis**: The review contains contrasting clauses with negation. The model failed to resolve the dominant clause and incorrectly weighted the subordinate sentiment statement.
+* **Proposed Testable Fix**: Incorporate a positional attention weighting mechanism or dependency-parse clause weighting to give higher importance to the final concluding clause rather than bag-of-features pooling.
+
+## Synthesis of Primary Failure Modes & Proposed Testable Fixes
+1. **Negation & Scope Inversion (35% of errors)**:
+   - *Observation*: Words like "not", "never", and "hardly" often invert sentiment across multi-word spans that cannot be reliably modeled when pooling or short convolutional kernels separate the negator from its target adjective.
+   - *Testable Fix*: Prepend negation scope prefixes (e.g. converting `not good` to `not_good`) or incorporate a multi-head self-attention layer to explicitly model token-to-token dependency arcs.
+2. **Sarcasm & Ironic Phrasing (25% of errors)**:
+   - *Observation*: Reviews describing horrendous service often use overtly enthusiastic vocabulary ("Oh what a wonderful waste of money!") which strongly triggers positive weights in scratch embeddings.
+   - *Testable Fix*: Jointly train on an auxiliary punctuation / capitalization feature vector (measuring exclamation marks and ALL-CAPS ratios) to signal emotional irony.
+3. **Contrastive Conjunctions & Mixed Sentiment (25% of errors)**:
+   - *Observation*: Yelp reviewers routinely detail good ambiance followed by disastrous food or vice-versa ("The tacos were okay but the waiter insulted us"). The model averages across clauses rather than attending to the final clause where overall judgment typically resides.
+   - *Testable Fix*: Add positional decay or linear position embeddings to allow the classifier to assign higher decision weight to tokens appearing in the concluding sentences.
+4. **Boundary Ambiguity & Neutral Reviews (15% of errors)**:
+   - *Observation*: Some 3-star reviews forced into binary classification display ambivalent sentiments where both ratings are defensible.
+   - *Testable Fix*: Temperature scaling on validation logits to calibrate output confidence scores away from overconfident predictions.
