@@ -1,0 +1,22 @@
+model,slice,n_examples,macro_f1,error_rate
+baseline,Short Reviews (<50 words),1199,0.9142,0.0826
+baseline,Medium Reviews (50-150 words),2255,0.9188,0.0812
+baseline,Long Reviews (>150 words),1546,0.9084,0.0886
+baseline,Negation-Bearing,3765,0.9128,0.0845
+baseline,Strong Sentiment Cues,1133,0.9545,0.0441
+baseline,Mixed Sentiment,2338,0.9066,0.0932
+baseline,High Unknown Token (>5% UNK),509,0.888,0.1081
+experimental_1,Short Reviews (<50 words),1199,0.9144,0.0826
+experimental_1,Medium Reviews (50-150 words),2255,0.9224,0.0776
+experimental_1,Long Reviews (>150 words),1546,0.9134,0.0834
+experimental_1,Negation-Bearing,3765,0.9156,0.0813
+experimental_1,Strong Sentiment Cues,1133,0.948,0.0503
+experimental_1,Mixed Sentiment,2338,0.9085,0.0911
+experimental_1,High Unknown Token (>5% UNK),509,0.8792,0.1159
+experimental_2,Short Reviews (<50 words),1199,0.9149,0.0817
+experimental_2,Medium Reviews (50-150 words),2255,0.9361,0.0639
+experimental_2,Long Reviews (>150 words),1546,0.9126,0.0854
+experimental_2,Negation-Bearing,3765,0.9246,0.0733
+experimental_2,Strong Sentiment Cues,1133,0.9592,0.0397
+experimental_2,Mixed Sentiment,2338,0.9221,0.0778
+experimental_2,High Unknown Token (>5% UNK),509,0.8997,0.0963

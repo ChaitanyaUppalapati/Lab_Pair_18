@@ -1,0 +1,30 @@
+{
+  "experimental_1": {
+    "comparison": "baseline_vs_experimental_1",
+    "sample_size": 5000,
+    "contingency_table": {
+      "both_correct_n00": 4474,
+      "base_correct_model_wrong_n01": 107,
+      "base_wrong_model_correct_n10": 123,
+      "both_wrong_n11": 296
+    },
+    "mcnemar_statistic": 0.9782608695652174,
+    "p_value": 0.3226285469329749,
+    "is_significant_at_alpha_0_05": false,
+    "interpretation": "The difference in classification accuracy between Baseline and experimental_1 is NOT statistically significant (p >= 0.05) under the McNemar test with continuity correction (chi2=0.9783, p=3.2263e-01)."
+  },
+  "experimental_2": {
+    "comparison": "baseline_vs_experimental_2",
+    "sample_size": 5000,
+    "contingency_table": {
+      "both_correct_n00": 4420,
+      "base_correct_model_wrong_n01": 161,
+      "base_wrong_model_correct_n10": 206,
+      "both_wrong_n11": 213
+    },
+    "mcnemar_statistic": 5.275204359673024,
+    "p_value": 0.02163124860272772,
+    "is_significant_at_alpha_0_05": true,
+    "interpretation": "The difference in classification accuracy between Baseline and experimental_2 is statistically significant (p < 0.05) under the McNemar test with continuity correction (chi2=5.2752, p=2.1631e-02)."
+  }
+}
