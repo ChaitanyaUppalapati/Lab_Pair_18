@@ -9,7 +9,7 @@ Repo link: <!-- TODO: paste GitHub URL -->
 | Member | Task 1 folder | Task 2 folder | Task 3 folder |
 |---|---|---|---|
 | Chaitanya | `task1_llm/member_chaitanya/` | `task2_sentiment/member_chaitanya/` | `task3_gan/member_chaitanya/` |
-| <!-- teammate --> | | | |
+| Aswin | `task1_llm/member_aswin/` | `task2_sentiment/member_aswin/` | `task3_gan/member_aswin/` |
 
 ## Setup
 
@@ -19,13 +19,16 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+*Note for NVIDIA RTX GPUs (e.g. RTX 5090): Install PyTorch with CUDA support first: `pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124`.*
+
 Datasets are **not** committed (size). Download instructions: see `task*/data/README.md`.
 
 ## Smoke test (one command)
 
-<!-- TODO: once a member's training entry point exists, document it here, e.g.
-python task1_llm/member_chaitanya/src/train.py --config task1_llm/member_chaitanya/configs/smoke.yaml
-The smoke config should run a few hundred steps on a tiny data subset in < 5 min on CPU. -->
+Run a rapid verification (< 1 minute) of the data pipeline, model forward pass, checkpointing, and evaluation:
+```bash
+python task2_sentiment/member_aswin/src/train.py --config task2_sentiment/member_aswin/configs/smoke.yaml
+```
 
 ## Reproducing a member's run
 
