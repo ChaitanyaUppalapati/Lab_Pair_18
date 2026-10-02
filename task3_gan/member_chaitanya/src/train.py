@@ -113,7 +113,8 @@ def main() -> None:
     iters_per_epoch = len(loader)
     total_iters, const_iters = epochs * iters_per_epoch, const_epochs * iters_per_epoch
     lam_c, lam_i, d_scale = l_cfg["lambda_cycle"], l_cfg["lambda_identity"], l_cfg["d_loss_scale"]
-    use_diffaug = bool(t_cfg["diffaugment_monet_d"])
+    use_diffaug_a = bool(t_cfg["diffaugment_monet_d"])
+    use_diffaug_b = bool(t_cfg.get("diffaugment_photo_d", False))
 
     start_epoch, it = 1, 0
     history = {"intervals": [], "epochs": []}
@@ -149,7 +150,9 @@ def main() -> None:
             for g in opt_d.param_groups:
                 g["lr"] = t_cfg["lr_d"] * lr_scale
             real_a, real_b = real_a.to(device, non_blocking=True), real_b.to(device, non_blocking=True)
-            d_a_in = diff_augment if use_diffaug else (lambda x: x)  # optional DiffAugment before D_A (Monet) only
+            # optional DiffAugment (same random transform family for real and fake) before each discriminator
+            d_a_in = diff_augment if use_diffaug_a else (lambda x: x)
+            d_b_in = diff_augment if use_diffaug_b else (lambda x: x)
 
             # ---- generators ----
             for p in d_params:
@@ -160,7 +163,7 @@ def main() -> None:
             rec_b = nets["G_A2B"](fake_a)
             idt_b = nets["G_A2B"](real_b)
             idt_a = nets["G_B2A"](real_a)
-            adv_a2b = lsgan(nets["D_B"](fake_b), True)
+            adv_a2b = lsgan(nets["D_B"](d_b_in(fake_b)), True)
             adv_b2a = lsgan(nets["D_A"](d_a_in(fake_a)), True)
             cyc_a, cyc_b = F.l1_loss(rec_a, real_a), F.l1_loss(rec_b, real_b)
             idt_l_a, idt_l_b = F.l1_loss(idt_a, real_a), F.l1_loss(idt_b, real_b)
@@ -180,7 +183,7 @@ def main() -> None:
                 p.requires_grad_(True)
             pooled_a, pooled_b = pool_a.query(fake_a), pool_b.query(fake_b)
             pred_real_a, pred_fake_a = nets["D_A"](d_a_in(real_a)), nets["D_A"](d_a_in(pooled_a))
-            pred_real_b, pred_fake_b = nets["D_B"](real_b), nets["D_B"](pooled_b)
+            pred_real_b, pred_fake_b = nets["D_B"](d_b_in(real_b)), nets["D_B"](d_b_in(pooled_b))
             loss_d_a = d_scale * (lsgan(pred_real_a, True) + lsgan(pred_fake_a, False))
             loss_d_b = d_scale * (lsgan(pred_real_b, True) + lsgan(pred_fake_b, False))
             loss_d = loss_d_a + loss_d_b

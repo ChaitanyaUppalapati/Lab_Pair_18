@@ -103,12 +103,16 @@ def main() -> None:
     parser.add_argument("--eval-batch-size", type=int, default=16)
     parser.add_argument("--kid-subset-size", type=int, default=100)
     parser.add_argument("--k", type=int, default=5, help="k for precision/recall/density/coverage")
+    parser.add_argument("--snapshot", default=None,
+                        help="evaluate checkpoints/<run_id>/<snapshot>/ (e.g. epoch_035) instead of the final generators")
     args = parser.parse_args()
     cfg = load_config(args.config)
     run_id, d_cfg, m_cfg = cfg["run_id"], cfg["data"], cfg["model"]
     paths = run_paths(run_id)
     set_seed(int(cfg["seed"]))
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    ckpt_dir = paths["checkpoints"] / args.snapshot if args.snapshot else paths["checkpoints"]
+    ckpt_rel = ckpt_dir.relative_to(MEMBER_DIR).as_posix()
 
     import lpips
     from torchmetrics.image.fid import FrechetInceptionDistance, NoTrainInceptionV3
@@ -117,7 +121,7 @@ def main() -> None:
     gens = {}
     for k in ("G_A2B", "G_B2A"):
         g = ResnetGenerator(m_cfg["ngf"], m_cfg["n_res_blocks"], m_cfg["n_downsampling"]).to(device).eval()
-        g.load_state_dict(torch.load(paths["checkpoints"] / f"{k}.pt", map_location=device))
+        g.load_state_dict(torch.load(ckpt_dir / f"{k}.pt", map_location=device))
         gens[k] = g
     inception = NoTrainInceptionV3(name="inception-v3-compat", features_list=["2048"]).to(device).eval()
     lpips_fn = lpips.LPIPS(net="alex", verbose=False).to(device).eval()
@@ -159,7 +163,7 @@ def main() -> None:
         pr = prdc(real_feats[ri].double(), res["out_feats"][fi].double(), args.k)
         cos = F.cosine_similarity(res["in_feats"], res["out_feats"], dim=1).mean().item()
         rows.append({
-            "run_id": run_id, "checkpoint": f"checkpoints/{run_id}/{fwd}.pt", "direction": direction,
+            "run_id": run_id, "checkpoint": f"{ckpt_rel}/{fwd}.pt", "direction": direction,
             "fid": fid.compute().item(), "kid_mean": kid_mean.item(), "kid_std": kid_std.item(), **pr,
             "cycle_l1": res["cycle_l1"], "lpips": res["lpips"], "content_cosine_sim": cos,
             "final_g_loss": last["loss_G"], "final_d_loss": last["loss_D_B"] if tag == "A2B" else last["loss_D_A"],
