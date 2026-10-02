@@ -1,0 +1,9 @@
+{
+  "images": "task3_gan/member_chaitanya/outputs/pred_B2A",
+  "n_images": 7038,
+  "fid": 83.92799862738838,
+  "mifid_paired": 0.40264087416789957,
+  "mifid_nearest": 0.24912674405606205,
+  "score_paired": 42.16531975077814,
+  "score_nearest": 42.088562685722216
+}
