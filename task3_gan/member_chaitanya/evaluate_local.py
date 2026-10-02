@@ -3,7 +3,8 @@
 Usage:
     python task3_gan/member_chaitanya/evaluate_local.py --config task3_gan/member_chaitanya/configs/full.yaml
 
-Directions: A2B = photo -> Monet (generated vs real Monet), B2A = Monet -> photo (generated vs real photos).
+Directions (Kaggle naming, A = Monet, B = photo): A2B = Monet -> photo (generated vs real photos),
+B2A = photo -> Monet (generated vs real Monet; the direction Kaggle scores).
 All translations are written to outputs/pred_A2B/ and outputs/pred_B2A/.
 
 Metric definitions (pretrained networks are used for evaluation only, never to make images)
@@ -131,9 +132,9 @@ def main() -> None:
     last = summary["final_epoch"]
     rng = torch.Generator().manual_seed(int(cfg["seed"]))
     rows = []
-    for direction, (fwd, back, src, real_loader) in {
-        "A2B (photo->Monet)": ("G_A2B", "G_B2A", "photo", "monet"),
-        "B2A (Monet->photo)": ("G_B2A", "G_A2B", "monet", "photo"),
+    for direction, (fwd, back, src, real_loader) in {  # Kaggle naming: A = Monet, B = photo
+        "A2B (Monet->photo)": ("G_A2B", "G_B2A", "monet", "photo"),
+        "B2A (photo->Monet)": ("G_B2A", "G_A2B", "photo", "monet"),
     }.items():
         tag = direction.split()[0]
         n_real, n_src = len(loaders[real_loader].dataset), len(loaders[src].dataset)

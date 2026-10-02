@@ -1,7 +1,8 @@
 """Task 3.1 CycleGAN training (photo <-> Monet).
 
-Naming: A = photo, B = Monet. G_A2B: photo -> Monet, G_B2A: Monet -> photo.
-D_A judges photos, D_B judges Monet paintings.
+Naming follows the Kaggle competition: A = Monet, B = photo.
+G_A2B: Monet -> photo, G_B2A: photo -> Monet (the direction Kaggle scores).
+D_A judges Monet paintings, D_B judges photos.
 
 Generator objective (one step for both generators):
     L_G = LSGAN(D_B(G_A2B(a)), 1) + LSGAN(D_A(G_B2A(b)), 1)
@@ -57,7 +58,7 @@ def lsgan(pred: torch.Tensor, target_is_real: bool) -> torch.Tensor:
 
 @torch.no_grad()
 def save_grid(nets: dict, fixed_a: torch.Tensor, fixed_b: torch.Tensor, path) -> None:
-    """Rows: photo | photo->Monet | reconstruction ; Monet | Monet->photo | reconstruction."""
+    """Rows: Monet | Monet->photo | reconstruction ; photo | photo->Monet | reconstruction."""
     for n in nets.values():
         n.eval()
     fake_b = nets["G_A2B"](fixed_a)
@@ -85,8 +86,8 @@ def main() -> None:
     set_seed(int(cfg["seed"]))
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    photo_dir, monet_dir = repo_path(d_cfg["photo_dir"]), repo_path(d_cfg["monet_dir"])
-    ds = UnpairedDataset(photo_dir, monet_dir,
+    monet_dir, photo_dir = repo_path(d_cfg["monet_dir"]), repo_path(d_cfg["photo_dir"])
+    ds = UnpairedDataset(monet_dir, photo_dir,
                          train_transform(d_cfg["load_size"], d_cfg["crop_size"], d_cfg["hflip"]),
                          train_transform(d_cfg["load_size"], d_cfg["crop_size"], d_cfg["hflip"]))
     loader = DataLoader(ds, batch_size=t_cfg["batch_size"], shuffle=True, drop_last=True,
@@ -95,8 +96,8 @@ def main() -> None:
                         generator=torch.Generator().manual_seed(int(cfg["seed"])))
     n_fixed = int(t_cfg["num_fixed_samples"])
     etf = eval_transform(d_cfg["crop_size"])
-    fixed_a = torch.stack([FolderDataset(photo_dir, etf)[i][0] for i in range(n_fixed)]).to(device)
-    fixed_b = torch.stack([FolderDataset(monet_dir, etf)[i][0] for i in range(n_fixed)]).to(device)
+    fixed_a = torch.stack([FolderDataset(monet_dir, etf)[i][0] for i in range(n_fixed)]).to(device)
+    fixed_b = torch.stack([FolderDataset(photo_dir, etf)[i][0] for i in range(n_fixed)]).to(device)
 
     nets = build_models(cfg, device)
     params = {k: count_params(v) for k, v in nets.items()}
@@ -146,7 +147,7 @@ def main() -> None:
             for g in opt_d.param_groups:
                 g["lr"] = t_cfg["lr_d"] * lr_scale
             real_a, real_b = real_a.to(device, non_blocking=True), real_b.to(device, non_blocking=True)
-            d_b_in = diff_augment if use_diffaug else (lambda x: x)
+            d_a_in = diff_augment if use_diffaug else (lambda x: x)  # optional DiffAugment before D_A (Monet) only
 
             # ---- generators ----
             for p in d_params:
@@ -157,8 +158,8 @@ def main() -> None:
             rec_b = nets["G_A2B"](fake_a)
             idt_b = nets["G_A2B"](real_b)
             idt_a = nets["G_B2A"](real_a)
-            adv_a2b = lsgan(nets["D_B"](d_b_in(fake_b)), True)
-            adv_b2a = lsgan(nets["D_A"](fake_a), True)
+            adv_a2b = lsgan(nets["D_B"](fake_b), True)
+            adv_b2a = lsgan(nets["D_A"](d_a_in(fake_a)), True)
             cyc_a, cyc_b = F.l1_loss(rec_a, real_a), F.l1_loss(rec_b, real_b)
             idt_l_a, idt_l_b = F.l1_loss(idt_a, real_a), F.l1_loss(idt_b, real_b)
             loss_g = adv_a2b + adv_b2a + lam_c * (cyc_a + cyc_b) + lam_i * (idt_l_a + idt_l_b)
@@ -176,8 +177,8 @@ def main() -> None:
             for p in d_params:
                 p.requires_grad_(True)
             pooled_a, pooled_b = pool_a.query(fake_a), pool_b.query(fake_b)
-            pred_real_a, pred_fake_a = nets["D_A"](real_a), nets["D_A"](pooled_a)
-            pred_real_b, pred_fake_b = nets["D_B"](d_b_in(real_b)), nets["D_B"](d_b_in(pooled_b))
+            pred_real_a, pred_fake_a = nets["D_A"](d_a_in(real_a)), nets["D_A"](d_a_in(pooled_a))
+            pred_real_b, pred_fake_b = nets["D_B"](real_b), nets["D_B"](pooled_b)
             loss_d_a = d_scale * (lsgan(pred_real_a, True) + lsgan(pred_fake_a, False))
             loss_d_b = d_scale * (lsgan(pred_real_b, True) + lsgan(pred_fake_b, False))
             loss_d = loss_d_a + loss_d_b
@@ -195,7 +196,7 @@ def main() -> None:
             vals = {"loss_G": loss_g.item(), "adv_A2B": adv_a2b.item(), "adv_B2A": adv_b2a.item(),
                     "cycle_A": cyc_a.item(), "cycle_B": cyc_b.item(), "identity_A": idt_l_a.item(),
                     "identity_B": idt_l_b.item(), "loss_D_A": loss_d_a.item(), "loss_D_B": loss_d_b.item(),
-                    "D_B_real_mean": pred_real_b.mean().item(), "D_B_fake_mean": pred_fake_b.mean().item(),
+                    "D_A_real_mean": pred_real_a.mean().item(), "D_A_fake_mean": pred_fake_a.mean().item(),
                     "grad_norm_G": gn_g, "grad_norm_D": gn_d}
             for k, v in vals.items():
                 sums[k] = sums.get(k, 0.0) + v
@@ -207,10 +208,10 @@ def main() -> None:
                 history["intervals"].append(row)
                 elapsed = time.perf_counter() - epoch_start
                 log.info("iter=%d epoch=%d lr=%.2e G=%.3f advA2B=%.3f advB2A=%.3f cycA=%.3f cycB=%.3f idtA=%.3f idtB=%.3f "
-                         "D_A=%.3f D_B=%.3f D_B(real)=%.2f D_B(fake)=%.2f gnG=%.2f gnD=%.2f it_per_s=%.2f",
+                         "D_A=%.3f D_B=%.3f D_A(real)=%.2f D_A(fake)=%.2f gnG=%.2f gnD=%.2f it_per_s=%.2f",
                          it, epoch, row["lr"], row["loss_G"], row["adv_A2B"], row["adv_B2A"], row["cycle_A"],
                          row["cycle_B"], row["identity_A"], row["identity_B"], row["loss_D_A"], row["loss_D_B"],
-                         row["D_B_real_mean"], row["D_B_fake_mean"], row["grad_norm_G"], row["grad_norm_D"],
+                         row["D_A_real_mean"], row["D_A_fake_mean"], row["grad_norm_G"], row["grad_norm_D"],
                          count / elapsed)
 
         epoch_s = time.perf_counter() - epoch_start
@@ -218,11 +219,11 @@ def main() -> None:
               **{k: v / max(1, count) for k, v in sums.items()}}
         history["epochs"].append(ep)
         log.info("epoch=%d done time_s=%.0f it_per_s=%.2f G=%.3f cycA=%.3f cycB=%.3f idtA=%.3f idtB=%.3f D_A=%.3f D_B=%.3f "
-                 "D_B(real)=%.2f D_B(fake)=%.2f nan_count=%d", epoch, epoch_s, ep["iters_per_s"], ep["loss_G"],
+                 "D_A(real)=%.2f D_A(fake)=%.2f nan_count=%d", epoch, epoch_s, ep["iters_per_s"], ep["loss_G"],
                  ep["cycle_A"], ep["cycle_B"], ep["identity_A"], ep["identity_B"], ep["loss_D_A"], ep["loss_D_B"],
-                 ep["D_B_real_mean"], ep["D_B_fake_mean"], nan_count)
-        if ep["loss_D_B"] < 0.05:
-            log.warning("epoch=%d D_B (Monet) loss %.4f is near 0: possible discriminator overfitting", epoch, ep["loss_D_B"])
+                 ep["D_A_real_mean"], ep["D_A_fake_mean"], nan_count)
+        if ep["loss_D_A"] < 0.05:
+            log.warning("epoch=%d D_A (Monet) loss %.4f is near 0: possible discriminator overfitting", epoch, ep["loss_D_A"])
         if epoch % t_cfg["grid_every_epochs"] == 0 or epoch == epochs:
             (paths["outputs"] / "grids").mkdir(exist_ok=True)
             save_grid(nets, fixed_a, fixed_b, paths["outputs"] / "grids" / f"epoch_{epoch:03d}.png")

@@ -1,6 +1,7 @@
 """Unpaired photo / Monet datasets.
 
-Domain A = photos (photo_jpg), domain B = Monet paintings (monet_jpg).
+Domain naming follows the Kaggle competition: A = Monet paintings (monet_jpg),
+B = photos (photo_jpg).
 One epoch = one pass over the photos (shuffled); each photo is paired with a
 Monet painting drawn uniformly at random, so pairs are never fixed.
 Training augmentation (both domains, independently): resize to load_size,
@@ -43,8 +44,10 @@ def load_rgb(path: Path) -> Image.Image:
 
 
 class UnpairedDataset(Dataset):
-    def __init__(self, photo_dir: Path, monet_dir: Path, transform_a, transform_b):
-        self.photos, self.monets = list_images(photo_dir), list_images(monet_dir)
+    """Returns (domain A image, domain B image) = (random Monet, photo i); length = number of photos."""
+
+    def __init__(self, monet_dir: Path, photo_dir: Path, transform_a, transform_b):
+        self.monets, self.photos = list_images(monet_dir), list_images(photo_dir)
         self.tf_a, self.tf_b = transform_a, transform_b
 
     def __len__(self) -> int:
@@ -53,7 +56,7 @@ class UnpairedDataset(Dataset):
     def __getitem__(self, i: int):
         # torch RNG: DataLoader seeds each worker differently, so draws are not repeated across workers
         monet = self.monets[int(torch.randint(len(self.monets), (1,)).item())]
-        return self.tf_a(load_rgb(self.photos[i])), self.tf_b(load_rgb(monet))
+        return self.tf_a(load_rgb(monet)), self.tf_b(load_rgb(self.photos[i]))
 
 
 class FolderDataset(Dataset):

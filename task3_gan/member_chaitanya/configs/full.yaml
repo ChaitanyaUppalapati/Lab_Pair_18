@@ -2,8 +2,8 @@ run_id: full_run01
 seed: 1337
 
 data:
-  photo_dir: task3_gan/data/photo_jpg     # domain A
-  monet_dir: task3_gan/data/monet_jpg     # domain B
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
   load_size: 286                          # resize before random crop
   crop_size: 256
   hflip: true                             # same augmentation for both domains, drawn independently
