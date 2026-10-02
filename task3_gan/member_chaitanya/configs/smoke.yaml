@@ -1,0 +1,43 @@
+# Smoke test: synthetic images, tiny networks, 2 epochs on CPU. Never used for reported metrics.
+# DiffAugment is switched on here only to exercise that code path.
+run_id: smoke_run01
+smoke: true
+seed: 1337
+
+data:
+  photo_dir: task3_gan/member_chaitanya/data_processed/smoke_data/photo_jpg     # domain A
+  monet_dir: task3_gan/member_chaitanya/data_processed/smoke_data/monet_jpg     # domain B
+  load_size: 72                          # resize before random crop
+  crop_size: 64
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 0
+
+model:
+  ngf: 8
+  n_res_blocks: 2
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 8                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 10.0
+  lambda_identity: 5.0                    # 0.5 x lambda_cycle
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 2                              # one epoch = one pass over the photos
+  constant_lr_epochs: 1                  # then linear decay to 0 over the remaining 20
+  lr_g: 2.0e-4
+  lr_d: 2.0e-4
+  betas: [0.5, 0.999]
+  pool_size: 5                           # per-discriminator history buffer
+  precision: fp32
+  diffaugment_monet_d: true               # optional DiffAugment (translation + cutout) before D_Monet only
+  log_every_iters: 4
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 1
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
