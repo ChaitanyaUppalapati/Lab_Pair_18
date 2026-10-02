@@ -1,0 +1,91 @@
+=== greedy | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time the and and the the the the the the the the the the the the the the the the the the the the the the the the to the the 
+
+=== greedy | prompt: 'Lily found a little' | sample 0 | ended_with_eos=False ===
+Lily found a little and the the the the the the the an the the the the the the the the the the to the the the the the to the the to the the
+
+=== greedy | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=False ===
+The dog was sad because the the the the the the the the the the the the the the the the the the the the the the the t t the the the the the the
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time,hent ar "
+On pave Igiloou ware gheme thed d thed ar thereror caimar fay s, a land and and and. Hetha hellyiversce wie o
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 1 | ended_with_eos=True ===
+Once upon a time s ishe a ak.
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 2 | ended_with_eos=False ===
+Once upon a timere loy t toous, cerad he bemened mesome dithe hes ksthem an ald co and, ther.
+
+Busang Yowat neade t. s heng Suthe whe th
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 0 | ended_with_eos=False ===
+Lily found a little sang t!"
+
+Mo and sthitouta hen'shaindy wad ap oucathe ly m dirand tan t aw wanghe he w bithe ble o hind tored my pline 
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 1 | ended_with_eos=False ===
+Lily found a little, sid hetulered. She lird are. " Ond way wad ld we s touplane a cheangithemon the tt s und towis wal oommato to w nred t
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 2 | ended_with_eos=False ===
+Lily found a littled orecho an aind lo promulfr wer'tot ile s we ay titheagig. Be pine fres thes d anegreraco t thed e cengom afonouad thed
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=False ===
+The dog was sad becausend ar heded te and as aiskecil usitlliler hetheris.
+
+
+The thog ther tumered he d at o we r she tallle tooind e ndithe me
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 1 | ended_with_eos=False ===
+The dog was sad because t e the an gind and the y efr smorirtothe. Thenthe they bnd ounloasan. She S hes the bis d ay tshe tilom  fo the cin th
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 2 | ended_with_eos=False ===
+The dog was sad because soo oraind s an h thedoo bomig d aid ther anand the ammetond he thelyed. Shind Sore wain ston funge brotherdsapas t am.
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time we cdicat'ext loo ous."
+
+Whe, sm pir SheOn so ae gidande puteredont warouca wofr whed esound id w ll ur aiso nd th milk
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 1 | ended_with_eos=False ===
+Once upon a timeto, abed y cryond!"Hen 
+
+
+Theane ato t lere.
+Daom ay s.saim. On ve t Shed Tr mo gon wand asar. Thereand uhatoureryed t s
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 2 | ended_with_eos=False ===
+Once upon a timenpyo f ad bethelird ndanthont was walome ut ad he astorys.
+
+
+She oore the 3, oke al prag. ?"I 
+"
+0 bie!
+
+Lim
+Tshaid ase 
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 0 | ended_with_eos=False ===
+Lily found a littlere ry."4 a way Ongid tax?" ke ato k mole by mapunghatend wa me s shey thasadd tou wed fpe t!""
+"oYoud, tomonclilane ds s
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 1 | ended_with_eos=False ===
+Lily found a little waindved o fid bock. haofreed awid ld m hind Shetomawawe s tt thirid m tr po, it w tas stchen omsony thim booo. Sh ho s
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 2 | ended_with_eos=False ===
+Lily found a littled vayore the ag ay.
+Ogromind a ged co and acand sttithealuiplerengotanmond ay, w anshored me the tul a, wied isd, lite B
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=False ===
+The dog was sad becausedntt s, prerofis 
+
+Zoo ply wathe be, ay weyed cid satoked Anoo ed, smy he imit ad cerrawer in nisouscait, paben th t e t
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 1 | ended_with_eos=False ===
+The dog was sad because, wal s d. Thoome ghe to thed lis. Sher, anlaud t a sa Berigof and wat thned irouret ghedd aot heme wiithuf thellanal's!
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 2 | ended_with_eos=False ===
+The dog was sad becausend fushel anede tondilin, ckarund the and br te bf mo im angh be. dendilonrer! 
+
+Ond he d cullo Iha ooveMot atnd booped 
+

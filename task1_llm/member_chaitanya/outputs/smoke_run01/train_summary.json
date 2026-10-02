@@ -1,0 +1,19 @@
+{
+  "run_id": "smoke_run01",
+  "param_count": 125312,
+  "vocab_size": 69,
+  "train_windows": 13717,
+  "total_steps": 428,
+  "epochs": 2,
+  "total_train_time_s": 166.41038300003856,
+  "train_compute_time_s": 160.62724419939332,
+  "train_tokens_per_sec": 43656.05619987649,
+  "peak_memory_mb": null,
+  "max_grad_norm": 2.6304500102996826,
+  "mean_grad_norm": 0.43761577728752776,
+  "loss_spikes": 0,
+  "spike_rule": "step loss > 1.5 x mean of previous 100 step losses (after warm-up)",
+  "nan_count": 0,
+  "best_val_loss": 2.2459940778979255,
+  "hardware": "CPU only: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+}

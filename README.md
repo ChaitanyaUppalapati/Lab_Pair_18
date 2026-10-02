@@ -30,6 +30,11 @@ Run a rapid verification (< 1 minute) of the data pipeline, model forward pass, 
 python task2_sentiment/member_aswin/src/train.py --config task2_sentiment/member_aswin/configs/smoke.yaml
 ```
 
+Task 1 (Chaitanya) — preprocess, causal-mask/shift checks, train, evaluate on a tiny config (a few minutes; downloads TinyStories on first run):
+```bash
+python task1_llm/member_chaitanya/src/smoke_test.py
+```
+
 ## Reproducing a member's run
 
 1. Pick the config from `task*/member_*/configs/`.

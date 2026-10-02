@@ -1,0 +1,54 @@
+# Smoke test: tiny model + data subset, runs in a few minutes. Never used for reported metrics.
+run_id: smoke_run01
+smoke: true              # metrics go to outputs/smoke_run01/metrics_row.csv, not metrics_report.csv
+seed: 1337
+
+data:
+  dataset_name: roneneldan/TinyStories
+  source_limit: 30000      # smoke only: read the first 30K source rows
+  text_field: text
+  cache_dir: task1_llm/data/hf_cache
+  processed_name: tinystories_smoke
+  seed: 1337               # story-level split after filtering + deduplication
+  drop_stories_with_disallowed_chars: true   # drop garbled (mis-decoded) stories
+  allowed_extra_chars: ["“", "”"]            # kept in addition to printable ASCII + newline
+  train_stories: 2000
+  val_stories: 200
+  eos_token: "<EOS>"
+  unk_token: "<UNK>"
+  block_size: 256          # input length; each window holds block_size + 1 chars (input + shifted target)
+  train_stride: 128        # sliding windows, half overlap
+  val_stride: 256          # validation uses non-overlapping windows
+
+model:
+  n_layers: 2
+  n_heads: 2
+  d_model: 64
+  d_ff: 256
+  dropout: 0.1
+  activation: gelu
+  tie_weights: false
+  bias: true
+
+training:
+  epochs: 2
+  batch_size: 64
+  optimizer: adamw
+  betas: [0.9, 0.99]
+  weight_decay: 0.1        # applied to 2-D weight matrices only
+  peak_lr: 1.0e-3
+  warmup_steps: 20       # linear warm-up from 0
+  min_lr: 1.0e-4           # cosine decay to this value at the last step
+  grad_clip: 1.0
+  precision: fp32
+  eval_every_steps: 100
+  eval_batches: 10
+  log_every_steps: 50
+  num_workers: 0
+
+generation:
+  prompts: ["Once upon a time", "Lily found a little", "The dog was sad because"]
+  max_new_chars: 120
+  default_temperature: 0.8
+  temperatures: [0.0, 0.8, 1.0]   # 0.0 = greedy
+  samples_per_setting: 3

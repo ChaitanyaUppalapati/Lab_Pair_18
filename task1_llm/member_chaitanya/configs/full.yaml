@@ -1,0 +1,51 @@
+run_id: full_run01
+seed: 1337
+
+data:
+  dataset_name: roneneldan/TinyStories
+  text_field: text
+  cache_dir: task1_llm/data/hf_cache
+  processed_name: tinystories_s1337_clean
+  seed: 1337               # story-level split after filtering + deduplication
+  drop_stories_with_disallowed_chars: true   # drop garbled (mis-decoded) stories
+  allowed_extra_chars: ["“", "”"]            # kept in addition to printable ASCII + newline
+  train_stories: 100000
+  val_stories: 10000
+  eos_token: "<EOS>"
+  unk_token: "<UNK>"
+  block_size: 256          # input length; each window holds block_size + 1 chars (input + shifted target)
+  train_stride: 128        # sliding windows, half overlap
+  val_stride: 256          # validation uses non-overlapping windows
+
+model:
+  n_layers: 6
+  n_heads: 6
+  d_model: 384
+  d_ff: 1536
+  dropout: 0.1
+  activation: gelu
+  tie_weights: false
+  bias: true
+
+training:
+  epochs: 10
+  batch_size: 64
+  optimizer: adamw
+  betas: [0.9, 0.99]
+  weight_decay: 0.1        # applied to 2-D weight matrices only
+  peak_lr: 1.0e-3
+  warmup_steps: 1000       # linear warm-up from 0
+  min_lr: 1.0e-4           # cosine decay to this value at the last step
+  grad_clip: 1.0
+  precision: fp32
+  eval_every_steps: 1000
+  eval_batches: 100
+  log_every_steps: 50
+  num_workers: 0
+
+generation:
+  prompts: ["Once upon a time", "Lily found a little", "The dog was sad because"]
+  max_new_chars: 400
+  default_temperature: 0.8
+  temperatures: [0.0, 0.8, 1.0]   # 0.0 = greedy
+  samples_per_setting: 3

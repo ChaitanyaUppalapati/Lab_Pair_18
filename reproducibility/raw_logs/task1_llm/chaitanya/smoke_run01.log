@@ -1,0 +1,46 @@
+2026-10-01 22:52:49,499 INFO run_id=smoke_run01 config=task1_llm/member_chaitanya/configs/smoke.yaml
+2026-10-01 22:52:49,499 INFO config={"run_id": "smoke_run01", "seed": 1337, "data": {"dataset_name": "roneneldan/TinyStories", "source_limit": 30000, "text_field": "text", "cache_dir": "task1_llm/data/hf_cache", "processed_name": "tinystories_smoke", "seed": 1337, "drop_stories_with_disallowed_chars": true, "allowed_extra_chars": ["\u201c", "\u201d"], "train_stories": 2000, "val_stories": 200, "eos_token": "<EOS>", "unk_token": "<UNK>", "block_size": 256, "train_stride": 128, "val_stride": 256}, "model": {"n_layers": 2, "n_heads": 2, "d_model": 64, "d_ff": 256, "dropout": 0.1, "activation": "gelu", "tie_weights": false, "bias": true}, "training": {"epochs": 2, "batch_size": 64, "optimizer": "adamw", "betas": [0.9, 0.99], "weight_decay": 0.1, "peak_lr": 0.001, "warmup_steps": 20, "min_lr": 0.0001, "grad_clip": 1.0, "precision": "fp32", "eval_every_steps": 100, "eval_batches": 10, "log_every_steps": 50, "num_workers": 0}, "generation": {"prompts": ["Once upon a time", "Lily found a little", "The dog was sad because"], "max_new_chars": 120, "default_temperature": 0.8, "temperatures": [0.0, 0.8, 1.0], "samples_per_setting": 3}}
+2026-10-01 22:52:49,510 INFO hardware=GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD torch=2.11.0+cu128
+2026-10-01 22:52:49,510 INFO vocab_size=69 train_windows=13717 val_windows=726 steps_per_epoch=214 total_steps=428 params=125312
+2026-10-01 22:52:49,772 INFO step=0 epoch=1 loss=4.2599 lr=5.000e-05 grad_norm=2.626 train_tok_per_s=63264
+2026-10-01 22:52:50,239 INFO step=50 epoch=1 loss=2.6939 lr=9.880e-04 grad_norm=0.479 train_tok_per_s=1193333
+2026-10-01 22:52:50,704 INFO step=100 epoch=1 loss=2.4288 lr=9.173e-04 grad_norm=0.240 train_tok_per_s=1448428
+2026-10-01 22:52:50,744 INFO step=100 eval val_loss(partial 10 batches)=2.4093
+2026-10-01 22:52:51,192 INFO step=150 epoch=1 loss=2.3720 lr=7.928e-04 grad_norm=0.355 train_tok_per_s=1577303
+2026-10-01 22:52:51,645 INFO step=200 epoch=1 loss=2.3297 lr=6.327e-04 grad_norm=0.435 train_tok_per_s=1647730
+2026-10-01 22:52:51,670 INFO step=200 eval val_loss(partial 10 batches)=2.3117
+2026-10-01 22:52:51,834 INFO epoch=1 train_loss_running=2.6260 train_loss_eval=2.2987 val_loss=2.3000 val_acc=0.3259 elapsed_s=2
+2026-10-01 22:52:51,845 INFO epoch=1 new best val_loss=2.3000 -> checkpoints/smoke_run01/best.pt
+2026-10-01 22:52:52,197 INFO step=250 epoch=2 loss=2.2989 lr=4.605e-04 grad_norm=0.340 train_tok_per_s=1685632
+2026-10-01 22:52:52,641 INFO step=300 epoch=2 loss=2.2923 lr=3.014e-04 grad_norm=0.292 train_tok_per_s=1723642
+2026-10-01 22:52:52,665 INFO step=300 eval val_loss(partial 10 batches)=2.2686
+2026-10-01 22:52:53,130 INFO step=350 epoch=2 loss=2.2842 lr=1.788e-04 grad_norm=0.549 train_tok_per_s=1740995
+2026-10-01 22:52:53,586 INFO step=400 epoch=2 loss=2.2655 lr=1.104e-04 grad_norm=0.287 train_tok_per_s=1758207
+2026-10-01 22:52:53,610 INFO step=400 eval val_loss(partial 10 batches)=2.2470
+2026-10-01 22:52:53,925 INFO epoch=2 train_loss_running=2.3005 train_loss_eval=2.2419 val_loss=2.2436 val_acc=0.3338 elapsed_s=4
+2026-10-01 22:52:53,930 INFO epoch=2 new best val_loss=2.2436 -> checkpoints/smoke_run01/best.pt
+2026-10-01 22:52:53,936 INFO done summary={"run_id": "smoke_run01", "param_count": 125312, "vocab_size": 69, "train_windows": 13717, "total_steps": 428, "epochs": 2, "total_train_time_s": 4.424313299823552, "train_compute_time_s": 3.9878658982925117, "train_tokens_per_sec": 1758422.21851103, "peak_memory_mb": 362.08935546875, "max_grad_norm": 2.626077175140381, "mean_grad_norm": 0.4412455949758258, "loss_spikes": 0, "spike_rule": "step loss > 1.5 x mean of previous 100 step losses (after warm-up)", "nan_count": 0, "best_val_loss": 2.2436488206721537, "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"}
+2026-10-01 22:55:10,193 INFO run_id=smoke_run01 config=task1_llm/member_chaitanya/configs/smoke.yaml
+2026-10-01 22:55:10,193 INFO config={"run_id": "smoke_run01", "smoke": true, "seed": 1337, "data": {"dataset_name": "roneneldan/TinyStories", "source_limit": 30000, "text_field": "text", "cache_dir": "task1_llm/data/hf_cache", "processed_name": "tinystories_smoke", "seed": 1337, "drop_stories_with_disallowed_chars": true, "allowed_extra_chars": ["\u201c", "\u201d"], "train_stories": 2000, "val_stories": 200, "eos_token": "<EOS>", "unk_token": "<UNK>", "block_size": 256, "train_stride": 128, "val_stride": 256}, "model": {"n_layers": 2, "n_heads": 2, "d_model": 64, "d_ff": 256, "dropout": 0.1, "activation": "gelu", "tie_weights": false, "bias": true}, "training": {"epochs": 2, "batch_size": 64, "optimizer": "adamw", "betas": [0.9, 0.99], "weight_decay": 0.1, "peak_lr": 0.001, "warmup_steps": 20, "min_lr": 0.0001, "grad_clip": 1.0, "precision": "fp32", "eval_every_steps": 100, "eval_batches": 10, "log_every_steps": 50, "num_workers": 0}, "generation": {"prompts": ["Once upon a time", "Lily found a little", "The dog was sad because"], "max_new_chars": 120, "default_temperature": 0.8, "temperatures": [0.0, 0.8, 1.0], "samples_per_setting": 3}}
+2026-10-01 22:55:29,587 INFO run_id=smoke_run01 config=task1_llm/member_chaitanya/configs/smoke.yaml
+2026-10-01 22:55:29,588 INFO config={"run_id": "smoke_run01", "smoke": true, "seed": 1337, "data": {"dataset_name": "roneneldan/TinyStories", "source_limit": 30000, "text_field": "text", "cache_dir": "task1_llm/data/hf_cache", "processed_name": "tinystories_smoke", "seed": 1337, "drop_stories_with_disallowed_chars": true, "allowed_extra_chars": ["\u201c", "\u201d"], "train_stories": 2000, "val_stories": 200, "eos_token": "<EOS>", "unk_token": "<UNK>", "block_size": 256, "train_stride": 128, "val_stride": 256}, "model": {"n_layers": 2, "n_heads": 2, "d_model": 64, "d_ff": 256, "dropout": 0.1, "activation": "gelu", "tie_weights": false, "bias": true}, "training": {"epochs": 2, "batch_size": 64, "optimizer": "adamw", "betas": [0.9, 0.99], "weight_decay": 0.1, "peak_lr": 0.001, "warmup_steps": 20, "min_lr": 0.0001, "grad_clip": 1.0, "precision": "fp32", "eval_every_steps": 100, "eval_batches": 10, "log_every_steps": 50, "num_workers": 0}, "generation": {"prompts": ["Once upon a time", "Lily found a little", "The dog was sad because"], "max_new_chars": 120, "default_temperature": 0.8, "temperatures": [0.0, 0.8, 1.0], "samples_per_setting": 3}}
+2026-10-01 22:55:29,610 INFO hardware=CPU only: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD torch=2.11.0+cu128
+2026-10-01 22:55:29,610 INFO vocab_size=69 train_windows=13717 val_windows=726 steps_per_epoch=214 total_steps=428 params=125312
+2026-10-01 22:55:30,014 INFO step=0 epoch=1 loss=4.2594 lr=5.000e-05 grad_norm=2.630 train_tok_per_s=40762
+2026-10-01 22:55:48,630 INFO step=50 epoch=1 loss=2.6930 lr=9.880e-04 grad_norm=0.467 train_tok_per_s=44140
+2026-10-01 22:56:07,603 INFO step=100 epoch=1 loss=2.4317 lr=9.173e-04 grad_norm=0.249 train_tok_per_s=43764
+2026-10-01 22:56:08,353 INFO step=100 eval val_loss(partial 10 batches)=2.4095
+2026-10-01 22:56:27,061 INFO step=150 epoch=1 loss=2.3744 lr=7.928e-04 grad_norm=0.358 train_tok_per_s=43839
+2026-10-01 22:56:46,060 INFO step=200 epoch=1 loss=2.3249 lr=6.327e-04 grad_norm=0.341 train_tok_per_s=43707
+2026-10-01 22:56:46,685 INFO step=200 eval val_loss(partial 10 batches)=2.3115
+2026-10-01 22:56:52,743 INFO epoch=1 train_loss_running=2.6258 train_loss_eval=2.2989 val_loss=2.3005 val_acc=0.3259 elapsed_s=83
+2026-10-01 22:56:52,750 INFO epoch=1 new best val_loss=2.3005 -> checkpoints/smoke_run01/best.pt
+2026-10-01 22:57:06,635 INFO step=250 epoch=2 loss=2.2958 lr=4.605e-04 grad_norm=0.344 train_tok_per_s=43742
+2026-10-01 22:57:25,576 INFO step=300 epoch=2 loss=2.2959 lr=3.014e-04 grad_norm=0.319 train_tok_per_s=43694
+2026-10-01 22:57:26,178 INFO step=300 eval val_loss(partial 10 batches)=2.2699
+2026-10-01 22:57:45,148 INFO step=350 epoch=2 loss=2.2857 lr=1.788e-04 grad_norm=0.518 train_tok_per_s=43650
+2026-10-01 22:58:03,937 INFO step=400 epoch=2 loss=2.2760 lr=1.104e-04 grad_norm=0.326 train_tok_per_s=43670
+2026-10-01 22:58:04,554 INFO step=400 eval val_loss(partial 10 batches)=2.2491
+2026-10-01 22:58:16,010 INFO epoch=2 train_loss_running=2.3015 train_loss_eval=2.2442 val_loss=2.2460 val_acc=0.3339 elapsed_s=166
+2026-10-01 22:58:16,014 INFO epoch=2 new best val_loss=2.2460 -> checkpoints/smoke_run01/best.pt
+2026-10-01 22:58:16,019 INFO done summary={"run_id": "smoke_run01", "param_count": 125312, "vocab_size": 69, "train_windows": 13717, "total_steps": 428, "epochs": 2, "total_train_time_s": 166.41038300003856, "train_compute_time_s": 160.62724419939332, "train_tokens_per_sec": 43656.05619987649, "peak_memory_mb": null, "max_grad_norm": 2.6304500102996826, "mean_grad_norm": 0.43761577728752776, "loss_spikes": 0, "spike_rule": "step loss > 1.5 x mean of previous 100 step losses (after warm-up)", "nan_count": 0, "best_val_loss": 2.2459940778979255, "hardware": "CPU only: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"}
