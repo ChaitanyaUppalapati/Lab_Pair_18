@@ -92,10 +92,16 @@ Training: 26,494 s (7 h 22 min), 10.63 it/s (21.3 images/sec, one image per doma
 - Cohen's kappa / % agreement:
 
 ## Kaggle
-- Submission: 2026-10-02, `submission.csv` = `ID,FID,MiFID` / `1,83.9280,0.4026`
-- Scoring protocol: `src/kaggle_score.py` — torchvision Inception-v3 (IMAGENET1K_V1) features, verified to reproduce `real_stats.npz`; FID against the 300 real Monet statistics; MiFID = mean cosine distance between index-paired, equal-size random subsets of generated and real features.
-- Public score: −42.1653 (= −(FID + MiFID) / 2); private: not yet released
-- Leaderboard rank: 2 of 20 (public leaderboard, 2026-10-02)
+Official protocol: `src/official_eval.py`, a port of the instructor's `Part3_Evaluation_Script.ipynb` (first 300 images per folder, both directions, FID and MiFID averaged over A2B and B2A).
+
+| Date (2026-10-02) | FID | MiFID | Public score | Note |
+|---|---|---|---|---|
+| 15:46 UTC | 83.9280 | 0.4026 | −42.1653 | **Not official**: computed with `src/kaggle_score.py` (photo→Monet only, all 7,038 images, vs `real_stats.npz`) before the evaluation script was available. Instructor asked to remove it. |
+| 17:35 UTC | 107.2547 | 0.4148 | −53.8347 | **Correction**, official script on the same epoch-40 model (B2A: FID 104.887 / MiFID 0.4066; A2B: FID 109.623 / MiFID 0.4230). |
+
+- Current `submission.csv` = the official values (row 2). Details: `outputs/official_eval.json`.
+- Leaderboard rank: pending removal of the non-official entry (Kaggle shows a team's best public score).
+- Official score of every saved snapshot (epochs 5–40) improved monotonically: −61.75, −58.35, −56.65, −56.27, −55.53, −54.64, −54.50, −53.87; the final model is the best.
 
 ## Hardware disclosure
 - GPU: NVIDIA GeForce RTX 4090 (24 GB); CPU: AMD Ryzen 9 7950X; PyTorch 2.11.0+cu128.

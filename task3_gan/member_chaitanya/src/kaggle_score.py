@@ -1,4 +1,11 @@
-"""Score generated photo->Monet JPGs the way the Kaggle competition describes.
+"""NOT the official leaderboard protocol -- use official_eval.py for submissions.
+
+Early approximation written from the competition's Evaluation page before the instructor's script
+was available: photo->Monet only, all generated images, against real_stats.npz. Kept because it
+reproduces real_stats.npz exactly and gives a lower-variance FID on all 7,038 translations.
+The first Kaggle submission (83.928 / 0.4026) was produced with this file by mistake.
+
+Score generated photo->Monet JPGs the way the Kaggle competition's Evaluation page describes.
 
 Feature extractor (verified to reproduce task3_gan/data/real_stats.npz exactly on the 300
 Monet images): torchvision Inception-v3 (IMAGENET1K_V1) with fc = Identity -> 2048-d,
@@ -77,7 +84,8 @@ def score(image_dir: Path, seed: int = 1337) -> dict:
     gi, ri = rng.choice(len(g), n, replace=False), rng.choice(len(r), n, replace=False)
     mifid_paired = float(np.mean(np.diag(cosine_dist(g[gi], r[ri]))))
     mifid_nearest = float(cosine_dist(g, r).min(1).mean())
-    return {"images": str(image_dir.relative_to(REPO_ROOT).as_posix()), "n_images": len(files), "fid": f,
+    shown = image_dir.relative_to(REPO_ROOT).as_posix() if image_dir.is_relative_to(REPO_ROOT) else image_dir.name
+    return {"images": shown, "n_images": len(files), "fid": f,
             "mifid_paired": mifid_paired, "mifid_nearest": mifid_nearest,
             "score_paired": (f + mifid_paired) / 2, "score_nearest": (f + mifid_nearest) / 2}
 
