@@ -33,6 +33,7 @@ training:
   betas: [0.5, 0.999]
   pool_size: 50                           # per-discriminator history buffer
   precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
   diffaugment_monet_d: false              # optional DiffAugment (translation + cutout) before D_Monet only
   log_every_iters: 100
   grid_every_epochs: 1

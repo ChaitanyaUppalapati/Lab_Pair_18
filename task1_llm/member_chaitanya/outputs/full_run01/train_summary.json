@@ -1,0 +1,19 @@
+{
+  "run_id": "full_run01",
+  "param_count": 10811136,
+  "vocab_size": 85,
+  "train_windows": 700427,
+  "total_steps": 109440,
+  "epochs": 10,
+  "total_train_time_s": 8457.795989899896,
+  "train_compute_time_s": 7617.59502717969,
+  "train_tokens_per_sec": 235384.65271549855,
+  "peak_memory_mb": 4598.45458984375,
+  "max_grad_norm": 9.627074241638184,
+  "mean_grad_norm": 0.20079960554663898,
+  "loss_spikes": 0,
+  "spike_rule": "step loss > 1.5 x mean of previous 100 step losses (after warm-up)",
+  "nan_count": 0,
+  "best_val_loss": 0.5096606620763791,
+  "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+}

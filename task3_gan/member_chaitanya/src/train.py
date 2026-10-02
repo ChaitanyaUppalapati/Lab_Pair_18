@@ -85,6 +85,8 @@ def main() -> None:
     log = get_logger(paths["raw_log"], f"train_{run_id}")
     set_seed(int(cfg["seed"]))
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    # faster conv algorithm selection; same model and maths, not bitwise reproducible
+    torch.backends.cudnn.benchmark = bool(t_cfg.get("cudnn_benchmark", False))
 
     monet_dir, photo_dir = repo_path(d_cfg["monet_dir"]), repo_path(d_cfg["photo_dir"])
     ds = UnpairedDataset(monet_dir, photo_dir,

@@ -1,0 +1,122 @@
+=== greedy | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time, there was a little girl named Lily. She loved to play with her toys and her favorite was a big box. One day, Lily's mom asked her to clean up her toys and put them away. Lily didn't want to clean up, but her mom said she had to wait until she was done. 
+
+Lily was sad because she wanted to play with her toys and her friends. She went to her room and sat down on her bed. She felt sad that her toys
+
+=== greedy | prompt: 'Lily found a little' | sample 0 | ended_with_eos=False ===
+Lily found a little box of toys and she wanted to play with them. She asked her mom if she could play with them, but her mom said no. Lily was sad and didn't know what to do.
+
+Later that day, Lily went to the park with her mom. She saw a boy who was sad because she was sad because she lost her toy. He wanted to help her find it. So, Lily went to the boy and asked for help. The boy was still sad because he lost his t
+
+=== greedy | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=False ===
+The dog was sad because he couldn't find his way home. The dog wanted to help the little bird. The dog said, "Don't worry, little bird. I will help you find your way home."
+
+The little bird and the dog walked through the woods. They saw many trees and flowers. The little bird was very happy. The little bird said, "Thank you, dog! You are very kind."
+
+The little bird said, "You are welcome, little bird. You are very kind
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time, there was a little bird named Tweet. Tweet loved to fly high in the sky very high in the sky. He was happy to see the flowers blooming and being used to take care of the things. One day, Tweet met a big bee who came to visit him. The bee explained that could bloom if he wanted to fly.
+
+Tweet used his head to help the bee fly. He held on to the branches that were big and thick. The bee said, "I w
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 1 | ended_with_eos=False ===
+Once upon a time, there was a little girl named Sue. Sue loved to play outside with her friends. One day, they decided to take a picnic in the woods.
+
+As they were eating, a big, mean cat came along. The cat was very loud and scared. The little girl was very scared and started to cry. Her friends saw the mean cat and hoped it would save the famous cat.
+
+As the cat walked by, the cat saw a big, mean dog. The dog w
+
+=== temperature=0.8 | prompt: 'Once upon a time' | sample 2 | ended_with_eos=False ===
+Once upon a time, there was a boy named Timmy. Timmy was very sleepy and didn't want to go to school because he wanted to play outside. But his mommy said they had to be obedient and go to school to get ready for lunch. Timmy didn't like that and he didn't want to go to school ever after.
+
+When they got to school, Timmy's teacher gave him a book about a real cat or a ball. Timmy thought this was better fun and he
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 0 | ended_with_eos=False ===
+Lily found a little bee crawling under a bush. She said, "Hello, little bees. Do you want to see what I have in my hat?"
+
+The bee did not answer, but Lily was happy to hear that Timmy. She thought that maybe when it was a treasure for the bee, if you liked it. Later, Lily went to play with her bee friends and asked them to come and play. They all went to the park and started to play. It was a perfect day for Lily an
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 1 | ended_with_eos=True ===
+Lily found a little dog with a long tail. She wondered why the dog was loading so much. She asked her mommy to take her for a walk. Her mommy gave her some water and Lily felt warm and cozy. She had a great time cleaning the park and making a cozy pile.
+
+=== temperature=0.8 | prompt: 'Lily found a little' | sample 2 | ended_with_eos=True ===
+Lily found a little bunch of stars in the dark pit. He was so happy and couldn't wait to start playing with them. 
+
+When the sun started to set, Timmy and Lily said goodbye to the stars in the sky. They were a smart boy who could see all the stars and planets until the sky was a big playground. Timmy was so happy that he could make a new friend. From that day on, Timmy and Lily were the best of friends.
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=True ===
+The dog was sad because he lost his leg. His friend, a big bear, saw the dog and wanted to help.
+
+The big bear and the little animals looked for the dog together. They found a big ball near the dog. The bear jumped and jumped, but the dog was not happy. The dog was not sad. No, the big bear and the little animals got new toys. They became good friends.
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 1 | ended_with_eos=False ===
+The dog was sad because he thought his spoon could find the source of the noise.
+
+Suddenly, it saw a big scary dog. The dog was brave and strong and he shot at the big scary dog. The dog was sad and hurt. He wanted to go back to his mom and dad. The dog knew he had to stop the fight and be safe.
+
+The other dogs did not listen to the dog. They did not know what to do. They thought they had to go back to the park. They wa
+
+=== temperature=0.8 | prompt: 'The dog was sad because' | sample 2 | ended_with_eos=True ===
+The dog was sad because he lost his friend. The dog thought of a message and the friend felt sorry for the fox. He told him that the dog was not nice and that his friend was hurt badly. The dog learned the lesson and was happy to be with the fox. And they lived happily ever after.
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 0 | ended_with_eos=False ===
+Once upon a time, there was a brave boy named Timmy. Timmy had a cool phone that was also scary. He found an old spot and climbed up past the top of the stairs. As he sat on the spot, he started to realize that the phone was not there anymore. 
+
+The next day, Timmy decided to go back to the old stairs to read his favorite story. He spotted a cobweb and blinked. The cobweb was gone and he was very happy. 
+
+Timmy r
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 1 | ended_with_eos=False ===
+Once upon a time there was a wild little boy called Bob. He was only three years old and very curious about one and he had a very special adventure. He loved playing ball and holiday and exploring the playground with his friends.
+
+
+One day, Bob was going on an adventure in the forest. He was a bit curious and decided to find out what was at the top. When he got to the top, he could see the flowers and birds and a
+
+=== temperature=1.0 | prompt: 'Once upon a time' | sample 2 | ended_with_eos=False ===
+Once upon a time, there was a bear named Bob. Bob liked to drink milk every morning. He would eat carrots and drink milk. The food was delicious and the bees were makeful. Bob lived in a hill and enjoyed running around and playing all day.
+
+One morning, the sun was horing. The bees had to change from buzz of bees. They wanted to help, so Bob started to sleep. Joe had a plan. He told the bees that their home was i
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 0 | ended_with_eos=True ===
+Lily found a little burger and a bandage. "You were hurt," she said. "I didn't hate that burger anymore." Baby felt bad and said, "I'm sorry I needed to help." But it was too late.
+
+Lily had done an x-ray to keep her bank from fake. Baby was sad and angry because she couldn't run as fast as her friends could. Lily learned that sometimes you have to complete anything that will make you feel better.
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 1 | ended_with_eos=False ===
+Lily found a little bird who was unknown to her. "Look, Lily! There's a bird in a blue sky. It looks scared." she explained. 
+
+Lily asked, "What can lead you to be?" 
+
+"I am the bird," explained Lily. 
+
+"Do read about the bird's nest?" asked Lily. 
+
+"Yes, it is," said her brother. 
+
+Lily read the note about the little bird, the bird's new baby. She loved looking at the nest and wondering what it would be like to be 
+
+=== temperature=1.0 | prompt: 'Lily found a little' | sample 2 | ended_with_eos=False ===
+Lily found a little squeaky button on the water and picked it up. When she was done, she took a sip of the lemon and started to slide down the bridge.
+
+Suddenly, the water started to get cold and Lily had to go back to her mom. Her mom called for help and even told her about the lemon jug. She was glad her balleriness had started and followed her to the lake to park.
+
+When they arrived at the lake, a big, scary fish
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 0 | ended_with_eos=True ===
+The dog was sad because he could not reach the rabbit. The bird wanted to help the dog, so it whistled and whistled. The dog learned to be very careful and help those who are in need. And the hunter was very happy because he had made a new friend.
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 1 | ended_with_eos=False ===
+The dog was sad because it lost its toy.
+
+The dog's friend, a cat named Tom, heard the dog and wanted to help. Tom said, "Please, can you help me search for the toy?". The cat listened to Tom and started searching.
+
+Tom was very guilty and all he found were tears, but then he remembered how happy he had been with the dog. He was kind to one day, but the best boy around was nothing to worry. 
+
+Tom was disappointed but fe
+
+=== temperature=1.0 | prompt: 'The dog was sad because' | sample 2 | ended_with_eos=True ===
+The dog was sad because he couldn't find more food and play, but then he saw a big tree. He wondered if he could help his brother. 
+
+Timmy ran to the tree and saw a hanger. The hanger looked bright and sharp. He tried to pick the hanger up with his antic to heal. Timmy was happy and thanked the hanger. After that, the hanger was never able to anything.
+

@@ -61,12 +61,45 @@ Loss curves: `outputs/full_run01/loss_curves.png`; gradient norm and LR: `output
 ## Metrics
 See `metrics_report.csv` (decoding metrics at temperature 0.8) and `outputs/full_run01/generation_metrics.csv` (per temperature). Metric definitions are in the docstring of `src/evaluate.py`.
 
-Summary: _(filled after the run)_
+Summary (final checkpoint, epoch 10):
+
+| Metric | Value |
+|---|---|
+| Train CE loss (eval mode) | 0.4842 |
+| Validation CE loss | 0.5097 |
+| Perplexity | 1.665 |
+| Bits per character | 0.735 |
+| Generalization gap (val − train) | 0.0255 |
+| Top-1 next-char accuracy (val) | 83.58% |
+| Distinct-1 / 2 / 3 (T = 0.8) | 0.344 / 0.778 / 0.929 |
+| Repeated 4-gram rate (T = 0.8) | 0.0195 |
+| Grad norm, mean / max (pre-clip) | 0.201 / 9.63 (max is the first step) |
+| Loss spikes / NaNs | 0 / 0 |
+| Parameters | 10,811,136 |
+| Training tokens/sec | 235,385 |
+| Generation tokens/sec (batch 1) | 180 |
+| Peak GPU memory | 4,598 MB |
+| Total training time | 8,458 s (2 h 21 min, incl. per-epoch evaluation) |
+
+Per-epoch losses:
+
+| Epoch | Train (eval mode) | Val | Val acc |
+|---|---|---|---|
+| 1 | 0.6217 | 0.6271 | 79.98% |
+| 2 | 0.5878 | 0.5953 | 80.97% |
+| 3 | 0.5689 | 0.5777 | 81.50% |
+| 4 | 0.5545 | 0.5651 | 81.88% |
+| 5 | 0.5418 | 0.5544 | 82.22% |
+| 6 | 0.5268 | 0.5412 | 82.59% |
+| 7 | 0.5141 | 0.5317 | 82.92% |
+| 8 | 0.4999 | 0.5201 | 83.23% |
+| 9 | 0.4895 | 0.5129 | 83.46% |
+| 10 | 0.4840 | 0.5097 | 83.58% |
 
 ## Hardware disclosure
 - GPU: NVIDIA GeForce RTX 4090 (24 GB); CPU: AMD Ryzen 9 7950X; PyTorch 2.11.0+cu128.
-- Peak memory: _(after the run)_
-- Total training time: _(after the run)_
+- Peak memory: 4,598 MB (GPU, allocated)
+- Total training time: 8,458 s
 
 ## Comparison with teammates
 
