@@ -1,0 +1,41 @@
+{
+  "run_id": "full_run02b",
+  "params": {
+    "G_A2B": 11378179,
+    "G_B2A": 11378179,
+    "D_A": 2764737,
+    "D_B": 2764737
+  },
+  "param_count_total": 28285832,
+  "param_count_generators": 22756358,
+  "photos": 7038,
+  "monets": 300,
+  "iters": 563040,
+  "train_time_s": 58038.92602910008,
+  "train_iters_per_sec": 9.7010754423281,
+  "train_images_per_sec": 19.4021508846562,
+  "peak_memory_mb": 19485.71337890625,
+  "max_grad_norm_G": 1824.5267333984375,
+  "max_grad_norm_D": 381.4660339355469,
+  "nan_count": 0,
+  "final_epoch": {
+    "epoch": 80,
+    "iters": 7038,
+    "epoch_time_s": 740.9899148000404,
+    "iters_per_s": 9.498104980145698,
+    "loss_G": 3.42461431470233,
+    "adv_A2B": 0.6174582123383774,
+    "adv_B2A": 0.8055145532511012,
+    "cycle_A": 0.06851193687393435,
+    "cycle_B": 0.07469674598496555,
+    "identity_A": 0.0460232482372478,
+    "identity_B": 0.06788852059661614,
+    "loss_D_A": 0.058318458724069336,
+    "loss_D_B": 0.11436226084070404,
+    "D_A_real_mean": 0.8730635950598536,
+    "D_A_fake_mean": 0.1263425479595144,
+    "grad_norm_G": 76.63790316851379,
+    "grad_norm_D": 18.681872069479965
+  },
+  "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+}

@@ -140,6 +140,44 @@ Local metrics of the submitted epoch-35 generators (`full_metrics_report.csv`, r
 
 Kaggle (official script on these outputs): FID 102.5307, MiFID 0.4082, public score −51.4694 (2026-10-03). Full leaderboard has 35 teams: this score ranks 25th once the non-official −42.1653 entry is removed (top 20 needs > −50.29, top 10 > −47.69).
 
+## Run 2b — run 2 continued to 80 epochs (current submitted model)
+Config `configs/full_run02b.yaml`: resumes full_run02's epoch-40 state (generators, discriminators, Adam state, history; the 50-image pools start empty) and trains epochs 41–80 with a warm restart at LR 1e-4 decaying linearly to 0 at epoch 80. Everything else as run 2.
+
+| Choice | Value | Why |
+|---|---|---|
+| Continue instead of retraining | resume run 2 at epoch 40 | |
+| Restart LR | 1e-4 (half of the original 2e-4), linear decay to 0 | |
+
+| Epoch | FID B2A | FID A2B | FID | MiFID | Official score |
+|---|---|---|---|---|---|
+| 45 | 99.10 | 103.92 | 101.51 | 0.4057 | −50.96 |
+| 50 | 99.37 | 103.74 | 101.55 | 0.4067 | −50.98 |
+| 55 | 99.20 | 102.16 | 100.68 | 0.4054 | −50.54 |
+| 60 | 99.58 | 102.95 | 101.27 | 0.4056 | −50.84 |
+| 65 | 99.87 | 100.81 | 100.34 | 0.4063 | −50.37 |
+| **70** | **99.00** | 100.83 | **99.91** | **0.4033** | **−50.16** |
+| 75 | 99.51 | 100.43 | 99.97 | 0.403 | −50.19 |
+| 80 | 100.18 | 100.44 | 100.31 | 0.403 | −50.36 |
+
+Training facts: epochs 41–80 took ≈ 8.3 h at 9.4–9.5 it/s (`train_summary.json` reports 58,039 s cumulative including run 2's 40 epochs). NaN count 0; max grad norm G 1,824.5 / D 381.5 (cumulative). End of epoch 80: cycle 0.069 / 0.075, identity 0.046 / 0.068, D_A 0.058, D_B 0.114.
+
+Local metrics of the submitted epoch-70 generators (run_id `full_run02b` in `full_metrics_report.csv`):
+
+| Metric | A2B (Monet → photo) | B2A (photo → Monet) |
+|---|---|---|
+| FID (torchmetrics, all images) | 84.40 | 82.20 |
+| KID mean ± std | 0.0228 ± 0.0024 | 0.0141 ± 0.0020 |
+| Precision / recall | 0.730 / 0.443 | 0.517 / 0.700 |
+| Density / coverage | 0.745 / 0.810 | 0.489 / 0.803 |
+| Cycle L1 | 0.0408 | 0.0448 |
+| LPIPS input vs translation | 0.354 | 0.408 |
+| Content cosine similarity | 0.776 | 0.741 |
+| Generator images/sec | 217 | 302 |
+
+Kaggle: FID 99.9142, MiFID 0.4033 → public score −50.1587 (2026-10-03). The leaderboard now has 40 teams; this ranks 22nd once the non-official −42.1653 entry is removed (top 20 > −49.73, top 10 > −46.99).
+
+Reference point measured with the official script: two disjoint sets of 300 **real** photos give FID 77.2–80.5 and MiFID 0.425–0.436 (score ≈ −39 to −40), i.e. the practical ceiling of this metric at N = 300.
+
 ## Hardware disclosure
 - GPU: NVIDIA GeForce RTX 4090 (24 GB); CPU: AMD Ryzen 9 7950X; PyTorch 2.11.0+cu128.
 - Training time: 26,494 s. Peak memory: 19,154 MB allocated (see note above).
