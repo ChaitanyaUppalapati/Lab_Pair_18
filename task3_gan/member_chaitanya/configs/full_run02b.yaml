@@ -1,0 +1,46 @@
+# full_run02b: continuation of full_run02 (DiffAugment on both discriminators) from its epoch-40 state
+# (weights, Adam state, history; checkpoints/full_run02/latest.pt copied to checkpoints/full_run02b/).
+# Epochs 1-40 ran under full_run02.yaml (2e-4 constant for 20, linear decay to 0 by 40).
+# Epochs 41-80 here: warm restart at 1e-4, linear decay to 0 by epoch 80.
+run_id: full_run02b
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 286                          # resize before random crop
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 10.0
+  lambda_identity: 5.0                    # 0.5 x lambda_cycle
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 80                              # total, including the 40 epochs of full_run02
+  constant_lr_epochs: 40                  # = the epochs already done in full_run02; decay runs over epochs 41-80
+  lr_g: 1.0e-4                            # restart LR for epochs 41-80 (full_run02 used 2e-4)
+  lr_d: 1.0e-4
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 5
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
