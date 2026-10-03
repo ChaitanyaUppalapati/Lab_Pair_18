@@ -134,6 +134,23 @@ def main() -> None:
         train_time_prev = state["train_time_s"]
         log.info("resumed from %s at epoch %d iter %d", latest, state["epoch"], it)
 
+    # optional generator EMA: an exponential moving average of the generator weights, used only for
+    # snapshots / inference (training itself is unchanged). Starts from the current (possibly resumed) weights.
+    ema_decay = float(t_cfg.get("ema_decay", 0.0))
+    ema = None
+    if ema_decay > 0:
+        ema = {k: {n: p.detach().clone() for n, p in nets[k].state_dict().items()} for k in ("G_A2B", "G_B2A")}
+        if args.resume and latest.exists() and state.get("ema"):
+            ema = {k: {n: t.to(device) for n, t in v.items()} for k, v in state["ema"].items()}
+            log.info("resumed EMA weights from %s", latest)
+        log.info("generator EMA enabled, decay=%s", ema_decay)
+
+    def update_ema() -> None:
+        for k in ("G_A2B", "G_B2A"):
+            cur = nets[k].state_dict()
+            names = [n for n, t in ema[k].items() if t.is_floating_point()]
+            torch._foreach_lerp_([ema[k][n] for n in names], [cur[n].detach() for n in names], 1.0 - ema_decay)
+
     log.info("run_id=%s config=%s", run_id, cfg["_config_path"])
     log.info("config=%s", json.dumps({k: v for k, v in cfg.items() if not k.startswith("_")}))
     log.info("hardware=%s torch=%s", hardware_string(), torch.__version__)
@@ -180,6 +197,8 @@ def main() -> None:
             loss_g.backward()
             gn_g = grad_norm(g_params)
             opt_g.step()
+            if ema is not None:
+                update_ema()
 
             # ---- discriminators ----
             for p in d_params:
@@ -237,12 +256,18 @@ def main() -> None:
         train_time = train_time_prev + (time.perf_counter() - run_start)
         torch.save({**{k: n.state_dict() for k, n in nets.items()}, "opt_g": opt_g.state_dict(),
                     "opt_d": opt_d.state_dict(), "epoch": epoch, "iter": it, "history": history,
-                    "nan_count": nan_count, "max_grad_norm": max_gn, "train_time_s": train_time, "config": cfg}, latest)
+                    "nan_count": nan_count, "max_grad_norm": max_gn, "train_time_s": train_time, "config": cfg,
+                    "ema": ema}, latest)
         if epoch % t_cfg["checkpoint_every_epochs"] == 0 or epoch == epochs:
             snap = paths["checkpoints"] / f"epoch_{epoch:03d}"
             snap.mkdir(exist_ok=True)
             for k in ("G_A2B", "G_B2A"):
                 torch.save(nets[k].state_dict(), snap / f"{k}.pt")
+            if ema is not None:  # EMA generators saved as their own snapshot, scored like any other
+                snap_ema = paths["checkpoints"] / f"epoch_{epoch:03d}_ema"
+                snap_ema.mkdir(exist_ok=True)
+                for k in ("G_A2B", "G_B2A"):
+                    torch.save(ema[k], snap_ema / f"{k}.pt")
         (paths["outputs"] / "history.json").write_text(json.dumps(history, indent=1))
 
     for k, n in nets.items():

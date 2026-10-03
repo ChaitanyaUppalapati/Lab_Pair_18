@@ -1,6 +1,6 @@
 # Smoke test: synthetic images, tiny networks, 2 epochs on CPU. Never used for reported metrics.
 # DiffAugment is switched on here only to exercise that code path.
-run_id: smoke_run05
+run_id: smoke_run06
 smoke: true
 seed: 1337
 
@@ -42,6 +42,7 @@ training:
   precision: fp32
   diffaugment_monet_d: true               # optional DiffAugment (translation + cutout) before D_Monet only
   diffaugment_photo_d: true
+  ema_decay: 0.9
   log_every_iters: 4
   grid_every_epochs: 1
   checkpoint_every_epochs: 1

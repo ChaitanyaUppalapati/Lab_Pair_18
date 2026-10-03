@@ -1,0 +1,46 @@
+# full_run05: continuation of full_run02b from its epoch-80 state (checkpoints/full_run02b/latest.pt copied to checkpoints/full_run05/),
+# epochs 81-120: second warm restart at 5e-5 with linear decay to 0, plus generator EMA (decay 0.9999,
+# half-life ~6,900 iterations ~ 1 epoch). Design decision by Claude at the user's direction; see DESIGN_LOG.md.
+run_id: full_run05
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 286                          # resize before random crop
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 10.0
+  lambda_identity: 5.0                    # 0.5 x lambda_cycle
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 120                             # total, including the 80 epochs of full_run02 + full_run02b
+  constant_lr_epochs: 80                  # = epochs already done; decay runs over epochs 81-120
+  lr_g: 5.0e-5                            # second warm restart (run 2b restarted at 1e-4)
+  lr_d: 5.0e-5
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  ema_decay: 0.9999                       # generator EMA for snapshots / inference
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 5
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
