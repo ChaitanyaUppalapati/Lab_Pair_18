@@ -1,0 +1,48 @@
+# full_run06: fine-tune of full_run02b's epoch-80 state with weaker content constraints:
+# lambda_cycle 10 -> 5, lambda_identity 5 -> 0.5, warm restart 1e-4 -> 0 over epochs 81-90, generator EMA 0.9999,
+# snapshots every 2 epochs. Reason: the official metric only rewards matching the target-domain distribution
+# (content is never scored), so a translator that commits harder to the target style should score better.
+# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
+run_id: full_run06
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 286                          # resize before random crop
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 5.0                       # runs 1-5: 10
+  lambda_identity: 0.5                    # runs 1-5: 5
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 90                              # fine-tune epochs 81-90 on top of run 2b's 80
+  constant_lr_epochs: 80                  # = epochs already done; decay runs over epochs 81-120
+  lr_g: 1.0e-4                            # restart LR for the fine-tune
+  lr_d: 1.0e-4
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  ema_decay: 0.9999                       # generator EMA for snapshots / inference
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 2
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
