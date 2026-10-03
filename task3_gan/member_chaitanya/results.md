@@ -103,6 +103,43 @@ Official protocol: `src/official_eval.py`, a port of the instructor's `Part3_Eva
 - Leaderboard rank: pending removal of the non-official entry (Kaggle shows a team's best public score).
 - Official score of every saved snapshot (epochs 5–40) improved monotonically: −61.75, −58.35, −56.65, −56.27, −55.53, −54.64, −54.50, −53.87; the final model is the best.
 
+## Run 2 — DiffAugment on both discriminators (submitted model)
+Config `configs/full_run02.yaml`: identical to run 1 except `diffaugment_monet_d: true` and `diffaugment_photo_d: true` (translation + cutout applied to real and generated images before D_A and D_B). Same seed, schedule, 40 epochs. The training loop was also changed to keep per-iteration statistics on the GPU (identical results, verified on the smoke config); the first attempt with the old loop was aborted after ~13 min and its log kept as `full_run02_attempt1_aborted.log`.
+
+| Choice | Value | Why |
+|---|---|---|
+| DiffAugment | on, both discriminators | |
+| Model selection | best official score among 5-epoch snapshots | |
+
+Official score of every snapshot (`outputs/full_run02/snapshot_scores.csv`; run 1 in `outputs/full_run01/snapshot_scores_official.json`):
+
+| Epoch | Run 1 score | Run 2 FID B2A | Run 2 FID A2B | Run 2 FID | Run 2 MiFID | Run 2 score |
+|---|---|---|---|---|---|---|
+| 5 | −61.75 | 125.53 | 123.06 | 124.30 | 0.4135 | −62.36 |
+| 10 | −58.35 | 108.87 | 119.47 | 114.17 | 0.4129 | −57.29 |
+| 15 | −56.65 | 103.74 | 126.87 | 115.31 | 0.4123 | −57.86 |
+| 20 | −56.27 | 105.99 | 113.02 | 109.51 | 0.4136 | −54.96 |
+| 25 | −55.53 | 101.16 | 109.83 | 105.50 | 0.4119 | −52.95 |
+| 30 | −54.64 | 101.33 | 109.28 | 105.31 | 0.4088 | −52.86 |
+| **35** | −54.50 | 99.42 | 105.65 | 102.53 | 0.4082 | **−51.47** |
+| 40 | −53.87 | 100.15 | 105.89 | 103.02 | 0.4048 | −51.72 |
+
+Training facts: 28,102 s (7 h 48 min), 10.02 it/s, NaN count 0, max grad norm G 1,627.3 / D 381.5. D_A (Monet) loss stayed between 0.078 and 0.214 for the whole run (run 1: fell to 0.031); final epoch cycle losses 0.071 / 0.083 (run 1: 0.079 / 0.092).
+
+Local metrics of the submitted epoch-35 generators (`full_metrics_report.csv`, run_id `full_run02`):
+
+| Metric | A2B (Monet → photo) | B2A (photo → Monet) |
+|---|---|---|
+| FID (torchmetrics, all images) | 86.65 | 84.12 |
+| KID mean | 0.0236 | 0.0146 |
+| Precision / recall | 0.730 / 0.427 | 0.453 / 0.727 |
+| Density / coverage | 0.892 / 0.863 | 0.377 / 0.733 |
+| Cycle L1 | 0.0427 | 0.0481 |
+| LPIPS input vs translation | 0.360 | 0.409 |
+| Content cosine similarity | 0.780 | 0.735 |
+
+Kaggle (official script on these outputs): FID 102.5307, MiFID 0.4082, public score −51.4694 (2026-10-03). Full leaderboard has 35 teams: this score ranks 25th once the non-official −42.1653 entry is removed (top 20 needs > −50.29, top 10 > −47.69).
+
 ## Hardware disclosure
 - GPU: NVIDIA GeForce RTX 4090 (24 GB); CPU: AMD Ryzen 9 7950X; PyTorch 2.11.0+cu128.
 - Training time: 26,494 s. Peak memory: 19,154 MB allocated (see note above).

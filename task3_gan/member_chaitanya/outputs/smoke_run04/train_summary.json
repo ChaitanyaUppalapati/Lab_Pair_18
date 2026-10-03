@@ -1,0 +1,41 @@
+{
+  "run_id": "smoke_run04",
+  "params": {
+    "G_A2B": 50947,
+    "G_B2A": 50947,
+    "D_A": 44537,
+    "D_B": 44537
+  },
+  "param_count_total": 190968,
+  "param_count_generators": 101894,
+  "photos": 12,
+  "monets": 6,
+  "iters": 24,
+  "train_time_s": 1.482049599988386,
+  "train_iters_per_sec": 16.19379000553563,
+  "train_images_per_sec": 32.38758001107126,
+  "peak_memory_mb": null,
+  "max_grad_norm_G": 94.21953582763672,
+  "max_grad_norm_D": 15.021111488342285,
+  "nan_count": 0,
+  "final_epoch": {
+    "epoch": 2,
+    "iters": 12,
+    "epoch_time_s": 0.6761424001306295,
+    "iters_per_s": 17.74774070917845,
+    "loss_G": 6.351647694905599,
+    "adv_A2B": 0.3445684512456258,
+    "adv_B2A": 0.4036217927932739,
+    "cycle_A": 0.18924301862716675,
+    "cycle_B": 0.18360555171966553,
+    "identity_A": 0.19182056188583374,
+    "identity_B": 0.18317375580469766,
+    "loss_D_A": 0.336570938428243,
+    "loss_D_B": 0.3524109522501628,
+    "D_A_real_mean": 0.5242367585500082,
+    "D_A_fake_mean": 0.47957539558410645,
+    "grad_norm_G": 53.78985087076823,
+    "grad_norm_D": 9.69336191813151
+  },
+  "hardware": "CPU only: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD"
+}

@@ -1,6 +1,6 @@
 # Smoke test: synthetic images, tiny networks, 2 epochs on CPU. Never used for reported metrics.
 # DiffAugment is switched on here only to exercise that code path.
-run_id: smoke_run03
+run_id: smoke_run04
 smoke: true
 seed: 1337
 

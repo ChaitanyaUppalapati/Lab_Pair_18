@@ -47,9 +47,15 @@ def build_models(cfg: dict, device: str) -> dict:
     return nets
 
 
-def grad_norm(params) -> float:
-    norms = [p.grad.detach().norm(2) for p in params if p.grad is not None]
-    return torch.norm(torch.stack(norms), 2).item() if norms else 0.0
+def grad_norm(params) -> torch.Tensor:
+    """Global L2 norm of all gradients, kept on the device (no host sync)."""
+    grads = [p.grad.detach() for p in params if p.grad is not None]
+    return torch.linalg.vector_norm(torch.stack(torch._foreach_norm(grads)))
+
+
+# per-iteration statistics, accumulated on the device and read back only when logging
+STAT_KEYS = ["loss_G", "adv_A2B", "adv_B2A", "cycle_A", "cycle_B", "identity_A", "identity_B", "loss_D_A",
+             "loss_D_B", "D_A_real_mean", "D_A_fake_mean", "grad_norm_G", "grad_norm_D"]
 
 
 def lsgan(pred: torch.Tensor, target_is_real: bool) -> torch.Tensor:
@@ -140,9 +146,10 @@ def main() -> None:
     if device == "cuda":
         torch.cuda.reset_peak_memory_stats()
     run_start = time.perf_counter()
+    max_gn_t = torch.tensor([max_gn["G"], max_gn["D"]], device=device)
 
     for epoch in range(start_epoch, epochs + 1):
-        sums, count, epoch_start = {}, 0, time.perf_counter()
+        sums_t, count, epoch_start = None, 0, time.perf_counter()
         for real_a, real_b in loader:
             lr_scale = 1.0 if it < const_iters else max(0.0, 1.0 - (it - const_iters) / max(1, total_iters - const_iters))
             for g in opt_g.param_groups:
@@ -197,17 +204,14 @@ def main() -> None:
             gn_d = grad_norm(d_params)
             opt_d.step()
 
-            max_gn["G"], max_gn["D"] = max(max_gn["G"], gn_g), max(max_gn["D"], gn_d)
-            vals = {"loss_G": loss_g.item(), "adv_A2B": adv_a2b.item(), "adv_B2A": adv_b2a.item(),
-                    "cycle_A": cyc_a.item(), "cycle_B": cyc_b.item(), "identity_A": idt_l_a.item(),
-                    "identity_B": idt_l_b.item(), "loss_D_A": loss_d_a.item(), "loss_D_B": loss_d_b.item(),
-                    "D_A_real_mean": pred_real_a.mean().item(), "D_A_fake_mean": pred_fake_a.mean().item(),
-                    "grad_norm_G": gn_g, "grad_norm_D": gn_d}
-            for k, v in vals.items():
-                sums[k] = sums.get(k, 0.0) + v
+            stats = torch.stack([loss_g, adv_a2b, adv_b2a, cyc_a, cyc_b, idt_l_a, idt_l_b, loss_d_a, loss_d_b,
+                                 pred_real_a.mean(), pred_fake_a.mean(), gn_g, gn_d]).detach().float()
+            sums_t = stats if sums_t is None else sums_t + stats
+            max_gn_t = torch.maximum(max_gn_t, stats[-2:])
             count += 1
             it += 1
             if it % t_cfg["log_every_iters"] == 0:
+                sums = dict(zip(STAT_KEYS, sums_t.tolist()))
                 row = {"iter": it, "epoch": epoch, "lr": t_cfg["lr_g"] * lr_scale,
                        **{k: v / count for k, v in sums.items()}}
                 history["intervals"].append(row)
@@ -220,6 +224,8 @@ def main() -> None:
                          count / elapsed)
 
         epoch_s = time.perf_counter() - epoch_start
+        sums = dict(zip(STAT_KEYS, sums_t.tolist())) if sums_t is not None else {k: float("nan") for k in STAT_KEYS}
+        max_gn = dict(zip(("G", "D"), max_gn_t.tolist()))
         ep = {"epoch": epoch, "iters": count, "epoch_time_s": epoch_s, "iters_per_s": count / epoch_s,
               **{k: v / max(1, count) for k, v in sums.items()}}
         history["epochs"].append(ep)
