@@ -30,7 +30,7 @@ class ResidualBlock(nn.Module):
 
 
 class ResnetGenerator(nn.Module):
-    def __init__(self, ngf: int = 64, n_blocks: int = 9, n_down: int = 2):
+    def __init__(self, ngf: int = 64, n_blocks: int = 9, n_down: int = 2, attention: bool = False):
         super().__init__()
         layers = conv_in_relu(3, ngf, 7, reflect_pad=3)                         # c7s1-64
         ch = ngf
@@ -38,6 +38,8 @@ class ResnetGenerator(nn.Module):
             layers += conv_in_relu(ch, ch * 2, 3, stride=2, pad=1)
             ch *= 2
         layers += [ResidualBlock(ch) for _ in range(n_blocks)]                    # R256 x9
+        if attention:
+            layers.append(SelfAttention(ch))                                      # optional: on the 64x64x256 map
         for _ in range(n_down):                                                   # u128, u64
             layers += [nn.Upsample(scale_factor=2, mode="nearest")] + conv_in_relu(ch, ch // 2, 3, reflect_pad=1)
             ch //= 2
@@ -49,18 +51,70 @@ class ResnetGenerator(nn.Module):
 
 
 class PatchDiscriminator(nn.Module):
-    def __init__(self, ndf: int = 64):
+    def __init__(self, ndf: int = 64, attention: bool = False):
         super().__init__()
-        self.net = nn.Sequential(
+        layers = [
             nn.Conv2d(3, ndf, 4, 2, 1), nn.LeakyReLU(0.2, inplace=True),                                   # C64
             nn.Conv2d(ndf, ndf * 2, 4, 2, 1), nn.InstanceNorm2d(ndf * 2), nn.LeakyReLU(0.2, inplace=True),  # C128
+        ]
+        if attention:
+            layers.append(SelfAttention(ndf * 2))                                                            # optional: 64x64x128
+        layers += [
             nn.Conv2d(ndf * 2, ndf * 4, 4, 2, 1), nn.InstanceNorm2d(ndf * 4), nn.LeakyReLU(0.2, inplace=True),  # C256
             nn.Conv2d(ndf * 4, ndf * 8, 4, 1, 1), nn.InstanceNorm2d(ndf * 8), nn.LeakyReLU(0.2, inplace=True),  # C512
             nn.Conv2d(ndf * 8, 1, 4, 1, 1),                                                                  # 1-channel patch map
-        )
+        ]
+        self.net = nn.Sequential(*layers)
 
     def forward(self, x):
         return self.net(x)
+
+
+class SelfAttention(nn.Module):
+    """SAGAN self-attention (Zhang et al., 2019): every position attends to every other position.
+
+    out = x + gamma * (softmax(f(x)^T g(x)) applied to h(x)); gamma starts at 0, so the block begins
+    as an identity and the network learns how much global context to mix in.
+    """
+
+    def __init__(self, ch: int):
+        super().__init__()
+        self.query = nn.Conv2d(ch, ch // 8, 1)
+        self.key = nn.Conv2d(ch, ch // 8, 1)
+        self.value = nn.Conv2d(ch, ch, 1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+    def forward(self, x):
+        B, C, H, W = x.shape
+        q = self.query(x).flatten(2).transpose(1, 2)            # (B, N, C/8)
+        k = self.key(x).flatten(2)                               # (B, C/8, N)
+        attn = torch.softmax(torch.bmm(q, k), dim=-1)            # (B, N, N)
+        v = self.value(x).flatten(2)                             # (B, C, N)
+        out = torch.bmm(v, attn.transpose(1, 2)).view(B, C, H, W)
+        return x + self.gamma * out
+
+
+def add_spectral_norm(module: nn.Module) -> nn.Module:
+    """Wrap every Conv2d in spectral normalisation (Miyato et al., 2018)."""
+    for name, child in module.named_children():
+        if isinstance(child, nn.Conv2d):
+            setattr(module, name, nn.utils.parametrizations.spectral_norm(child))
+        else:
+            add_spectral_norm(child)
+    return module
+
+
+def make_generator(m: dict) -> nn.Module:
+    """Build a generator from the model config (attention / spectral norm optional, default off)."""
+    g = ResnetGenerator(m["ngf"], m["n_res_blocks"], m["n_downsampling"], attention=m.get("g_attention", False))
+    g.apply(lambda mod: init_weights(mod, m.get("init_std", 0.02)))
+    return add_spectral_norm(g) if m.get("spectral_norm_g", False) else g
+
+
+def make_discriminator(m: dict) -> nn.Module:
+    d = PatchDiscriminator(m["ndf"], attention=m.get("d_attention", False))
+    d.apply(lambda mod: init_weights(mod, m.get("init_std", 0.02)))
+    return add_spectral_norm(d) if m.get("spectral_norm_d", False) else d
 
 
 def init_weights(module: nn.Module, std: float = 0.02) -> None:

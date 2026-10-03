@@ -35,7 +35,7 @@ from torch.utils.data import DataLoader
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 from common import MEMBER_DIR, hardware_string, load_config, repo_path, run_paths, set_seed  # noqa: E402
 from data import FolderDataset, eval_transform  # noqa: E402
-from models import ResnetGenerator, count_params  # noqa: E402
+from models import count_params, make_generator  # noqa: E402
 
 CSV_COLUMNS = ["run_id", "checkpoint", "direction", "fid", "kid_mean", "kid_std", "gen_precision", "gen_recall",
                "density", "coverage", "cycle_l1", "lpips", "content_cosine_sim", "final_g_loss", "final_d_loss",
@@ -120,7 +120,7 @@ def main() -> None:
 
     gens = {}
     for k in ("G_A2B", "G_B2A"):
-        g = ResnetGenerator(m_cfg["ngf"], m_cfg["n_res_blocks"], m_cfg["n_downsampling"]).to(device).eval()
+        g = make_generator(m_cfg).to(device).eval()
         g.load_state_dict(torch.load(ckpt_dir / f"{k}.pt", map_location=device))
         gens[k] = g
     inception = NoTrainInceptionV3(name="inception-v3-compat", features_list=["2048"]).to(device).eval()

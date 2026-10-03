@@ -1,5 +1,5 @@
-# full_run03: full_run02 setup (DiffAugment on both discriminators, 40 epochs) plus self-attention in G and D, spectral norm in D only.
-run_id: full_run03
+# full_run04: full_run02 setup (DiffAugment on both discriminators, 40 epochs) plus self-attention in G and D, spectral norm in G and D.
+run_id: full_run04
 seed: 1337
 
 data:
@@ -20,7 +20,7 @@ model:
   init_std: 0.02
   g_attention: true                       # SAGAN self-attention after the residual blocks (64x64x256)
   d_attention: true                       # SAGAN self-attention after C128 (64x64x128)
-  spectral_norm_g: false
+  spectral_norm_g: true
   spectral_norm_d: true
 
 loss:

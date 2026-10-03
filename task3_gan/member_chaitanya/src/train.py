@@ -28,21 +28,17 @@ from torchvision.utils import save_image
 
 from common import get_logger, hardware_string, load_config, repo_path, run_paths, set_seed
 from data import FolderDataset, UnpairedDataset, eval_transform, list_images, train_transform
-from models import ImagePool, PatchDiscriminator, ResnetGenerator, count_params, diff_augment, init_weights
+from models import ImagePool, count_params, diff_augment, make_discriminator, make_generator
 
 
 def build_models(cfg: dict, device: str) -> dict:
     m = cfg["model"]
     if m["upsampling"] != "nearest_conv" or m["norm"] != "instance":
         raise ValueError("this implementation supports upsampling=nearest_conv and norm=instance")
-    nets = {
-        "G_A2B": ResnetGenerator(m["ngf"], m["n_res_blocks"], m["n_downsampling"]),
-        "G_B2A": ResnetGenerator(m["ngf"], m["n_res_blocks"], m["n_downsampling"]),
-        "D_A": PatchDiscriminator(m["ndf"]),
-        "D_B": PatchDiscriminator(m["ndf"]),
-    }
+    # attention / spectral norm are optional config switches (default off = the original architecture)
+    nets = {"G_A2B": make_generator(m), "G_B2A": make_generator(m),
+            "D_A": make_discriminator(m), "D_B": make_discriminator(m)}
     for net in nets.values():
-        net.apply(lambda mod: init_weights(mod, m["init_std"]))
         net.to(device)
     return nets
 

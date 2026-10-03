@@ -18,7 +18,7 @@ from torch.utils.data import DataLoader
 
 from common import REPO_ROOT, load_config, repo_path, run_paths
 from data import FolderDataset, eval_transform, list_images
-from models import ResnetGenerator
+from models import make_generator
 from official_eval import N_EVAL, evaluate
 
 
@@ -51,7 +51,7 @@ def main() -> None:
     rows = []
     for name, folder in snaps:
         for key, files, sub in (("G_A2B", monets, "pred_A2B"), ("G_B2A", photos, "pred_B2A")):
-            g = ResnetGenerator(m["ngf"], m["n_res_blocks"], m["n_downsampling"]).to(device).eval()
+            g = make_generator(m).to(device).eval()
             g.load_state_dict(torch.load(folder / f"{key}.pt", map_location=device))
             translate(g, files, tmp / sub, d["crop_size"], device)
         r = evaluate((tmp / "pred_A2B").relative_to(REPO_ROOT).as_posix(), (tmp / "pred_B2A").relative_to(REPO_ROOT).as_posix())
