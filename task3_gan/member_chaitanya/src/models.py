@@ -111,10 +111,35 @@ def make_generator(m: dict) -> nn.Module:
     return add_spectral_norm(g) if m.get("spectral_norm_g", False) else g
 
 
+class MultiScaleDiscriminator(nn.Module):
+    """pix2pixHD-style multi-scale PatchGAN: discriminator k judges the input average-pooled by 2^k.
+
+    The coarser scales see far more of the image per patch, so they judge global colour, lighting and
+    composition, which a single 70x70 PatchGAN cannot. forward() returns a list of patch maps (one per scale).
+    """
+
+    def __init__(self, scales: list):
+        super().__init__()
+        self.ds = nn.ModuleList(scales)
+        self.down = nn.AvgPool2d(3, stride=2, padding=1, count_include_pad=False)
+
+    def forward(self, x):
+        outs = []
+        for i, d in enumerate(self.ds):
+            if i:
+                x = self.down(x)
+            outs.append(d(x))
+        return outs
+
+
 def make_discriminator(m: dict) -> nn.Module:
-    d = PatchDiscriminator(m["ndf"], attention=m.get("d_attention", False))
-    d.apply(lambda mod: init_weights(mod, m.get("init_std", 0.02)))
-    return add_spectral_norm(d) if m.get("spectral_norm_d", False) else d
+    def one():
+        d = PatchDiscriminator(m["ndf"], attention=m.get("d_attention", False))
+        d.apply(lambda mod: init_weights(mod, m.get("init_std", 0.02)))
+        return add_spectral_norm(d) if m.get("spectral_norm_d", False) else d
+
+    n = int(m.get("d_scales", 1))
+    return one() if n == 1 else MultiScaleDiscriminator([one() for _ in range(n)])
 
 
 def init_weights(module: nn.Module, std: float = 0.02) -> None:

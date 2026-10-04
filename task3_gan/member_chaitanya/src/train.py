@@ -28,7 +28,7 @@ from torchvision.utils import save_image
 
 from common import get_logger, hardware_string, load_config, repo_path, run_paths, set_seed
 from data import FolderDataset, UnpairedDataset, eval_transform, list_images, train_transform
-from models import ImagePool, count_params, diff_augment, make_discriminator, make_generator
+from models import ImagePool, MultiScaleDiscriminator, count_params, diff_augment, make_discriminator, make_generator
 
 
 def build_models(cfg: dict, device: str) -> dict:
@@ -54,8 +54,15 @@ STAT_KEYS = ["loss_G", "adv_A2B", "adv_B2A", "cycle_A", "cycle_B", "identity_A",
              "loss_D_B", "D_A_real_mean", "D_A_fake_mean", "grad_norm_G", "grad_norm_D"]
 
 
-def lsgan(pred: torch.Tensor, target_is_real: bool) -> torch.Tensor:
+def lsgan(pred, target_is_real: bool) -> torch.Tensor:
+    """LSGAN loss; for a multi-scale discriminator (list of patch maps) the per-scale losses are averaged."""
+    if isinstance(pred, (list, tuple)):
+        return sum(lsgan(p, target_is_real) for p in pred) / len(pred)
     return F.mse_loss(pred, torch.ones_like(pred) if target_is_real else torch.zeros_like(pred))
+
+
+def first_scale(pred):
+    return pred[0] if isinstance(pred, (list, tuple)) else pred
 
 
 @torch.no_grad()
@@ -125,10 +132,21 @@ def main() -> None:
     latest = paths["checkpoints"] / "latest.pt"
     if args.resume and latest.exists():
         state = torch.load(latest, map_location=device)
+        upgraded_d = False
         for k, net in nets.items():
-            net.load_state_dict(state[k])
+            saved = state[k]
+            if k.startswith("D_") and isinstance(net, MultiScaleDiscriminator) and not any(n.startswith("ds.") for n in saved):
+                # upgrading a single-scale discriminator: its weights become scale 0, coarser scales start fresh
+                net.ds[0].load_state_dict(saved)
+                upgraded_d = True
+            else:
+                net.load_state_dict(saved)
         opt_g.load_state_dict(state["opt_g"])
-        opt_d.load_state_dict(state["opt_d"])
+        if upgraded_d:
+            log.info("discriminators upgraded to %d scales: scale 0 loaded, other scales and D optimiser state re-initialised",
+                     len(nets["D_A"].ds))
+        else:
+            opt_d.load_state_dict(state["opt_d"])
         start_epoch, it = state["epoch"] + 1, state["iter"]
         history, nan_count, max_gn = state["history"], state["nan_count"], state["max_grad_norm"]
         train_time_prev = state["train_time_s"]
@@ -220,7 +238,7 @@ def main() -> None:
             opt_d.step()
 
             stats = torch.stack([loss_g, adv_a2b, adv_b2a, cyc_a, cyc_b, idt_l_a, idt_l_b, loss_d_a, loss_d_b,
-                                 pred_real_a.mean(), pred_fake_a.mean(), gn_g, gn_d]).detach().float()
+                                 first_scale(pred_real_a).mean(), first_scale(pred_fake_a).mean(), gn_g, gn_d]).detach().float()
             sums_t = stats if sums_t is None else sums_t + stats
             max_gn_t = torch.maximum(max_gn_t, stats[-2:])
             count += 1

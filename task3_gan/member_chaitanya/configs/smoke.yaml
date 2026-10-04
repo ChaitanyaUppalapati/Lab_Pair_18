@@ -1,6 +1,6 @@
 # Smoke test: synthetic images, tiny networks, 2 epochs on CPU. Never used for reported metrics.
 # DiffAugment is switched on here only to exercise that code path.
-run_id: smoke_run06
+run_id: smoke_run07
 smoke: true
 seed: 1337
 
@@ -18,6 +18,7 @@ model:
   n_downsampling: 2
   upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
   ndf: 8                                 # PatchGAN C64-C128-C256-C512
+  d_scales: 2
   norm: instance
   init_std: 0.02
   g_attention: true
@@ -33,7 +34,7 @@ loss:
 
 training:
   batch_size: 1
-  epochs: 2                              # one epoch = one pass over the photos
+  epochs: 3                              # one epoch = one pass over the photos
   constant_lr_epochs: 1                  # then linear decay to 0 over the remaining 20
   lr_g: 2.0e-4
   lr_d: 2.0e-4
