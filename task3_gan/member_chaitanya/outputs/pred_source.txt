@@ -1,1 +1,1 @@
-task3_gan/member_chaitanya/checkpoints/full_blends/epoch_p1
+task3_gan/member_chaitanya/checkpoints/full_blends/epoch_q1
