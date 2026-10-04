@@ -1,0 +1,48 @@
+# full_run15: re-creates the window where Monet -> photo was best. Resumes full_run06's final (epoch-90) state
+# (lambda_cycle 5 / lambda_identity 0.5, EMA), switches to lambda_cycle 2 / lambda_identity 0 with a warm restart
+# 1e-4 -> 0 over 6 epochs (91-96), EMA continued, snapshots (raw + EMA) EVERY epoch.
+# Reason: the best Monet -> photo generators of all runs (FID 97.45-98.12) were run 7's EMA snapshots 2-4 epochs
+# after the same lambda switch; every later attempt made Monet -> photo worse. Design decision by Claude at the user's direction.
+run_id: full_run15
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 286                          # resize before random crop
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 2.0                       # run 6: 5, runs 1-5: 10
+  lambda_identity: 0.0                    # run 6: 0.5, runs 1-5: 5
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 96                              # epochs 91-96 on top of run 6's epoch-90 state
+  constant_lr_epochs: 90                  # decay over epochs 91-96
+  lr_g: 1.0e-4                            # restart LR for the fine-tune
+  lr_d: 1.0e-4
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  ema_decay: 0.9999                       # generator EMA for snapshots / inference
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 1
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
