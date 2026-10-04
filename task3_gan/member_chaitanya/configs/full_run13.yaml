@@ -1,0 +1,53 @@
+# full_run13: Monet -> photo specialisation (mirror of full_run12). Resumes full_run12's final state, loads the best
+# per-direction generators (blend p6: G_A2B = full_run07 EMA 88+90 average, G_B2A = full_run10 EMA 98+102 average),
+# FREEZES G_B2A and fine-tunes only G_A2B (+ both discriminators) for 8 epochs (5e-5 -> 0), EMA, snapshots every
+# 2 epochs. Reason: Monet -> photo (FID ~97.8) is now the weaker direction and has not improved since run 7.
+# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
+run_id: full_run13
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 256                          # no zoom-crop: train at the evaluation scale (runs 1-8: 286)
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  d_scales: 2                             # multi-scale discriminator (runs 1-9: 1)
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 2.0                       # run 6: 5, runs 1-5: 10
+  lambda_identity: 0.0                    # run 6: 0.5, runs 1-5: 5
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 120                             # fine-tune epochs 113-120 on top of run 12's epoch-112 state
+  constant_lr_epochs: 112                 # decay over epochs 113-120
+  lr_g: 5.0e-5
+  lr_d: 5.0e-5
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  ema_decay: 0.9999                       # generator EMA for snapshots / inference
+  freeze_generators: [G_B2A]
+  init_generators:
+    G_A2B: task3_gan/member_chaitanya/checkpoints/full_blends/epoch_p6/G_A2B.pt
+    G_B2A: task3_gan/member_chaitanya/checkpoints/full_blends/epoch_p6/G_B2A.pt
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 2
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
