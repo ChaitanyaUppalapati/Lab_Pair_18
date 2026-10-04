@@ -1,0 +1,3 @@
+full_run06/epoch_082_ema
+full_run06/epoch_084_ema
+full_run06/epoch_086_ema

@@ -1,0 +1,1 @@
+task3_gan/member_chaitanya/checkpoints/full_run06/epoch_soupB
