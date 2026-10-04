@@ -141,7 +141,10 @@ def main() -> None:
                 upgraded_d = True
             else:
                 net.load_state_dict(saved)
-        opt_g.load_state_dict(state["opt_g"])
+        if t_cfg.get("freeze_generators"):
+            log.info("generator optimiser state not restored (frozen generators change the parameter set)")
+        else:
+            opt_g.load_state_dict(state["opt_g"])
         if upgraded_d:
             log.info("discriminators upgraded to %d scales: scale 0 loaded, other scales and D optimiser state re-initialised",
                      len(nets["D_A"].ds))
@@ -152,6 +155,22 @@ def main() -> None:
         train_time_prev = state["train_time_s"]
         log.info("resumed from %s at epoch %d iter %d", latest, state["epoch"], it)
 
+    # optional: overwrite generators with weights from other checkpoints (e.g. the best per-direction generator)
+    for key, rel in (t_cfg.get("init_generators") or {}).items():
+        nets[key].load_state_dict(torch.load(repo_path(rel), map_location=device))
+        log.info("initialised %s from %s", key, rel)
+    # optional: freeze generators. The cycle loss still uses them (as a fixed inverse); only the other generator
+    # (and both discriminators) are updated. Still a CycleGAN; one half is simply held fixed in this phase.
+    frozen = list(t_cfg.get("freeze_generators") or [])
+    if frozen:
+        for key in frozen:
+            for p in nets[key].parameters():
+                p.requires_grad_(False)
+            nets[key].eval()  # also stops spectral-norm power-iteration buffers from updating
+        g_params = [p for k in ("G_A2B", "G_B2A") if k not in frozen for p in nets[k].parameters()]
+        opt_g = torch.optim.Adam(g_params, lr=t_cfg["lr_g"], betas=tuple(t_cfg["betas"]))
+        log.info("frozen generators: %s; training the other generator only", frozen)
+
     # optional generator EMA: an exponential moving average of the generator weights, used only for
     # snapshots / inference (training itself is unchanged). Starts from the current (possibly resumed) weights.
     ema_decay = float(t_cfg.get("ema_decay", 0.0))
@@ -161,6 +180,9 @@ def main() -> None:
         if args.resume and latest.exists() and state.get("ema"):
             ema = {k: {n: t.to(device) for n, t in v.items()} for k, v in state["ema"].items()}
             log.info("resumed EMA weights from %s", latest)
+        for key in (t_cfg.get("init_generators") or {}):  # replaced generators: restart their EMA from the new weights
+            ema[key] = {n: p.detach().clone() for n, p in nets[key].state_dict().items()}
+            log.info("EMA for %s reset to its initialised weights", key)
         log.info("generator EMA enabled, decay=%s", ema_decay)
 
     def update_ema() -> None:
@@ -271,6 +293,8 @@ def main() -> None:
         if epoch % t_cfg["grid_every_epochs"] == 0 or epoch == epochs:
             (paths["outputs"] / "grids").mkdir(exist_ok=True)
             save_grid(nets, fixed_a, fixed_b, paths["outputs"] / "grids" / f"epoch_{epoch:03d}.png")
+            for key in frozen:  # save_grid switches every net back to train mode
+                nets[key].eval()
         train_time = train_time_prev + (time.perf_counter() - run_start)
         torch.save({**{k: n.state_dict() for k, n in nets.items()}, "opt_g": opt_g.state_dict(),
                     "opt_d": opt_d.state_dict(), "epoch": epoch, "iter": it, "history": history,
