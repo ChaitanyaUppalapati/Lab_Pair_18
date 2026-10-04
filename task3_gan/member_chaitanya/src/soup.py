@@ -19,16 +19,21 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-config", required=True)
     parser.add_argument("--name", required=True)
-    parser.add_argument("--sources", nargs="+", required=True, help="<run_id>/<snapshot> folders under checkpoints/")
+    parser.add_argument("--sources", nargs="+", help="<run_id>/<snapshot> folders under checkpoints/ (both generators)")
+    parser.add_argument("--sources-a2b", nargs="+", help="override: sources for G_A2B (Monet -> photo) only")
+    parser.add_argument("--sources-b2a", nargs="+", help="override: sources for G_B2A (photo -> Monet) only")
     args = parser.parse_args()
     out = run_paths(load_config(args.out_config)["run_id"])["checkpoints"] / args.name
     out.mkdir(exist_ok=True)
-    for key in ("G_A2B", "G_B2A"):
-        states = [torch.load(MEMBER_DIR / "checkpoints" / s / f"{key}.pt", map_location="cpu") for s in args.sources]
+    # the two generators are independent at inference (pred_A2B uses only G_A2B, pred_B2A only G_B2A),
+    # so each can be averaged over its own set of snapshots
+    per_key = {"G_A2B": args.sources_a2b or args.sources, "G_B2A": args.sources_b2a or args.sources}
+    for key, sources in per_key.items():
+        states = [torch.load(MEMBER_DIR / "checkpoints" / s / f"{key}.pt", map_location="cpu") for s in sources]
         torch.save({k: torch.stack([s[k].float() for s in states]).mean(0).to(states[0][k].dtype) for k in states[0]},
                    out / f"{key}.pt")
-    (out / "sources.txt").write_text("\n".join(args.sources) + "\n")
-    print(f"wrote {out} from {', '.join(args.sources)}")
+    (out / "sources.txt").write_text("".join(f"{k}: {' '.join(v)}\n" for k, v in per_key.items()))
+    print(f"wrote {out}: " + "; ".join(f"{k} <- {', '.join(v)}" for k, v in per_key.items()))
 
 
 if __name__ == "__main__":
