@@ -1,0 +1,52 @@
+# full_run17: gentle Monet -> photo specialisation. Resumes full_run07's final (epoch-94) state (single-scale
+# discriminators trained with these generators), loads G_A2B = blend b1 (run-7 EMA 88+90, best Monet -> photo, FID 97.81)
+# and G_B2A = run-12 EMA 112 (best photo -> Monet), FREEZES G_B2A, fine-tunes G_A2B at a low LR 2e-5 -> 0 over 6
+# epochs (95-100), EMA, snapshots every epoch. Reason: run 13's Monet -> photo specialisation (5e-5, 2-scale D) made it
+# worse; this tries a gentler step from the generator's own training state. Design decision by Claude at the user's direction.
+run_id: full_run17
+seed: 1337
+
+data:
+  monet_dir: task3_gan/data/monet_jpg     # domain A (Kaggle naming)
+  photo_dir: task3_gan/data/photo_jpg     # domain B
+  load_size: 286                          # resize before random crop
+  crop_size: 256
+  hflip: true                             # same augmentation for both domains, drawn independently
+  num_workers: 4
+
+model:
+  ngf: 64
+  n_res_blocks: 9
+  n_downsampling: 2
+  upsampling: nearest_conv                # nearest-neighbour 2x + 3x3 conv
+  ndf: 64                                 # PatchGAN C64-C128-C256-C512
+  norm: instance
+  init_std: 0.02
+
+loss:
+  adversarial: lsgan                      # MSE
+  lambda_cycle: 2.0                       # run 6: 5, runs 1-5: 10
+  lambda_identity: 0.0                    # run 6: 0.5, runs 1-5: 5
+  d_loss_scale: 0.5                       # D loss halved
+
+training:
+  batch_size: 1
+  epochs: 100                             # epochs 95-100 on top of run 7's epoch-94 state
+  constant_lr_epochs: 94
+  lr_g: 2.0e-5
+  lr_d: 2.0e-5
+  betas: [0.5, 0.999]
+  pool_size: 50                           # per-discriminator history buffer
+  precision: fp32
+  cudnn_benchmark: true                   # cuDNN autotuning: ~6.5 h vs ~8 h for 40 epochs; not bitwise reproducible
+  diffaugment_monet_d: true              # DiffAugment (translation + cutout) on real and fake before D_A (Monet)
+  diffaugment_photo_d: true              # ... and before D_B (photo)
+  ema_decay: 0.9999                       # generator EMA for snapshots / inference
+  freeze_generators: [G_B2A]
+  init_generators:
+    G_A2B: task3_gan/member_chaitanya/checkpoints/full_blends/epoch_b1_r7ema88-90/G_A2B.pt
+    G_B2A: task3_gan/member_chaitanya/checkpoints/full_run12/epoch_112_ema/G_B2A.pt
+  log_every_iters: 100
+  grid_every_epochs: 1
+  checkpoint_every_epochs: 1
+  num_fixed_samples: 4                    # per domain, for the per-epoch progress grid
