@@ -140,32 +140,34 @@ Local metrics of the submitted epoch-35 generators (`full_metrics_report.csv`, r
 
 Kaggle (official script on these outputs): FID 102.5307, MiFID 0.4082, public score −51.4694 (2026-10-03). Full leaderboard has 35 teams: this score ranks 25th once the non-official −42.1653 entry is removed (top 20 needs > −50.29, top 10 > −47.69).
 
-## Final submitted model (as of 2026-10-04 18:30)
+## Final submitted model (as of 2026-10-04 19:50)
 
 > From 2026-10-03 the model design was handed to Claude at the user's direction; every change after run 4, its reason and its result are in `DESIGN_LOG.md` (entries marked **[Claude]**).
 
-The submission uses the two generators of one CycleGAN lineage (run 2 → 2b → 6 → 7 → … → 16), each taken from the training state that was best for its own direction (each direction's FID depends only on its own generator):
+The submission uses the two generators of one CycleGAN lineage (run 2 → 2b → 6 → 7 → … → 16 → 18), each taken from the training state that was best for its own direction (each direction's FID depends only on its own generator):
 
 | Generator | Source | How it was trained |
 |---|---|---|
 | G_A2B (Monet → photo) | weight average of run-7 EMA snapshots 88 and 90 | run 6 (λ_cyc 5, λ_id 0.5) → run 7 (λ_cyc 2, λ_id 0), generator EMA 0.9999 |
-| G_B2A (photo → Monet) | run-16 EMA snapshot 116 | runs 10 → 12 → 16: 2-scale discriminators, evaluation-scale training, λ_cyc 2 / λ_id 0, then fine-tuned with G_A2B frozen (the frozen generator acts as the fixed inverse in the cycle loss) |
+| G_B2A (photo → Monet) | run-18 EMA snapshot 123 | runs 10 → 12 → 16 → 18: 2-scale discriminators, evaluation-scale training, λ_cyc 2 / λ_id 0, then fine-tuned with G_A2B frozen (the frozen generator acts as the fixed inverse in the cycle loss); run 18 = 6 more epochs at LR 1.5e-5 → 0 |
 
-Checkpoint: `checkpoints/full_run16/epoch_116_ema/` (G_A2B is the frozen copy of `full_blends/epoch_b1_r7ema88-90/G_A2B.pt`).
+Checkpoint: `checkpoints/full_run18/epoch_123_ema/` (G_A2B is the frozen copy of `full_blends/epoch_b1_r7ema88-90/G_A2B.pt`).
 
 | Metric | A2B (Monet → photo) | B2A (photo → Monet) |
 |---|---|---|
-| FID (torchmetrics, all images) | 81.89 | 75.03 |
-| KID mean | 0.0211 | 0.0100 |
-| Precision / recall | 0.737 / 0.400 | 0.617 / 0.693 |
-| Density / coverage | 0.797 / 0.863 | 0.630 / 0.837 |
-| Cycle L1 | 0.0445 | 0.0515 |
-| LPIPS input vs translation | 0.411 | 0.434 |
-| Content cosine similarity | 0.739 | 0.724 |
+| FID (torchmetrics, all images) | 81.89 | 75.50 |
+| KID mean | 0.0211 | 0.0108 |
+| Precision / recall | 0.737 / 0.400 | 0.597 / 0.690 |
+| Density / coverage | 0.797 / 0.863 | 0.611 / 0.840 |
+| Cycle L1 | 0.0445 | 0.0523 |
+| LPIPS input vs translation | 0.411 | 0.441 |
+| Content cosine similarity | 0.739 | 0.721 |
 
-Official script (first 300 images per folder): FID_A2B 97.81, FID_B2A 94.29 → submission **FID 96.0488 / MiFID 0.4002**, Kaggle public score **−48.2244**, rank ≈ 16 of 44 once the non-official −42.1653 entry is removed.
+Note: on all 7,038 photos the run-16 EMA 116 generator has a slightly lower FID (75.03 vs 75.50); the official 300-image score, which Kaggle uses, favours run-18 EMA 123 by 0.08 FID. The difference is within snapshot-to-snapshot noise.
 
-Score progression of the Kaggle submissions (official script): −53.83 (run 1) → −51.47 (run 2, DiffAugment) → −50.16 (run 2b) → −49.73 (weight average) → −49.49 (run 6, lower λ + EMA) → −48.93 / −48.69 (run 7, λ_cyc 2 / λ_id 0) → −48.55 → −48.40 → −48.27 → **−48.22** (per-direction generators, photo → Monet specialisation).
+Official script (first 300 images per folder): FID_A2B 97.81, FID_B2A 94.21 → submission **FID 96.0061 / MiFID 0.3998**, Kaggle public score **−48.2029** (previous: run-16 EMA 116, −48.2244), rank ≈ 16 of 44 once the non-official −42.1653 entry is removed.
+
+Score progression of the Kaggle submissions (official script): −53.83 (run 1) → −51.47 (run 2, DiffAugment) → −50.16 (run 2b) → −49.73 (weight average) → −49.49 (run 6, lower λ + EMA) → −48.93 / −48.69 (run 7, λ_cyc 2 / λ_id 0) → −48.55 → −48.40 → −48.27 → −48.22 → **−48.20** (per-direction generators, photo → Monet specialisation; run 18 EMA 123).
 
 Reference points measured with the official script: untranslated images −63.5; two disjoint sets of 300 real photos −39 to −40.
 
