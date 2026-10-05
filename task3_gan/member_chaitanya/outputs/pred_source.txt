@@ -1,1 +1,1 @@
-task3_gan/member_chaitanya/checkpoints/full_run16/epoch_114_ema
+checkpoints/full_run16/epoch_116_ema (G_A2B = frozen copy of full_blends/epoch_b1_r7ema88-90, G_B2A = run-16 EMA 116)
