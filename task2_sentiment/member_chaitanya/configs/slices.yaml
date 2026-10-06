@@ -1,0 +1,25 @@
+# Slice definitions for robustness analysis (Chaitanya). Shared with Aswin so both members slice identically.
+# All slices are computed on the RAW review text (Yelp's literal "\n" escapes replaced by spaces), lowercased,
+# except `truncated`, which uses the cleaned token count of our pipeline.
+# Slices smaller than `min_slice_size` are reported with their size but no metric.
+min_slice_size: 150
+
+length_words:          # raw whitespace-separated words
+  short: [0, 60]       # <= 60
+  medium: [61, 180]    # 61 - 180
+  long: [181, null]    # > 180
+
+truncated_tokens: 256  # cleaned tokens > 256 (our max sequence length)
+
+negation_regex: "\\b(not|no|never)\\b|n['’]t\\b"
+contrast_regex: "\\b(but|however|although|though|except)\\b"
+
+# "No strong polarity words": none of these words appear as whole words.
+strong_polarity_words:
+  positive: [amazing, awesome, excellent, fantastic, incredible, outstanding, perfect, perfection, superb, wonderful,
+             love, loved, loves, best, delicious, phenomenal, exceptional, favorite, favourite, spectacular]
+  negative: [worst, terrible, horrible, awful, disgusting, hate, hated, hates, disappointing, disappointed,
+             disappointment, gross, inedible, pathetic, nasty, atrocious, dreadful, appalling, unacceptable, overpriced]
+
+# Explicit rating mention: "5 stars", "one star", "zero stars", "4.5 stars", "half a star", "1/5"...
+rating_regex: "\\b(\\d(\\.\\d)?|zero|one|two|three|four|five|no|half( a)?)[\\s-]*stars?\\b|\\b[0-5](\\.\\d)?\\s*/\\s*(5|10)\\b|\\b[0-5]\\s+out\\s+of\\s+(5|five)\\b"

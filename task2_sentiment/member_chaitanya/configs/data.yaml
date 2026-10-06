@@ -1,0 +1,9 @@
+# Data / preprocessing settings shared by all three models (user-specified).
+data:
+  split: "Aswin's split, HF row indices in task2_sentiment/member_chaitanya/splits/ (train 20K / val 5K / test5k 5K) + test33k complement"
+  max_vocab: 30000          # incl. <pad> and <unk>; matches Aswin
+  min_freq: 2               # words seen once in train -> <unk>
+  max_len: 256              # flat token limit; matches Aswin
+  max_sentences: 32         # HAN: sentences per review. 12 (first plan) kept only 77.9% of train tokens vs 97.2% for
+                            # the flat 256 limit; 32 x 32 keeps 97.1%, so both input views see the same text
+  max_sentence_words: 32    # HAN: tokens per sentence (only 0.3% of sentences are longer)

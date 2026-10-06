@@ -1,0 +1,13 @@
+{
+  "run_id": "t2_ref_tfidf_lr",
+  "model": "reference_tfidf_logreg",
+  "seed": null,
+  "C": 16.0,
+  "best_val_macro_f1": 0.9303990979723098,
+  "param_count": 169930,
+  "n_features": 169929,
+  "train_time_s": 10.664037227630615,
+  "train_examples_per_sec": 1875.462320047029,
+  "peak_memory_mb": null,
+  "hardware": "CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD (CPU, scikit-learn)"
+}

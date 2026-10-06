@@ -1,0 +1,11 @@
+2026-10-06 01:15:20,314 INFO run=t2_exp2_transformer_s43 config=task2_sentiment/member_chaitanya/configs/experimental_2.yaml seed=43 device=cuda hw=GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD
+2026-10-06 01:15:20,314 INFO model={'type': 'transformer', 'embed_dim': 128, 'n_layers': 2, 'n_heads': 4, 'd_ff': 512, 'max_len': 256, 'embed_dropout': 0.3, 'attn_dropout': 0.1, 'dropout': 0.2} params=2944385 vocab=19646 train=20000 input=flat(256,)
+2026-10-06 01:15:20,314 INFO training={'optimizer': 'AdamW', 'lr': 0.0005, 'weight_decay': 0.01, 'schedule': 'warmup_linear', 'warmup_frac': 0.05, 'batch_size': 64, 'max_epochs': 20, 'patience': 3, 'grad_clip': 1.0}
+2026-10-06 01:15:23,600 INFO epoch=1 train_loss=0.4677 val_loss=0.3113 val_acc=0.8772 val_macro_f1=0.8770 lr=5.00e-04 time_s=3.3 *best
+2026-10-06 01:15:26,546 INFO epoch=2 train_loss=0.2472 val_loss=0.2449 val_acc=0.8982 val_macro_f1=0.8981 lr=4.74e-04 time_s=2.9 *best
+2026-10-06 01:15:29,477 INFO epoch=3 train_loss=0.1636 val_loss=0.2634 val_acc=0.9066 val_macro_f1=0.9066 lr=4.47e-04 time_s=2.9 *best
+2026-10-06 01:15:32,394 INFO epoch=4 train_loss=0.1192 val_loss=0.2759 val_acc=0.9054 val_macro_f1=0.9054 lr=4.21e-04 time_s=2.9
+2026-10-06 01:15:35,312 INFO epoch=5 train_loss=0.0900 val_loss=0.3213 val_acc=0.9010 val_macro_f1=0.9010 lr=3.95e-04 time_s=2.9
+2026-10-06 01:15:38,232 INFO epoch=6 train_loss=0.0718 val_loss=0.3480 val_acc=0.8974 val_macro_f1=0.8974 lr=3.68e-04 time_s=2.9
+2026-10-06 01:15:38,232 INFO early stop: no val macro-F1 gain for 3 epochs
+2026-10-06 01:15:40,129 INFO done summary={"run_id": "t2_exp2_transformer_s43", "model": "exp2_transformer", "config": "task2_sentiment/member_chaitanya/configs/experimental_2.yaml", "seed": 43, "param_count": 2944385, "best_epoch": 3, "epochs_run": 6, "best_val_macro_f1": 0.9065902816529032, "train_time_s": 16.541145086288452, "total_time_s": 17.91706132888794, "train_examples_per_sec": 7254.636808637408, "inference_examples_per_sec": 23062.105199626414, "peak_memory_mb": 1535.36865234375, "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD", "torch": "2.11.0+cu128", "checkpoint": "checkpoints/t2_exp2_transformer_s43/best.pt"}

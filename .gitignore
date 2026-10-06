@@ -37,3 +37,7 @@ task3_gan/member_*_f.zip
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Task 2 checkpoints (regenerable from configs + seeds; sha256 recorded in reproducibility/manifests)
+task2_sentiment/member_*/checkpoints/*
+!task2_sentiment/member_*/checkpoints/.gitkeep

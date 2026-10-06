@@ -1,0 +1,21 @@
+# Experimental 1: Hierarchical Attention Network (word BiLSTM + attention -> sentence BiLSTM + attention).
+model_name: exp1_han
+run_prefix: t2_exp1_han
+input: hier                  # 32 sentences x 32 tokens (see configs/data.yaml), sentences split on the raw text
+model:
+  type: han
+  embed_dim: 128
+  hidden: 64                 # per direction -> 128-d sentence / document vectors
+  attn_dim: 128
+  embed_dropout: 0.3
+  dropout: 0.3               # on sentence vectors and the document vector
+training:
+  optimizer: AdamW
+  lr: 1.0e-3
+  weight_decay: 0.01
+  schedule: constant
+  batch_size: 64
+  max_epochs: 15
+  patience: 3
+  grad_clip: 1.0
+seeds: [42, 43, 44]

@@ -1,0 +1,165 @@
+{
+  "splits": {
+    "train": {
+      "n": 20000,
+      "class_counts": {
+        "0": 10000,
+        "1": 10000
+      },
+      "positive_rate": 0.5,
+      "missing_text": 0,
+      "non_string": 0,
+      "empty_or_whitespace": 0,
+      "empty_after_cleaning": 2,
+      "label_not_0_1": 0,
+      "duplicate_texts_within_split": 0,
+      "raw_words_mean": 133.3,
+      "raw_words_median": 96.0,
+      "raw_words_p95": 376.0,
+      "raw_words_max": 982,
+      "raw_words_by_class_median": {
+        "0": 112.0,
+        "1": 83.0
+      },
+      "clean_tokens_median": 52.0,
+      "clean_tokens_p95": 200.0,
+      "pct_truncated_over_max_len": 2.42,
+      "sentences_median": 7.0,
+      "pct_over_max_sentences": 2.34,
+      "pct_sentences_over_max_words": 0.27,
+      "oov_token_rate": 0.0109
+    },
+    "val": {
+      "n": 5000,
+      "class_counts": {
+        "0": 2500,
+        "1": 2500
+      },
+      "positive_rate": 0.5,
+      "missing_text": 0,
+      "non_string": 0,
+      "empty_or_whitespace": 0,
+      "empty_after_cleaning": 0,
+      "label_not_0_1": 0,
+      "duplicate_texts_within_split": 0,
+      "raw_words_mean": 133.2,
+      "raw_words_median": 97.0,
+      "raw_words_p95": 380.0,
+      "raw_words_max": 962,
+      "raw_words_by_class_median": {
+        "0": 111.0,
+        "1": 84.0
+      },
+      "clean_tokens_median": 53.0,
+      "clean_tokens_p95": 201.0,
+      "pct_truncated_over_max_len": 2.58,
+      "sentences_median": 7.0,
+      "pct_over_max_sentences": 2.54,
+      "pct_sentences_over_max_words": 0.23,
+      "oov_token_rate": 0.0189
+    },
+    "test5k": {
+      "n": 5000,
+      "class_counts": {
+        "0": 2500,
+        "1": 2500
+      },
+      "positive_rate": 0.5,
+      "missing_text": 0,
+      "non_string": 0,
+      "empty_or_whitespace": 0,
+      "empty_after_cleaning": 0,
+      "label_not_0_1": 0,
+      "duplicate_texts_within_split": 0,
+      "raw_words_mean": 131.0,
+      "raw_words_median": 97.0,
+      "raw_words_p95": 355.0500000000002,
+      "raw_words_max": 1007,
+      "raw_words_by_class_median": {
+        "0": 111.0,
+        "1": 84.0
+      },
+      "clean_tokens_median": 52.0,
+      "clean_tokens_p95": 191.0,
+      "pct_truncated_over_max_len": 2.08,
+      "sentences_median": 7.0,
+      "pct_over_max_sentences": 2.16,
+      "pct_sentences_over_max_words": 0.27,
+      "oov_token_rate": 0.0187
+    },
+    "test33k": {
+      "n": 33000,
+      "class_counts": {
+        "0": 16500,
+        "1": 16500
+      },
+      "positive_rate": 0.5,
+      "missing_text": 0,
+      "non_string": 0,
+      "empty_or_whitespace": 0,
+      "empty_after_cleaning": 0,
+      "label_not_0_1": 0,
+      "duplicate_texts_within_split": 0,
+      "raw_words_mean": 132.8,
+      "raw_words_median": 97.0,
+      "raw_words_p95": 370.0,
+      "raw_words_max": 988,
+      "raw_words_by_class_median": {
+        "0": 112.0,
+        "1": 84.0
+      },
+      "clean_tokens_median": 52.0,
+      "clean_tokens_p95": 198.0,
+      "pct_truncated_over_max_len": 2.26,
+      "sentences_median": 7.0,
+      "pct_over_max_sentences": 2.44,
+      "pct_sentences_over_max_words": 0.26,
+      "oov_token_rate": 0.0194
+    }
+  },
+  "cross_split_duplicate_texts": {
+    "val": 0,
+    "test5k": 0,
+    "test33k": 0
+  },
+  "handling": "No rows dropped, so the split stays identical to Aswin's (team McNemar needs the same rows). Reviews that are empty after cleaning are encoded as a single <unk> token.",
+  "vocab": {
+    "size": 19646,
+    "min_freq": 2,
+    "max_vocab": 30000,
+    "train_types": 35365
+  },
+  "examples": [
+    {
+      "raw": "Brand new place, just opened today. Interior is bright and welcoming , the friendly staff are putting their best foot forward as any new business ought.\\n\\nHubby ran in and got a 6 pack of cupcakes and the family snarffled them down before I could rightly choose my flavor. The one I had, yellow with a butter-cream frosting was mighty tasty. To Divine Cupcake's credit: the cupcakes are normal-sized",
+      "cleaned": [
+        "brand new place open today",
+        "interior bright welcome friendly staff put best foot forward new business ought",
+        "hubby ran get 6 pack cupcake family snarffled could rightly choose flavor",
+        "one yellow butter cream frosting mighty tasty",
+        "divine cupcake credit cupcake normal size not ginormous one find elsewhere ratio cake frosting correct",
+        "not rip stump squish top frosting order eat must large one"
+      ]
+    },
+    {
+      "raw": "I used to come to this location for ALL my shipping, and fax needs. Today, I went in to copy a paper, and the guy (I'm guessing the owner) was absolutely rude when I had asked him to help me. Walking over rolling eyes, asking rude questions and all. I never thought I would experience such a horrible experience from this business.",
+      "cleaned": [
+        "use come location shipping fax need",
+        "today go copy paper guy guess owner absolutely rude ask help",
+        "walk roll eye ask rude question",
+        "never think would experience horrible experience business"
+      ]
+    },
+    {
+      "raw": "Breakfast at Armando's is awesome.  I always get the steak, egg and cheese burrito. Recently had lunch for the first time and had the Chicken Enchilada plate with red sauce and it was awesome.  The girls that work there are always nice and friendly.  I just wish they had a beer license.",
+      "cleaned": [
+        "breakfast armando awesome",
+        "always get steak egg cheese burrito",
+        "recently lunch first time chicken enchilada plate red sauce awesome",
+        "girl work always nice friendly",
+        "wish beer license"
+      ]
+    }
+  ],
+  "preprocessing_seconds": 57.3
+}

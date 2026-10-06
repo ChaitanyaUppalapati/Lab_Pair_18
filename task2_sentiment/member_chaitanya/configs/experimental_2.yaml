@@ -1,0 +1,26 @@
+# Experimental 2: hand-written Transformer encoder (2 layers, 4 heads, width 128, learned positions,
+# pre-LayerNorm, masked mean pooling).
+model_name: exp2_transformer
+run_prefix: t2_exp2_transformer
+input: flat
+model:
+  type: transformer
+  embed_dim: 128
+  n_layers: 2
+  n_heads: 4
+  d_ff: 512
+  max_len: 256
+  embed_dropout: 0.3         # same embedding dropout as the other two models (controlled constant)
+  attn_dropout: 0.1
+  dropout: 0.2               # residual, FFN and pre-output dropout
+training:
+  optimizer: AdamW
+  lr: 5.0e-4
+  weight_decay: 0.01
+  schedule: warmup_linear
+  warmup_frac: 0.05          # of max_epochs x steps_per_epoch
+  batch_size: 64
+  max_epochs: 20
+  patience: 3
+  grad_clip: 1.0
+seeds: [42, 43, 44]

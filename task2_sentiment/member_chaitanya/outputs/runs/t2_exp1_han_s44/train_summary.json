@@ -1,0 +1,18 @@
+{
+  "run_id": "t2_exp1_han_s44",
+  "model": "exp1_han",
+  "config": "task2_sentiment/member_chaitanya/configs/experimental_1.yaml",
+  "seed": 44,
+  "param_count": 2746753,
+  "best_epoch": 2,
+  "epochs_run": 5,
+  "best_val_macro_f1": 0.9193945800915654,
+  "train_time_s": 48.54991340637207,
+  "total_time_s": 49.42107653617859,
+  "train_examples_per_sec": 2059.7359085479898,
+  "inference_examples_per_sec": 39990.55242839043,
+  "peak_memory_mb": 386.94091796875,
+  "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "torch": "2.11.0+cu128",
+  "checkpoint": "checkpoints/t2_exp1_han_s44/best.pt"
+}

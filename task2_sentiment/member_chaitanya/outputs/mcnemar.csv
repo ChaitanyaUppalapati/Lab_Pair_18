@@ -1,0 +1,7 @@
+eval_set,model_a,model_b,a_right_b_wrong,a_wrong_b_right,statistic,p_value,test
+test5k,Baseline (fastText bigram),Exp 1 (HAN),153,149,0.029801324503311258,0.8629417966554445,chi2 with continuity correction
+test5k,Baseline (fastText bigram),Exp 2 (Transformer),184,101,23.59298245614035,1.1902078636785542e-06,chi2 with continuity correction
+test5k,Baseline (fastText bigram),Reference: TF-IDF + LR (uncounted),68,96,4.445121951219512,0.035001090259513104,chi2 with continuity correction
+test33k,Baseline (fastText bigram),Exp 1 (HAN),1066,925,9.844299347061778,0.0017035886569091074,chi2 with continuity correction
+test33k,Baseline (fastText bigram),Exp 2 (Transformer),1214,700,137.49686520376176,9.389136161337132e-32,chi2 with continuity correction
+test33k,Baseline (fastText bigram),Reference: TF-IDF + LR (uncounted),438,622,31.593396226415095,1.9007486382798113e-08,chi2 with continuity correction

@@ -1,0 +1,7 @@
+2026-10-06 01:03:59,584 INFO C=0.25 val_macro_f1=0.9048
+2026-10-06 01:04:00,459 INFO C=1.0 val_macro_f1=0.9212
+2026-10-06 01:04:00,886 INFO C=4.0 val_macro_f1=0.9284
+2026-10-06 01:04:01,312 INFO C=16.0 val_macro_f1=0.9312
+2026-10-06 01:04:01,881 INFO C=64.0 val_macro_f1=0.9308
+2026-10-06 01:04:02,666 INFO C=256.0 val_macro_f1=0.9298
+2026-10-06 01:04:02,799 INFO done summary={'run_id': 't2_ref_tfidf_lr', 'model': 'reference_tfidf_logreg', 'seed': None, 'C': 16.0, 'best_val_macro_f1': 0.9311984148114772, 'param_count': 170412, 'n_features': 170411, 'train_time_s': 10.853665590286255, 'train_examples_per_sec': 1842.6954316613067, 'peak_memory_mb': None, 'hardware': 'CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD (CPU, scikit-learn)'}

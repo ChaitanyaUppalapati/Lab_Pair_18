@@ -1,0 +1,10 @@
+train baseline seed 42
+train baseline seed 43
+train baseline seed 44
+train experimental_1 seed 42
+train experimental_1 seed 43
+train experimental_1 seed 44
+train experimental_2 seed 42
+train experimental_2 seed 43
+train experimental_2 seed 44
+all training done

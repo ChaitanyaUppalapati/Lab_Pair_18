@@ -1,0 +1,18 @@
+{
+  "run_id": "t2_baseline_s42",
+  "model": "baseline_fasttext_bigram",
+  "config": "task2_sentiment/member_chaitanya/configs/baseline.yaml",
+  "seed": 42,
+  "param_count": 19292033,
+  "best_epoch": 2,
+  "epochs_run": 5,
+  "best_val_macro_f1": 0.9287998974718523,
+  "train_time_s": 6.074044227600098,
+  "total_time_s": 6.375523567199707,
+  "train_examples_per_sec": 16463.495531627166,
+  "inference_examples_per_sec": 263172.591713835,
+  "peak_memory_mb": 698.25,
+  "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "torch": "2.11.0+cu128",
+  "checkpoint": "checkpoints/t2_baseline_s42/best.pt"
+}

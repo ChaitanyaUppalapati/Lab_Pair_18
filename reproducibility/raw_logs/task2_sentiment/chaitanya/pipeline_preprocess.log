@@ -1,0 +1,7 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+train: 20000 reviews processed (27s)
+val: 5000 reviews processed (30s)
+test5k: 5000 reviews processed (32s)
+test33k: 33000 reviews processed (46s)
+vocab 19646 (train types 35365, with count >= 2: 19644)
+done in 57s

@@ -1,0 +1,19 @@
+# Baseline: fastText-style mean of unigram + hashed-bigram embeddings -> linear output (user-specified).
+model_name: baseline_fasttext_bigram
+run_prefix: t2_baseline
+input: flat
+model:
+  type: fasttext_bigram
+  embed_dim: 128
+  bigram_buckets: 131072     # 2^17 hashed bigram rows
+  embed_dropout: 0.3
+training:
+  optimizer: AdamW
+  lr: 3.0e-3
+  weight_decay: 0.01
+  schedule: constant
+  batch_size: 64
+  max_epochs: 20
+  patience: 3              # early stopping on validation macro-F1, best epoch restored
+  grad_clip: null
+seeds: [42, 43, 44]          # seed 42 = run used for McNemar, bootstrap and error review

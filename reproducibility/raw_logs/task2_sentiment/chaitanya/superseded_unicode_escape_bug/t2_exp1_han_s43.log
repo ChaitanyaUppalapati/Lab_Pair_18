@@ -1,0 +1,11 @@
+2026-10-06 01:04:24,900 INFO run=t2_exp1_han_s43 config=task2_sentiment/member_chaitanya/configs/experimental_1.yaml seed=43 device=cuda hw=GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD
+2026-10-06 01:04:24,900 INFO model={'type': 'han', 'embed_dim': 128, 'hidden': 64, 'attn_dim': 128, 'embed_dropout': 0.3, 'dropout': 0.3} params=2756993 vocab=19726 train=20000 input=hier(32, 32)
+2026-10-06 01:04:24,900 INFO training={'optimizer': 'AdamW', 'lr': 0.001, 'weight_decay': 0.01, 'schedule': 'constant', 'batch_size': 64, 'max_epochs': 15, 'patience': 3, 'grad_clip': 1.0}
+2026-10-06 01:04:35,018 INFO epoch=1 train_loss=0.3292 val_loss=0.2127 val_acc=0.9180 val_macro_f1=0.9179 lr=1.00e-03 time_s=10.1 *best
+2026-10-06 01:04:44,647 INFO epoch=2 train_loss=0.1553 val_loss=0.2192 val_acc=0.9182 val_macro_f1=0.9181 lr=1.00e-03 time_s=9.6 *best
+2026-10-06 01:04:54,721 INFO epoch=3 train_loss=0.0992 val_loss=0.2255 val_acc=0.9198 val_macro_f1=0.9198 lr=1.00e-03 time_s=10.1 *best
+2026-10-06 01:05:04,530 INFO epoch=4 train_loss=0.0614 val_loss=0.2822 val_acc=0.9100 val_macro_f1=0.9099 lr=1.00e-03 time_s=9.8
+2026-10-06 01:05:14,700 INFO epoch=5 train_loss=0.0465 val_loss=0.3149 val_acc=0.9136 val_macro_f1=0.9136 lr=1.00e-03 time_s=10.2
+2026-10-06 01:05:24,492 INFO epoch=6 train_loss=0.0369 val_loss=0.3322 val_acc=0.9158 val_macro_f1=0.9158 lr=1.00e-03 time_s=9.8
+2026-10-06 01:05:24,492 INFO early stop: no val macro-F1 gain for 3 epochs
+2026-10-06 01:05:25,629 INFO done summary={"run_id": "t2_exp1_han_s43", "model": "exp1_han", "config": "task2_sentiment/member_chaitanya/configs/experimental_1.yaml", "seed": 43, "param_count": 2756993, "best_epoch": 3, "epochs_run": 6, "best_val_macro_f1": 0.9197855967017438, "train_time_s": 58.352750301361084, "total_time_s": 59.59135866165161, "train_examples_per_sec": 2056.4583396714547, "inference_examples_per_sec": 38888.04912327003, "peak_memory_mb": 387.79052734375, "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD", "torch": "2.11.0+cu128", "checkpoint": "checkpoints/t2_exp1_han_s43/best.pt"}

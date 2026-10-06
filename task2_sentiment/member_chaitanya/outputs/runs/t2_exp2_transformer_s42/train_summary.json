@@ -1,0 +1,18 @@
+{
+  "run_id": "t2_exp2_transformer_s42",
+  "model": "exp2_transformer",
+  "config": "task2_sentiment/member_chaitanya/configs/experimental_2.yaml",
+  "seed": 42,
+  "param_count": 2944385,
+  "best_epoch": 3,
+  "epochs_run": 6,
+  "best_val_macro_f1": 0.9051719460685249,
+  "train_time_s": 16.520649671554565,
+  "total_time_s": 17.89949679374695,
+  "train_examples_per_sec": 7263.636865723102,
+  "inference_examples_per_sec": 23124.129039140287,
+  "peak_memory_mb": 1535.36865234375,
+  "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "torch": "2.11.0+cu128",
+  "checkpoint": "checkpoints/t2_exp2_transformer_s42/best.pt"
+}

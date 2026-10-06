@@ -1,0 +1,10 @@
+2026-10-06 01:12:12,534 INFO run=t2_exp1_han_s42 config=task2_sentiment/member_chaitanya/configs/experimental_1.yaml seed=42 device=cuda hw=GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD
+2026-10-06 01:12:12,534 INFO model={'type': 'han', 'embed_dim': 128, 'hidden': 64, 'attn_dim': 128, 'embed_dropout': 0.3, 'dropout': 0.3} params=2746753 vocab=19646 train=20000 input=hier(32, 32)
+2026-10-06 01:12:12,534 INFO training={'optimizer': 'AdamW', 'lr': 0.001, 'weight_decay': 0.01, 'schedule': 'constant', 'batch_size': 64, 'max_epochs': 15, 'patience': 3, 'grad_clip': 1.0}
+2026-10-06 01:12:23,054 INFO epoch=1 train_loss=0.3363 val_loss=0.2146 val_acc=0.9142 val_macro_f1=0.9141 lr=1.00e-03 time_s=10.5 *best
+2026-10-06 01:12:32,830 INFO epoch=2 train_loss=0.1496 val_loss=0.2055 val_acc=0.9188 val_macro_f1=0.9188 lr=1.00e-03 time_s=9.8 *best
+2026-10-06 01:12:42,609 INFO epoch=3 train_loss=0.0968 val_loss=0.2230 val_acc=0.9154 val_macro_f1=0.9154 lr=1.00e-03 time_s=9.8
+2026-10-06 01:12:52,380 INFO epoch=4 train_loss=0.0622 val_loss=0.2571 val_acc=0.9162 val_macro_f1=0.9162 lr=1.00e-03 time_s=9.8
+2026-10-06 01:13:02,355 INFO epoch=5 train_loss=0.0396 val_loss=0.3199 val_acc=0.9152 val_macro_f1=0.9152 lr=1.00e-03 time_s=10.0
+2026-10-06 01:13:02,356 INFO early stop: no val macro-F1 gain for 3 epochs
+2026-10-06 01:13:03,439 INFO done summary={"run_id": "t2_exp1_han_s42", "model": "exp1_han", "config": "task2_sentiment/member_chaitanya/configs/experimental_1.yaml", "seed": 42, "param_count": 2746753, "best_epoch": 2, "epochs_run": 5, "best_val_macro_f1": 0.9187648544266191, "train_time_s": 49.00852179527283, "total_time_s": 49.82009506225586, "train_examples_per_sec": 2040.4614613298868, "inference_examples_per_sec": 40846.973219090345, "peak_memory_mb": 387.39990234375, "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD", "torch": "2.11.0+cu128", "checkpoint": "checkpoints/t2_exp1_han_s42/best.pt"}

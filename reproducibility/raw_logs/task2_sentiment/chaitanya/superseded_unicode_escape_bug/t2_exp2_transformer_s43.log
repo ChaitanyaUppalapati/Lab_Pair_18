@@ -1,0 +1,10 @@
+2026-10-06 01:06:55,980 INFO run=t2_exp2_transformer_s43 config=task2_sentiment/member_chaitanya/configs/experimental_2.yaml seed=43 device=cuda hw=GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD
+2026-10-06 01:06:55,980 INFO model={'type': 'transformer', 'embed_dim': 128, 'n_layers': 2, 'n_heads': 4, 'd_ff': 512, 'max_len': 256, 'embed_dropout': 0.3, 'attn_dropout': 0.1, 'dropout': 0.2} params=2954625 vocab=19726 train=20000 input=flat(256,)
+2026-10-06 01:06:55,980 INFO training={'optimizer': 'AdamW', 'lr': 0.0005, 'weight_decay': 0.01, 'schedule': 'warmup_linear', 'warmup_frac': 0.05, 'batch_size': 64, 'max_epochs': 20, 'patience': 3, 'grad_clip': 1.0}
+2026-10-06 01:06:59,305 INFO epoch=1 train_loss=0.4628 val_loss=0.2876 val_acc=0.8792 val_macro_f1=0.8791 lr=5.00e-04 time_s=3.3 *best
+2026-10-06 01:07:02,259 INFO epoch=2 train_loss=0.2488 val_loss=0.2316 val_acc=0.9060 val_macro_f1=0.9060 lr=4.74e-04 time_s=2.9 *best
+2026-10-06 01:07:05,192 INFO epoch=3 train_loss=0.1599 val_loss=0.2613 val_acc=0.9036 val_macro_f1=0.9035 lr=4.47e-04 time_s=2.9
+2026-10-06 01:07:08,118 INFO epoch=4 train_loss=0.1183 val_loss=0.2727 val_acc=0.9034 val_macro_f1=0.9034 lr=4.21e-04 time_s=2.9
+2026-10-06 01:07:11,047 INFO epoch=5 train_loss=0.0889 val_loss=0.3243 val_acc=0.8992 val_macro_f1=0.8992 lr=3.95e-04 time_s=2.9
+2026-10-06 01:07:11,047 INFO early stop: no val macro-F1 gain for 3 epochs
+2026-10-06 01:07:12,953 INFO done summary={"run_id": "t2_exp2_transformer_s43", "model": "exp2_transformer", "config": "task2_sentiment/member_chaitanya/configs/experimental_2.yaml", "seed": 43, "param_count": 2954625, "best_epoch": 2, "epochs_run": 5, "best_val_macro_f1": 0.9059855443372973, "train_time_s": 13.9015793800354, "total_time_s": 15.066415786743164, "train_examples_per_sec": 7193.427255007722, "inference_examples_per_sec": 22972.54339217544, "peak_memory_mb": 1535.52490234375, "hardware": "GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD", "torch": "2.11.0+cu128", "checkpoint": "checkpoints/t2_exp2_transformer_s43/best.pt"}

@@ -1,0 +1,36 @@
+{
+  "source": "fancyzhx/yelp_polarity",
+  "seed": 42,
+  "verification": {
+    "test5k_text_matches_aswin_predictions_in_order": "5000/5000",
+    "test5k_label_matches": "5000/5000",
+    "aswin_vocab_fingerprint": "18766 (Aswin reports 18766)",
+    "text_overlap_train25k_vs_hf_test": 0
+  },
+  "splits": {
+    "train": {
+      "hf_split": "train",
+      "n": 20000,
+      "n_pos": 10000,
+      "text_sha256": "b9cc1590325993cce61847fe5b6f10573fb339e80d81943d23d7692da2f6621b"
+    },
+    "val": {
+      "hf_split": "train",
+      "n": 5000,
+      "n_pos": 2500,
+      "text_sha256": "e9dfaec70e075c06956e4dfe2d6f5e99ad8e932352e4a67f8a23cd8c2f7afed1"
+    },
+    "test5k": {
+      "hf_split": "test",
+      "n": 5000,
+      "n_pos": 2500,
+      "text_sha256": "f83a523a07593aa3fbc36b4ed4226694991a45bbc76f658e02c1151d4cfe3d96"
+    },
+    "test33k": {
+      "hf_split": "test",
+      "n": 33000,
+      "n_pos": 16500,
+      "text_sha256": "08dfb8be21bd9fda008d86a6c7e4785963a55783696883fa2b2528769c4c40e4"
+    }
+  }
+}

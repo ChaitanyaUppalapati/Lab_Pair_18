@@ -1,0 +1,10 @@
+model_a,model_b,a_right_b_wrong,a_wrong_b_right,statistic,p_value,test,p_holm
+Baseline (fastText bigram),Aswin baseline (mean-pool FFN),164,98,16.125954198473284,5.926624060536017e-05,chi2 with continuity correction,0.0005333961654482416
+Baseline (fastText bigram),Aswin exp 1 (BiGRU),174,124,8.057046979865772,0.004532700177114137,chi2 with continuity correction,0.027196201062684826
+Baseline (fastText bigram),Aswin exp 2 (TextCNN),197,176,1.0723860589812333,0.3004071129278023,chi2 with continuity correction,0.9012213387834069
+Exp 1 (HAN),Aswin baseline (mean-pool FFN),201,139,10.944117647058823,0.0009390125330806505,chi2 with continuity correction,0.007512100264645204
+Exp 1 (HAN),Aswin exp 1 (BiGRU),195,149,5.886627906976744,0.01525628694772525,chi2 with continuity correction,0.07628143473862625
+Exp 1 (HAN),Aswin exp 2 (TextCNN),188,171,0.713091922005571,0.3984192757235214,chi2 with continuity correction,0.9012213387834069
+Exp 2 (Transformer),Aswin baseline (mean-pool FFN),150,167,0.807570977917981,0.3688393676529087,chi2 with continuity correction,0.9012213387834069
+Exp 2 (Transformer),Aswin exp 1 (BiGRU),149,182,3.093655589123867,0.07859805056592707,chi2 with continuity correction,0.3143922022637083
+Exp 2 (Transformer),Aswin exp 2 (TextCNN),173,235,9.120098039215685,0.002528164128409167,chi2 with continuity correction,0.017697148898864166
