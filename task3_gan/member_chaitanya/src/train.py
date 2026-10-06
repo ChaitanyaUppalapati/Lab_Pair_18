@@ -20,13 +20,22 @@ import itertools
 import json
 import math
 import time
+from pathlib import Path
 
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 
-from common import get_logger, hardware_string, load_config, repo_path, run_paths, set_seed
+from common import REPO_ROOT, get_logger, hardware_string, load_config, repo_path, run_paths, set_seed
+
+
+def rel(path) -> str:
+    """Repo-relative path for logs (no absolute personal paths in committed logs)."""
+    try:
+        return Path(path).resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return Path(path).name
 from data import FolderDataset, UnpairedDataset, eval_transform, list_images, train_transform
 from models import ImagePool, MultiScaleDiscriminator, count_params, diff_augment, make_discriminator, make_generator
 
@@ -153,7 +162,7 @@ def main() -> None:
         start_epoch, it = state["epoch"] + 1, state["iter"]
         history, nan_count, max_gn = state["history"], state["nan_count"], state["max_grad_norm"]
         train_time_prev = state["train_time_s"]
-        log.info("resumed from %s at epoch %d iter %d", latest, state["epoch"], it)
+        log.info("resumed from %s at epoch %d iter %d", rel(latest), state["epoch"], it)
 
     # optional: overwrite generators with weights from other checkpoints (e.g. the best per-direction generator)
     for key, rel in (t_cfg.get("init_generators") or {}).items():
@@ -179,7 +188,7 @@ def main() -> None:
         ema = {k: {n: p.detach().clone() for n, p in nets[k].state_dict().items()} for k in ("G_A2B", "G_B2A")}
         if args.resume and latest.exists() and state.get("ema"):
             ema = {k: {n: t.to(device) for n, t in v.items()} for k, v in state["ema"].items()}
-            log.info("resumed EMA weights from %s", latest)
+            log.info("resumed EMA weights from %s", rel(latest))
         for key in (t_cfg.get("init_generators") or {}):  # replaced generators: restart their EMA from the new weights
             ema[key] = {n: p.detach().clone() for n, p in nets[key].state_dict().items()}
             log.info("EMA for %s reset to its initialised weights", key)

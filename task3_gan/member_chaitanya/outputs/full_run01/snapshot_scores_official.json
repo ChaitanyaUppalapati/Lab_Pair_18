@@ -1,155 +1,155 @@
 [
- {
-  "FID_B2A": 118.65182644422974,
-  "MiFID_B2A": 0.4141329526901245,
-  "FID_A2B": 127.524767846266,
-  "MiFID_A2B": 0.42268994450569153,
-  "FID": 123.08829714524788,
-  "MiFID": 0.418411448597908,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 118.65182644422974,
+    "MiFID_B2A": 0.4141329526901245,
+    "FID_A2B": 127.524767846266,
+    "MiFID_A2B": 0.42268994450569153,
+    "FID": 123.08829714524788,
+    "MiFID": 0.418411448597908,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_005"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_005"
- },
- {
-  "FID_B2A": 109.79460320906979,
-  "MiFID_B2A": 0.40352365374565125,
-  "FID_A2B": 122.76590659658476,
-  "MiFID_A2B": 0.4290759265422821,
-  "FID": 116.28025490282727,
-  "MiFID": 0.4162997901439667,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 109.79460320906979,
+    "MiFID_B2A": 0.40352365374565125,
+    "FID_A2B": 122.76590659658476,
+    "MiFID_A2B": 0.4290759265422821,
+    "FID": 116.28025490282727,
+    "MiFID": 0.4162997901439667,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_010"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_010"
- },
- {
-  "FID_B2A": 107.22796648176202,
-  "MiFID_B2A": 0.4078412353992462,
-  "FID_A2B": 118.52915183662658,
-  "MiFID_A2B": 0.42397943139076233,
-  "FID": 112.87855915919431,
-  "MiFID": 0.4159103333950043,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 107.22796648176202,
+    "MiFID_B2A": 0.4078412353992462,
+    "FID_A2B": 118.52915183662658,
+    "MiFID_A2B": 0.42397943139076233,
+    "FID": 112.87855915919431,
+    "MiFID": 0.4159103333950043,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_015"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_015"
- },
- {
-  "FID_B2A": 107.68286779176321,
-  "MiFID_B2A": 0.40427088737487793,
-  "FID_A2B": 116.5826551421737,
-  "MiFID_A2B": 0.42563411593437195,
-  "FID": 112.13276146696846,
-  "MiFID": 0.41495250165462494,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 107.68286779176321,
+    "MiFID_B2A": 0.40427088737487793,
+    "FID_A2B": 116.5826551421737,
+    "MiFID_A2B": 0.42563411593437195,
+    "FID": 112.13276146696846,
+    "MiFID": 0.41495250165462494,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_020"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_020"
- },
- {
-  "FID_B2A": 104.77133609096208,
-  "MiFID_B2A": 0.40984922647476196,
-  "FID_A2B": 116.50557407197664,
-  "MiFID_A2B": 0.42399778962135315,
-  "FID": 110.63845508146936,
-  "MiFID": 0.41692350804805756,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 104.77133609096208,
+    "MiFID_B2A": 0.40984922647476196,
+    "FID_A2B": 116.50557407197664,
+    "MiFID_A2B": 0.42399778962135315,
+    "FID": 110.63845508146936,
+    "MiFID": 0.41692350804805756,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_025"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_025"
- },
- {
-  "FID_B2A": 109.19455030323655,
-  "MiFID_B2A": 0.4089576303958893,
-  "FID_A2B": 108.52004254132308,
-  "MiFID_A2B": 0.4254463315010071,
-  "FID": 108.85729642227982,
-  "MiFID": 0.4172019809484482,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 109.19455030323655,
+    "MiFID_B2A": 0.4089576303958893,
+    "FID_A2B": 108.52004254132308,
+    "MiFID_A2B": 0.4254463315010071,
+    "FID": 108.85729642227982,
+    "MiFID": 0.4172019809484482,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_030"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_030"
- },
- {
-  "FID_B2A": 105.12843136096178,
-  "MiFID_B2A": 0.4094680845737457,
-  "FID_A2B": 112.04505766656577,
-  "MiFID_A2B": 0.42442405223846436,
-  "FID": 108.58674451376378,
-  "MiFID": 0.41694606840610504,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 105.12843136096178,
+    "MiFID_B2A": 0.4094680845737457,
+    "FID_A2B": 112.04505766656577,
+    "MiFID_A2B": 0.42442405223846436,
+    "FID": 108.58674451376378,
+    "MiFID": 0.41694606840610504,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_035"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_035"
- },
- {
-  "FID_B2A": 104.93533907667727,
-  "MiFID_B2A": 0.4067007303237915,
-  "FID_A2B": 109.71776641766496,
-  "MiFID_A2B": 0.4230382442474365,
-  "FID": 107.32655274717112,
-  "MiFID": 0.414869487285614,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
+  {
+    "FID_B2A": 104.93533907667727,
+    "MiFID_B2A": 0.4067007303237915,
+    "FID_A2B": 109.71776641766496,
+    "MiFID_A2B": 0.4230382442474365,
+    "FID": 107.32655274717112,
+    "MiFID": 0.414869487285614,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_040"
   },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_040"
- },
- {
-  "FID_B2A": 104.93533907667727,
-  "MiFID_B2A": 0.4067007303237915,
-  "FID_A2B": 109.71776641766496,
-  "MiFID_A2B": 0.4230382442474365,
-  "FID": 107.32655274717112,
-  "MiFID": 0.414869487285614,
-  "counts": {
-   "real_monet": 300,
-   "real_photo": 300,
-   "a2b": 300,
-   "b2a": 300
-  },
-  "pred_a2b": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_A2B",
-  "pred_b2a": "C:\\Users\\chaitanya\\AppData\\Local\\Temp\\claude\\c--Users-chaitanya-Documents-GEN-AI-LAB1\\a1b45506-2a66-5aea-8e75-109211aa4048\\scratchpad\\snap_eval\\pred_B2A",
-  "snapshot": "epoch_040 (final)"
- }
+  {
+    "FID_B2A": 104.93533907667727,
+    "MiFID_B2A": 0.4067007303237915,
+    "FID_A2B": 109.71776641766496,
+    "MiFID_A2B": 0.4230382442474365,
+    "FID": 107.32655274717112,
+    "MiFID": 0.414869487285614,
+    "counts": {
+      "real_monet": 300,
+      "real_photo": 300,
+      "a2b": 300,
+      "b2a": 300
+    },
+    "pred_a2b": "temporary prediction folder (scratch), pred_A2B",
+    "pred_b2a": "temporary prediction folder (scratch), pred_B2A",
+    "snapshot": "epoch_040 (final)"
+  }
 ]
