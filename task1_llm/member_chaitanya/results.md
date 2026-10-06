@@ -102,16 +102,29 @@ Per-epoch losses:
 - Total training time: 8,458 s
 
 ## Comparison with teammates
-Aswin's full run is not in the repository yet (only a smoke test), so I compare the designs and state what I expect. His numbers will be added only if they arrive in time **and** are evaluated on the same validation set and vocabulary; otherwise bits per character are not comparable.
+Aswin's full run (`task1_llm/member_aswin/metrics_report.csv`, run `full_run01`, A100) against mine:
 
 | | Mine | Aswin |
 |---|---|---|
-| Model | 6 layers, d_model 384 (10.8M parameters) | 5 layers, d_model 240 (≈ 3.5M parameters) |
+| Model | 6 layers, d_model 384, 10,811,136 parameters | 5 layers, d_model 240, 3,558,960 parameters |
 | Context | 256 | 160 |
 | Text seen per epoch | sliding windows, stride 128: ≈ 179M target characters | one crop per story: ≈ 16M characters |
+| Vocabulary | 85 (mojibake stories removed) | 111 (includes mojibake characters) |
 | Peak LR / epochs | 1e-3 / 10 | 2.5e-4 / 12 |
+| Validation CE / bits per character | 0.5097 / 0.735 | 0.7582 / 1.094 |
+| Perplexity | 1.665 | 2.134 |
+| Top-1 next-character accuracy | 83.58% | 76.01% |
+| Generalisation gap (val − train) | +0.025 | −0.035 (his train CE is measured with dropout on) |
+| Loss spikes / NaNs | 0 / 0 | 125 (his more sensitive 3σ rule) / 0 |
+| Peak memory / training time | 4.6 GB / 8,458 s (RTX 4090) | 1.0 GB / 822 s (A100) |
 
-Expectations: his 160-character context covers only about 18% of a story, so I expect weaker consistency of names and plot. His smaller model should give a clearly higher validation loss. One crop per story means about 10× less text seen per epoch, so I expect a higher loss and possibly earlier overfitting, and his lower learning rate should slow convergence further.
+These are not a controlled comparison: the validation sets, vocabularies and even the definitions differ (his
+distinct-n and repeated 4-gram rate count character n-grams, mine count word n-grams), so bits per character are not
+strictly comparable and the generation metrics not at all. The direction of the gap is still what I expected from
+the designs: his 160-character context covers only about 18% of a story, his model is about a third of the size, and
+one crop per story means about 10× less text seen per epoch, all of which point to a higher loss, and his lower learning
+rate slows convergence further. His validation loss was still falling at epoch 12, as mine was at epoch 10, so both
+models were stopped while underfitting.
 
 ## Evidence
 - Config: `configs/full.yaml`

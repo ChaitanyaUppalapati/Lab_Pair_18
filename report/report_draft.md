@@ -33,24 +33,24 @@ Metrics (Chaitanya: validation set of 10K stories; generation metrics at tempera
 
 | Metric | Chaitanya | Aswin |
 |---|---|---|
-| Training CE loss | 0.4842 | pending (full run not in repo) |
-| Validation CE loss | 0.5097 | pending (full run not in repo) |
-| Perplexity | 1.6647 | pending (full run not in repo) |
-| Bits per character | 0.7353 | pending (full run not in repo) |
-| Generalisation gap (val − train) | 0.0255 | pending (full run not in repo) |
-| Top-1 next-char accuracy | 0.8358 | pending (full run not in repo) |
-| Distinct-1 | 0.3443 | pending (full run not in repo) |
-| Distinct-2 | 0.7785 | pending (full run not in repo) |
-| Distinct-3 | 0.9292 | pending (full run not in repo) |
-| Repeated 4-gram rate | 0.0195 | pending (full run not in repo) |
-| Max / mean grad norm | 9.63 / 0.201 | pending (full run not in repo) |
-| Loss spikes / NaNs | 0 / 0 | pending (full run not in repo) |
-| Parameters | 10,811,136 | pending (full run not in repo) |
-| Train tokens/s | 235,385 | pending (full run not in repo) |
-| Generation tokens/s | 179.9255 | pending (full run not in repo) |
-| Peak memory (MB) | 4,598.4546 | pending (full run not in repo) |
-| Total training time (s) | 8,457.7960 | pending (full run not in repo) |
-| Hardware | GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD | pending (full run not in repo) |
+| Training CE loss | 0.4842 | 0.7932 |
+| Validation CE loss | 0.5097 | 0.7582 |
+| Perplexity | 1.6647 | 2.1345 |
+| Bits per character | 0.7353 | 1.0939 |
+| Generalisation gap (val − train) | 0.0255 | -0.0350 |
+| Top-1 next-char accuracy | 0.8358 | 0.7601 |
+| Distinct-1 | 0.3443 | 0.0167 |
+| Distinct-2 | 0.7785 | 0.1180 |
+| Distinct-3 | 0.9292 | 0.3220 |
+| Repeated 4-gram rate | 0.0195 | 0.5115 |
+| Max / mean grad norm | 9.63 / 0.201 | 6.87 / 0.720 |
+| Loss spikes / NaNs | 0 / 0 | 125 / 0 |
+| Parameters | 10,811,136 | 3,558,960 |
+| Train tokens/s | 235,385 | 233,568 |
+| Generation tokens/s | 179.9255 | 241.1109 |
+| Peak memory (MB) | 4,598.4546 | 1,017.8931 |
+| Total training time (s) | 8,457.7960 | 822.0166 |
+| Hardware | GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD | NVIDIA A100-SXM4-40GB |
 
 Note: Aswin's distinct-n counts character n-grams; Chaitanya's counts word n-grams — not directly comparable.
 
