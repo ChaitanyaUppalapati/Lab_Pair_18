@@ -33,6 +33,11 @@ task3_gan/member_*_f.zip
 **/data_processed/*
 !**/data_processed/.gitkeep
 
+# Task 1 exported run bundles (promoted artifacts live in the normal repository tree)
+task1_llm/member_*/task1_*_results.zip
+task1_llm/member_*/task1_*_results/
+task1_llm/member_*/task1_colab_all_in_one_outputs.ipynb
+
 # OS / editor
 .DS_Store
 Thumbs.db
