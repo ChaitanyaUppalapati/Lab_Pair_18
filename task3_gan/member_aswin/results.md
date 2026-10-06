@@ -2,13 +2,13 @@
 
 ## Status
 
-Implementation and a GPU run through epoch 90 are preserved in the v3 notebooks and `checkpoints/aswin_cyclegan_v3_improved/`. The supplied two-direction evaluation script has been completed using `epoch_090.pt`. The two-rater human audit and actual Kaggle leaderboard submission remain pending.
+The V2 GPU run completed all 150 epochs on an NVIDIA GeForce RTX 4090. The executed notebook is `src/task3_cyclegan_aswin_v2.ipynb`; its configuration and outputs match `checkpoints/aswin_cyclegan_v2/`, the training log/history, generated images, and `full_metrics_report.csv`. Validation selected `best_model.pt` at epoch 130. The supplied two-direction evaluation script has been rerun on those generated outputs. The two-rater human audit and actual Kaggle leaderboard submission remain pending.
 
 ## Independent architecture
 
 - Generator A→B and B→A: 9-block ResNet, 64 base filters, two strided downsampling stages, instance normalization, reflection padding, and nearest-neighbor resize-convolution upsampling.
-- Discriminator A and B: two-scale spectral-normalized 70×70 PatchGAN discriminators.
-- Objective: least-squares adversarial loss, cycle L1 weight 10, and identity L1 weight 5.
+- Discriminator A and B: single-scale spectral-normalized 70×70 PatchGAN discriminators.
+- Objective: least-squares adversarial loss, cycle L1 weight 10, and identity L1 weight 2.5, with the identity weight decaying to zero over the first half of training.
 - Stability: 50-image replay buffers, AMP, gradient clipping, exponential-moving-average generators, and linear learning-rate decay.
 
 Chaitanya's architecture and hyperparameters were blank when this design was created. Recheck both completed configurations before the full run and coordinate a change if they become materially identical.
@@ -23,11 +23,11 @@ Chaitanya's architecture and hyperparameters were blank when this design was cre
 
 ## Training behavior and convergence
 
-Add evidence-backed observations from `outputs/plots/<run_id>_training_curves.png` and the raw JSONL log. Discuss adversarial balance, cycle/identity trends, gradient norms, instability, and non-finite counts.
+Training completed in 9,567.69 seconds (2 h 39 min 27.69 s) at 16.92 images/s, with 3,988.75 MB peak GPU memory. Validation B2A FID reached its best value of 189.550 at epoch 130; epoch 150 ended at 192.001, so the epoch-130 checkpoint was correctly retained. Final epoch losses were generator 3.087, discriminator A 0.127, discriminator B 0.178, and cycle 0.210. No NaN loss occurred. The run recorded 70 non-finite-gradient steps, which the training loop safely skipped rather than applying corrupted updates.
 
 ## Cycle-consistency verification
 
-Report both-direction cycle L1 values and reference the qualitative grid showing inputs, translations, and reconstructions.
+Measured cycle-reconstruction L1 is 0.110149 for Monet→Photo→Monet and 0.123067 for Photo→Monet→Photo. The fixed qualitative evidence is in `outputs/plots/aswin_cyclegan_v2_qualitative_grid.png`.
 
 ## Quantitative metrics
 
@@ -35,11 +35,11 @@ The supplied `Part3_Evaluation_Script.ipynb` evaluated the first 300 sorted imag
 
 | Direction | FID | MiFID |
 |---|---:|---:|
-| Photo → Monet (B2A) | 103.126 | 0.4077 |
-| Monet → Photo (A2B) | 119.646 | 0.4348 |
-| Submission average | 111.38606856321958 | 0.4212227378974539 |
+| Photo → Monet (B2A) | 100.668 | 0.4054 |
+| Monet → Photo (A2B) | 109.561 | 0.4220 |
+| Submission average | 105.1144417304836 | 0.4136924761280517 |
 
-Evidence is preserved in `src/Part3_Evaluation_Script_evaluated.ipynb`, and the exact submission row is in `submission.csv`. These values are distinct from the additional metrics requested in `full_metrics_report.csv`, which should only be filled from measured evidence.
+Evidence is preserved in `src/Part3_Evaluation_Script_evaluated.ipynb`, and the exact submission row is in `submission.csv`. These values are distinct from the additional measured training and generation metrics preserved in `full_metrics_report.csv`.
 
 ## Visual quality assessment
 

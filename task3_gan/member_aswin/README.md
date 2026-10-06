@@ -1,6 +1,6 @@
 # Task 3 - CycleGAN Monet and Photo (Aswin)
 
-The completed V1 and V2 experiments, including their immutable outputs, are preserved in `src/task3_cyclegan_aswin.ipynb` and `src/task3_cyclegan_aswin_v2.ipynb`. The recommended next experiment is `src/task3_cyclegan_aswin_v3.ipynb`. V3 retains V2's successful generators and adds BF16 mixed precision, differentiable discriminator augmentation, lazy R1 regularization, adaptive Monet-discriminator updates, an identity-loss floor, and composite FID-plus-cycle checkpoint selection.
+The canonical training artifact is `src/task3_cyclegan_aswin_v2.ipynb`. It contains the executed 150-epoch RTX 4090 run and matches `checkpoints/aswin_cyclegan_v2/`, the JSONL log, training history, plots, generated images, and metric report. Superseded V1/V3 training notebooks were removed from `src` to prevent selecting the wrong run.
 
 ## Recommended run environment
 
@@ -11,7 +11,7 @@ The completed V1 and V2 experiments, including their immutable outputs, are pres
 
 ## Run instructions
 
-1. Open `src/task3_cyclegan_aswin_v3.ipynb` from the repository root. Keep the completed V1 and V2 notebooks unchanged as evidence.
+1. Open `src/task3_cyclegan_aswin_v2.ipynb` from the repository root.
 2. Select a GPU runtime.
 3. Run the dependency cell.
 4. Review `CFG`, `DATA_ROOT`, `WORK_ROOT`, and the Kaggle competition slug.
@@ -23,7 +23,7 @@ The completed V1 and V2 experiments, including their immutable outputs, are pres
 
 ## Completed evaluation artifacts
 
-The supplied `Part3_Evaluation_Script.ipynb` was run against the restored v3-improved epoch-90 outputs with 300 images per set, as required by its `N_EVAL` setting.
+The supplied `Part3_Evaluation_Script.ipynb` was rerun against the V2 best-checkpoint outputs with 300 images per set, as required by its `N_EVAL` setting.
 
 - Executed notebook: `src/Part3_Evaluation_Script_evaluated.ipynb`
 - Reusable A2B generation utility: `src/generate_eval_images.py`
@@ -34,6 +34,6 @@ The supplied `Part3_Evaluation_Script.ipynb` was run against the restored v3-imp
 
 Large checkpoints, generated JPEGs, datasets, and ZIP archives are retained locally and excluded from normal Git. The notebooks, source code, metric CSV, and written evidence remain eligible for version control.
 
-The default full run uses 100 epochs, nine generator residual blocks, two discriminator scales, AMP, replay buffers, and EMA generators. Set `CFG.smoke = True` only to verify execution; smoke outputs are not assignment results.
+The completed full run uses 150 epochs, nine generator residual blocks, one discriminator scale, AMP, replay buffers, and EMA generators. Its best validation checkpoint is epoch 130. Set `CFG.smoke = True` only to verify execution; smoke outputs are not assignment results.
 
 No architecture can guarantee the best leaderboard result. Treat the provided configuration as a strong, stable starting point and only report results produced by an actual run.

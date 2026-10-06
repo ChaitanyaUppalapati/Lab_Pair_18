@@ -28,6 +28,7 @@ task3_gan/member_*/outputs/pred_B2A/*
 task3_gan/member_*/images.zip
 task3_gan/member_*/data-*.zip
 task3_gan/member_*_f.zip
+task3_gan/member_*.zip
 
 # Per-member processed data (regenerable)
 **/data_processed/*
