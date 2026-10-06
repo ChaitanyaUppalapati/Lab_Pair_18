@@ -138,7 +138,7 @@ Training: 26,494 s (7 h 22 min), 10.63 it/s (21.3 images/sec, one image per doma
 - **Samples:** 30 fixed inputs chosen with a fixed seed (266) from the sorted file lists: 20 photo → Monet (the Kaggle
   direction) and 10 Monet → photo, translated by the submitted generators (`checkpoints/full_run18/epoch_123_ema/`).
   Items were shuffled and shown under anonymous IDs (S01–S30) with no file names, run names or scores; the answer key
-  (`outputs/human_audit/key.csv`) was not opened until both raters had submitted. Tool: `src/human_audit.py`.
+  (`outputs/human_audit/round1_own_model_only/key.csv`) was not opened until both raters had submitted. Tool: `src/human_audit.py`.
 - **Raters:** rater 1 Chaitanya, rater 2 Aswin, each rating alone.
 - **Rubric (integers 1–5):** *style*: does the output convincingly look like the target domain (5 = indistinguishable,
   1 = not at all); *content*: is the input's scene and layout preserved (5 = fully, 1 = unrecognisable);
@@ -152,7 +152,7 @@ Training: 26,494 s (7 h 22 min), 10.63 it/s (21.3 images/sec, one image per doma
 
 Score distributions (counts of 2 / 3 / 4 / 5; nobody used 1): style rater 1 0/2/11/17, rater 2 2/5/12/11; content
 rater 1 0/2/2/26, rater 2 3/9/10/8; artifacts rater 1 2/5/18/5, rater 2 3/8/10/9. Ratings:
-`outputs/human_audit/rater_1.csv`, `rater_2.csv`; results: `outputs/human_audit/audit_results.json`.
+`outputs/human_audit/round1_own_model_only/rater_1.csv`, `rater_2.csv`; results: `outputs/human_audit/round1_own_model_only/audit_results.json`.
 
 ## Kaggle
 Official protocol: `src/official_eval.py`, a port of the instructor's `Part3_Evaluation_Script.ipynb` (first 300 images per folder, both directions, FID and MiFID averaged over A2B and B2A).
