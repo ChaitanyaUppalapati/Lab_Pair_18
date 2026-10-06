@@ -1,0 +1,30 @@
+{
+  "member": "aswin",
+  "task": "task1_llm",
+  "run_id": "full_run01",
+  "created_utc": "not recorded during run",
+  "python": "not recorded during run",
+  "os": "Google Colab Pro runtime (exact image not recorded)",
+  "hardware": {
+    "torch": "2.11.0+cu130",
+    "cuda_available": true,
+    "cuda": "13.0",
+    "gpus": [
+      "NVIDIA A100-SXM4-40GB"
+    ],
+    "peak_memory_mb": 1017.89306640625
+  },
+  "config": "task1_llm/member_aswin/configs/full.yaml",
+  "frozen_config": "task1_llm/member_aswin/checkpoints/full_run01/config.yaml",
+  "checkpoint": "task1_llm/member_aswin/checkpoints/full_run01/best_model.pt",
+  "checkpoint_sha256": "faac36643b139b32497399b3931351017224a8787f6f1f3717ce9967d21d35e7",
+  "final_checkpoint": "task1_llm/member_aswin/checkpoints/full_run01/final_model.pt",
+  "final_checkpoint_sha256": "80d39990a1b118a36574749c14ab244a617ff2799f2b16716e9f5873f50f4ee0",
+  "raw_log": "reproducibility/raw_logs/task1_llm/aswin/full_run01.log",
+  "executed_notebook": "task1_llm/member_aswin/src/task1_colab_all_in_one.ipynb",
+  "metrics": "task1_llm/member_aswin/metrics_report.csv",
+  "notes": "Reconstructed only from preserved full_run01 artifacts and the executed notebook. Exact Python, OS image, and pip freeze were not captured during training and are intentionally not guessed.",
+  "packages": [
+    "torch==2.11.0+cu130"
+  ]
+}

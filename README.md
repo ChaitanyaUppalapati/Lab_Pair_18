@@ -1,8 +1,8 @@
-# DATA266 Lab 1 — Team [Team Number]
+# DATA266 Lab 1 — Team 18
 
 LLM pretraining (TinyStories) · Yelp Polarity sentiment classification · CycleGAN Monet style transfer.
 
-Repo link: <!-- TODO: paste GitHub URL -->
+Repo: `git@github.com:ChaitanyaUppalapati/Lab_Pair_18.git`
 
 ## Team ownership
 
@@ -35,6 +35,11 @@ Task 1 (Chaitanya) — preprocess, causal-mask/shift checks, train, evaluate on 
 python task1_llm/member_chaitanya/src/smoke_test.py
 ```
 
+Task 1 (Aswin) — the equivalent synthetic pipeline check:
+```bash
+python task1_llm/member_aswin/src/smoke_test.py
+```
+
 ## Reproducing a member's run
 
 1. Pick the config from `task*/member_*/configs/`.
@@ -58,7 +63,7 @@ python task1_llm/member_chaitanya/src/smoke_test.py
 | Design justification | `task*/member_*/results.md` |
 | Environment manifests | `reproducibility/manifests/` |
 | Raw training logs | `reproducibility/raw_logs/` |
-| Final report | `report/DATA266_Lab1_Report_Team_[Team Number].pdf` |
+| Final report | `report/DATA266_Lab1_Report_Team_18.pdf` |
 
 Checkpoints over 100 MB: use Git LFS or link to external storage in the member's `results.md` with the checkpoint ID.
 

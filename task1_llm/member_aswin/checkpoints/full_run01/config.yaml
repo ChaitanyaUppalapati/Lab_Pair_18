@@ -1,0 +1,30 @@
+run_id: full_run01
+data:
+  dataset_name: roneneldan/TinyStories
+  text_field: text
+  train_examples: 100000
+  val_examples: 10000
+  context_length: 160
+  seed: 26617
+  special_tokens: ["<PAD>", "<UNK>", "<BOS>", "<EOS>"]
+model:
+  n_layers: 5
+  d_model: 240
+  n_heads: 6
+  d_ff: 960
+  dropout: 0.12
+training:
+  batch_size: 48
+  learning_rate: 0.00025
+  weight_decay: 0.1
+  epochs: 12
+  warmup_ratio: 0.05
+  min_lr_ratio: 0.1
+  grad_clip: 1.0
+  num_workers: 2
+  device: auto
+  log_every: 100
+generation:
+  prompts: ["Once upon a time", "Lily found a little", "The dragon was afraid"]
+  temperatures: [0.7, 1.0, 1.2]
+  max_new_tokens: 300
