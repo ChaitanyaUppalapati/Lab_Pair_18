@@ -294,6 +294,9 @@ No single factor explains a 4.6-point gap and I cannot separate them without abl
   his checkpoint was selected by a validation FID on held-out images.
 - *Content constraints:* my later runs cut λ_cycle to 2 and λ_identity to 0. The metric rewards only matching the Monet
   distribution, so looser constraints let outputs move further toward it, while he kept λ_cycle at 10.
+- *No DiffAugment:* his V2 trains its discriminators on un-augmented images. DiffAugment was my biggest single gain
+  (−53.87 → −51.47, run 1 → run 2): with only 300 paintings the Monet discriminator memorises them, as mine did in run 1
+  (loss below 0.05 by epoch 13), and its feedback to the generator stops being informative.
 
 Runs 5 onward were designed with Claude (marked in `DESIGN_LOG.md`). My own runs 2–2b reached −51.47 / −50.16, which
 already beat −52.76, so most of the gap predates those changes. Part of my score also carries the optimistic bias of
