@@ -1,1 +1,1 @@
-checkpoints/full_run16/epoch_116_ema (G_A2B = frozen copy of full_blends/epoch_b1_r7ema88-90, G_B2A = run-16 EMA 116)
+checkpoints/full_run18/epoch_123_ema (G_A2B = frozen copy of full_blends/epoch_b1_r7ema88-90, G_B2A = run-18 EMA 123); written by the run-18 orchestrator's evaluate_local --snapshot epoch_123_ema on 2026-10-04, submitted as Kaggle -48.2029
