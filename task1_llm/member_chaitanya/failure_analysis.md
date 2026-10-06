@@ -1,10 +1,10 @@
 # Task 1 — Generation Failure Analysis (Chaitanya)
 
 Model: `checkpoints/full_run01/final.pt` (character-level GPT, 10.8M parameters).
-Samples come from a pool of 63 generations (3 prompts × greedy, 10 × T=0.8, 10 × T=1.0; 600 new characters each)
-made by `src/failure_candidates.py`. The three below are **suggested** by automatic flags
-(`outputs/full_run01/failure_candidates.md` lists the top candidates per flag); swap any of them for another
-candidate if you prefer. **To fill in: Failure type and Observation.**
+I generated a pool of 63 continuations (3 prompts × greedy, 10 × temperature 0.8, 10 × temperature 1.0; 600 new
+characters each) with `src/failure_candidates.py`, ranked them by automatic flags (repeated 4-gram rate,
+words never seen in training, entity drift) and chose one clear example of each failure type
+(`outputs/full_run01/failure_candidates.md` lists the other candidates).
 
 ## Case 1
 - Prompt / decoding settings: prompt `The dog was sad because`, greedy, max 600 new characters, ended with <EOS>: True (pool sample #3)
@@ -15,8 +15,8 @@ candidate if you prefer. **To fill in: Failure type and Observation.**
   
   The dog and the box became best friends. They played together every day. The dog was not sad anymore. The dog and the box became best friends. They played together every day.
   ```
-- Failure type:
-- Observation:
+- Failure type: Repetition loop.
+- Observation: Greedy decoding always picks the most likely next character. Once "The dog and the box became best friends. They played together every day." is in the context, the same continuation becomes the most likely one again: the positive feedback loop described by Holtzman et al. (2019). It does not help that "They played together every day" is one of the most frequent stock phrases in TinyStories. (Repeated 4-gram rate 0.143, the highest in the pool, against 0.020 for my temperature-0.8 samples.)
 
 ## Case 2
 - Prompt / decoding settings: prompt `Once upon a time`, temperature 1.0, max 600 new characters, ended with <EOS>: False (pool sample #43)
@@ -27,8 +27,8 @@ candidate if you prefer. **To fill in: Failure type and Observation.**
   
   After a few days, she was done and had a nice nap. She woke up feeling much better and was all clean again. Her mommy was happy
   ```
-- Failure type:
-- Observation:
+- Failure type: Broken word formation (invented words) plus loss of coherence.
+- Observation: At temperature 1.0 every character is sampled from the full distribution, so a single unlikely character can derail a word ("te-ta-ta--cars"). The model then continues from a non-word it has never seen, and the errors compound because a character-level model has no word-level unit to fall back on ("tea-flashers"). The premise "wanted to be lonely so she went to the doctor" is also semantically incoherent, and "x-ray" is rare in TinyStories, so the model is out of its depth there.
 
 ## Case 3
 - Prompt / decoding settings: prompt `Once upon a time`, temperature 1.0, max 600 new characters, ended with <EOS>: False (pool sample #41)
@@ -41,5 +41,5 @@ candidate if you prefer. **To fill in: Failure type and Observation.**
   
   Freddy had learnt an important lesson - that woggly river my work tasks and be with the other animals. That's why he never tried to sl
   ```
-- Failure type:
-- Observation:
+- Failure type: Broken grammar inside a template.
+- Observation: The model reproduces the opening of a moral ending ("learnt an important lesson - that ...") because that pattern is extremely common in the training stories. Finishing the clause requires planning syntax over many characters, which a 6-layer character-level model does poorly, especially at temperature 1.0. The result is an invented word ("woggly") and a clause that never resolves.

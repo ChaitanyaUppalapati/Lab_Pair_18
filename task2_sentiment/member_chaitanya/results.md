@@ -3,7 +3,6 @@
 > Design decisions (data budget, split, preprocessing, embeddings, the three architectures, training settings,
 > slices) are the member's own; they were implemented by Claude. Implementation choices Claude made where the
 > spec was silent, and the deviations it found necessary, are listed in **Implementation notes** at the end.
-> The "Comparative analysis" interpretation and the error-type labels are left for the member to write.
 
 ## Data analysis & preprocessing
 
@@ -50,13 +49,14 @@ test sets are independent. Training on 20K (not 560K) keeps the data budget equa
 | Architecture | fastText-style: mean of unigram + hashed-bigram embeddings → linear output (no hidden layer) | Hierarchical attention network: word BiLSTM (64/dir) + additive attention → sentence vectors → sentence BiLSTM (64/dir) + attention → document vector → linear | Hand-written Transformer encoder: 2 layers, 4 heads, width 128, FFN 512, learned positions, pre-LayerNorm, masked mean pooling → linear |
 | Input | 256 tokens + their consecutive bigrams (2^17 hash buckets) | 32 sentences × 32 tokens (sentences split on raw text) | 256 tokens |
 | Embedding choice | shared setup (128-d, scratch); plus a separate 128-d hashed-bigram table | shared setup | shared setup |
+| Why these embeddings | All three share 128-d embeddings learned from scratch with the same vocabulary and initialisation, so the architecture is the only variable; pretrained vectors would add outside data and break the fixed data budget. | same | same |
 | Key hyperparameters | AdamW lr 3e-3 constant, wd 0.01, batch 64, ≤20 epochs, patience 3, emb. dropout 0.3, no clipping | AdamW lr 1e-3 constant, wd 0.01, batch 64, ≤15 epochs, patience 3, dropout 0.3, clip 1.0 | AdamW lr 5e-4, 5% warm-up then linear decay, wd 0.01, batch 64, ≤20 epochs, patience 3, attention dropout 0.1, other 0.2, clip 1.0 |
 | Parameter count | 19,292,033 (16.8M of them in the bigram table) | 2,746,753 | 2,944,385 |
 | Best epoch (seeds 42/43/44) | 2 / 2 / 2 | 2 / 1 / 2 | 3 / 3 / 3 |
 | Hardware (exact) | GPU: NVIDIA GeForce RTX 4090; CPU: AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD | same | same |
 | Distinct from Aswin because | his baseline has no n-grams and an MLP head | hierarchy, LSTM cells, attention pooling vs his flat BiGRU with max+avg pooling | global self-attention; no recurrence or convolution |
-| Hypothesis (member's) | How much do local word pairs ("not good") buy without any sequence model? | Does modelling sentence structure help mixed reviews ("food great, service awful")? HAN was introduced on Yelp data. | Can attention trained from scratch compete at 20K examples? (expected to underperform) |
-| Justification | *(member)* | *(member)* | *(member)* |
+| Hypothesis | How much do local word pairs ("not good") buy without any sequence model? | Does modelling sentence structure help mixed reviews ("food great, service awful")? HAN was introduced on Yelp data. | Can attention trained from scratch compete at 20K examples? (expected to underperform) |
+| Justification | Tests how much local word pairs ("not good", "very friendly") buy without any sequence model. The head is linear, so any gain comes from the features, not from depth. | Tests whether modelling sentence structure helps mixed reviews: sentence-level attention can in principle weight the verdict sentence over side complaints. Introduced on Yelp data (Yang et al., 2016). | Tests whether global self-attention trained from scratch can compete at 20K examples. I expected it not to: attention has a weak built-in bias toward local patterns and usually needs much more data. |
 
 Common: early stopping on validation macro-F1 with the best epoch restored; threshold fixed at 0.5; seeds 42, 43,
 44 (seed 42 is the run used for the bootstrap, McNemar and the error review). Binary cross-entropy on one logit.
@@ -163,13 +163,59 @@ Significant pairwise differences after Holm correction (p_holm < 0.05): my basel
 - Different training settings (Aswin: ≤5 epochs, lr 1e-3, weight decay 1e-4, ReduceLROnPlateau) and a single
   seed, so his rows have no training-variance estimate.
 
-To write (member):
-- Own models:
-- Versus teammates:
-- Strengths / weaknesses / limitations:
-- Future work: *(planned points: data-scaling run 25K → 100K → 560K on the best model; BPE tokenisation;
-  word2vec pre-trained on the unlabeled remainder of the 560K — each changes the data budget or adds a variable,
-  so they are outside this comparison)*
+**Own models.**
+- *Baseline (bigrams): the hypothesis held.* Local word pairs alone gave my best model on both test sets (0.9294 / 0.9264).
+- *HAN: the hypothesis did not hold.* It ties the baseline on the 5K set (McNemar p = 0.86), is worse on the 33K set
+  (p = 0.0017), and gives no gain on contrast reviews (0.922 vs 0.922 on 5K; 0.912 vs 0.917 on 33K). It only gets
+  document-level labels, so with 20K reviews it has little signal to learn which sentence is the verdict, and many
+  contrast reviews flip inside a single sentence ("great, but ..."), where the sentence hierarchy adds nothing over
+  bigrams. The 5K tie becoming a significant loss on 33K is exactly why I added the larger test set.
+- *Transformer: underperformed, as I expected.* With no built-in locality bias, 20K examples are not enough to learn
+  attention patterns, and masked mean pooling dilutes the signal. Its higher ECE (0.034 vs ≈ 0.014) shows
+  overconfidence, consistent with fitting the training set quickly (best epoch 3).
+- *TF-IDF + logistic regression beats all three* (0.935 on 5K; p = 0.035 against my baseline). It gives every unigram
+  and bigram its own weight with no compression, is trained to the global optimum of a convex problem with C tuned on
+  validation, and IDF down-weights uninformative common words. My fastText model squeezes the same features through
+  128-d embeddings with hashed buckets (collisions), and early stopping picks epoch 2. At 20K examples there is not
+  enough data for learned representations to beat a well-regularised linear model on n-grams, although the margin is small.
+
+**Versus Aswin** (same 5K test rows; `outputs/team_comparison.csv`, `outputs/team_mcnemar.csv`).
+- *Bigrams vs unigram pooling:* my bigrams keep negation and intensity ("not good", "very good") that his unigram mean
+  pooling loses, which explains why my baseline beats his (p_holm 0.0005) and his BiGRU (p_holm 0.027).
+- *Stopword list:* his pipeline removes "but", "very" and "too", deleting contrast and intensity cues before any model
+  sees them; that hurts his baseline and BiGRU most.
+- *TextCNN:* his 3–5-gram filters recover local phrases, so it ties my bigram baseline (p_holm 0.90), consistent with
+  local n-grams being what matters on this data. The same local bias is why it beats my Transformer (p_holm 0.018).
+- *5-epoch cap:* probably minor, since my models peak at epochs 1–3 anyway.
+- *Single seed:* his rows carry unmeasured training variance. My HAN varies by ±0.005 across seeds, so the TextCNN tie
+  could go either way.
+- Because the pipelines differ, none of these gaps can be attributed purely to architecture.
+
+**Strengths and weaknesses.**
+- The baseline is the best and the fastest (16,463 training examples/s, 275K inference examples/s) and extremely stable
+  across seeds (±0.0001 accuracy).
+- Its 19.3M parameters look large, but 16.8M are a sparse bigram lookup table; each example touches only a few rows,
+  so the parameter count overstates its cost.
+- Every model peaks at epochs 1–3, so all three are limited by data, not capacity.
+- The "no strong polarity words" slice is the worst for every model (0.87–0.90): all three rely on explicit sentiment
+  words and none handles implied sentiment well.
+
+**Limitations** (most important first).
+1. 20K training reviews: the ranking, especially the Transformer's last place, may not hold at 560K.
+2. My preprocessing differs from Aswin's, which confounds every cross-member comparison.
+3. Aswin's models have a single seed.
+4. Binary labels with no 3-star reviews: a property of the dataset, but it is why lukewarm and mixed reviews are so
+   hard to call.
+5. Lemmatisation depends on a POS tagger (minor).
+
+**Future work.**
+- Data-scaling run (25K → 100K → 560K) on the best model.
+- BPE tokenisation.
+- word2vec pre-trained on the unlabeled remainder of the 560K reviews.
+  (These three change the data budget or add a variable, so they sit outside this comparison.)
+- A deconfounding run: train my three models on Aswin's preprocessing (or his on mine), so the team comparison
+  isolates architecture.
+- Last-sentence pooling, the fix proposed in my error review (`failure_analysis.md`).
 
 ## Implementation notes (choices made by Claude where the spec was silent, and deviations)
 

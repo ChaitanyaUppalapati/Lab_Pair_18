@@ -1,6 +1,6 @@
 # Task 3 — CycleGAN Monet ↔ Photo (Chaitanya)
 
-> Values below come from `configs/full.yaml` and the run artifacts. The **Why** column and the analysis sections are mine to write.
+> Values below come from `configs/full.yaml` and the run artifacts.
 
 ## Data
 - Domain naming follows the Kaggle competition: **A = Monet** (300 images, `monet_jpg`), **B = photo** (7,038 images, `photo_jpg`). All images are 256×256 JPG.
@@ -10,36 +10,36 @@
 
 | Choice | Value | Why |
 |---|---|---|
-| Epoch definition | one pass over photos | |
-| Augmentation | resize 286 → crop 256, h-flip, both domains | |
-| No colour jitter / rotation / v-flip | — | |
+| Epoch definition | one pass over photos | Matches the official implementation's max(len(A), len(B)) and guarantees every photo is used once per epoch, with a random Monet each step, so "epoch" is a unit teammates can compare. The consequence is that each painting is reused about 23 times per epoch, which is why I watched the Monet discriminator for overfitting. |
+| Augmentation | resize 286 → crop 256, h-flip, both domains | The paper's default. Random crops add translation jitter, effectively extra data for only 300 paintings, and horizontal flips do not change what a landscape is. Applied to both domains so neither discriminator sees systematically different image statistics. (Run 9 later showed the 286 resize also creates a small mismatch between training and inference scale.) |
+| No colour jitter / rotation / v-flip | — | Colour is part of the Monet style: jitter would blur the palette the generator is trying to learn and fight the identity loss. Rotations and vertical flips create unnatural compositions (sky at the bottom) that the discriminator would accept as real. |
 
 ## Architecture
 | Component | Design | Why |
 |---|---|---|
-| Generator G_A2B: Monet → photo | ResNet: c7s1-64, d128, d256, 9 × R256, u128, u64, c7s1-3 + tanh | |
-| Generator G_B2A: photo → Monet | same as G_A2B | |
-| Upsampling | nearest-neighbour 2× + 3×3 conv | |
-| Padding | reflection | |
-| Discriminator D_A (Monet), D_B (photo) | 70×70 PatchGAN: C64-C128-C256-C512 (4×4), 4×4 conv → 1 channel (30×30 output map) | |
-| Normalization | InstanceNorm (none on first D layer); LeakyReLU 0.2 in D | |
-| Initialisation | N(0, 0.02) conv weights, zero bias | |
-| Parameter count | G: 11,378,179 each; D: 2,764,737 each; total 28,285,832 | |
+| Generator G_A2B: Monet → photo | ResNet: c7s1-64, d128, d256, 9 × R256, u128, u64, c7s1-3 + tanh | ResNet-9 is the paper's generator for 256×256: it transforms features at 64×64 through residual blocks and keeps the global structure. A U-Net's skip connections pass high-resolution input detail straight to the output, which makes it easy to copy photo textures and under-stylise, and texture is exactly what should change here. |
+| Generator G_B2A: photo → Monet | same as G_A2B | Symmetric task, same reasoning as G_A2B. |
+| Upsampling | nearest-neighbour 2× + 3×3 conv | Transposed convolutions with stride 2 produce checkerboard artifacts from uneven kernel overlap (Odena et al., 2016), especially in flat sky and water. The human audit scores artifacts, so avoiding them was worth deviating from the paper, at the same compute cost. |
+| Padding | reflection | Zero padding makes border pixels see artificial black, which creates dark frames and edge artifacts; reflection keeps the statistics continuous at the borders. The paper's choice. |
+| Discriminator D_A (Monet), D_B (photo) | 70×70 PatchGAN: C64-C128-C256-C512 (4×4), 4×4 conv → 1 channel (30×30 output map) | Style is mostly local texture, which a 70×70 patch can judge. The PatchGAN outputs a 30×30 grid of decisions per image, so each painting supplies many training signals, which matters with only 300, and it is small (2.76M parameters); a full-image discriminator would memorise 300 compositions faster. The catch, which I learned later, is that FID depends on global colour and lighting, which a patch discriminator does not enforce. |
+| Normalization | InstanceNorm (none on first D layer); LeakyReLU 0.2 in D | InstanceNorm normalises each image's own contrast and colour statistics, the standard for style transfer; BatchNorm at batch size 1 is unstable. The first discriminator layer has no normalisation (pix2pix / DCGAN convention) so it sees raw colour and intensity, exactly what separates the two domains. |
+| Initialisation | N(0, 0.02) conv weights, zero bias | The paper / DCGAN default: small initial weights keep early outputs near neutral, so neither network starts with an extreme advantage. |
+| Parameter count | G: 11,378,179 each; D: 2,764,737 each; total 28,285,832 | Follows from the paper architecture above. |
 
 ## Training
 | Setting | Value | Why |
 |---|---|---|
-| Adversarial loss type | LSGAN (MSE) | |
-| D loss scale | × 0.5 | |
-| λ_cycle | 10 | |
-| λ_identity | 5 (0.5 × λ_cycle) | |
-| Optimizer / LR / betas | Adam, 2e-4 for G and D, (0.5, 0.999) | |
-| LR schedule | constant for epochs 1–20, then linear decay to 0 at the last iteration of epoch 40 | |
-| Batch size, epochs | 1, 40 (281,520 iterations) | |
-| Image buffer | 50 per discriminator | |
-| Precision | fp32 (cuDNN autotuning on) | |
-| Gradient clipping | none | |
-| DiffAugment on D_A | off (optional switch in config) | |
+| Adversarial loss type | LSGAN (MSE) | LSGAN penalises samples by their distance from the decision boundary, so the generator keeps getting useful gradients even when the discriminator is confident, where BCE saturates. The paper found it more stable with better quality; I had 0 NaNs. |
+| D loss scale | × 0.5 | Slows the discriminator relative to the generator, as in the paper: telling real from fake is the easier task, especially with only 300 paintings. |
+| λ_cycle | 10 | The paper value. It weights cycle consistency well above the adversarial term, so content is preserved and outputs do not drift into hallucinated content. Later runs showed this metric does not reward content preservation and λ_cycle 2 scored better, but for a paper-faithful first run 10 was right. |
+| λ_identity | 5 (0.5 × λ_cycle) | For Monet ↔ photo the paper adds an identity loss at 0.5 × λ_cycle to stop the generators shifting colours unnecessarily (e.g. turning daytime scenes into sunset tints). I wanted palette preservation in the first run. |
+| Optimizer / LR / betas | Adam, 2e-4 for G and D, (0.5, 0.999) | The paper's settings. β₁ = 0.5 lowers momentum, which helps when each network's objective keeps changing as the other learns (the standard DCGAN-era recommendation). |
+| LR schedule | constant for epochs 1–20, then linear decay to 0 at the last iteration of epoch 40 | The paper's 100 + 100 schedule halved to fit compute: the constant phase finds the solution and the linear decay lets both networks settle. Run 1's snapshot scores improved monotonically through the decay, which supports it. |
+| Batch size, epochs | 1, 40 (281,520 iterations) | Batch 1 is paper-faithful and suits per-image InstanceNorm. 40 epochs = 281,520 iterations, close to the paper's horse ↔ zebra step count, and took 7.4 h on the 4090. |
+| Image buffer | 50 per discriminator | Shows the discriminator a history of past fakes, not just the latest, which damps the back-and-forth where each network chases the other's newest move (Shrivastava et al., 2017). 50 is the paper default. |
+| Precision | fp32 (cuDNN autotuning on) | Simplicity, and no fp16 issues in the squared LSGAN terms; 10.6 it/s was acceptable. The 19 GB peak came from cuDNN autotuning; steady state was about 3.2 GB. |
+| Gradient clipping | none | The paper does not clip, and Adam scales each parameter's step by its own gradient history, so a large raw norm does not turn into a huge update. The curves show norms were large mostly at the start, with 0 NaNs, and picking a clip threshold without evidence could shift the generator/discriminator balance. The max norms (G 1,562 / D 483) are reported as the stability evidence. |
+| DiffAugment on D_A | off (optional switch in config) | Run 1 is the paper-faithful baseline; I kept DiffAugment as a switch to turn on if the Monet discriminator overfit the 300 paintings, which it did (run 2). |
 
 Loss curves: `outputs/full_run01/loss_curves.png`. Per-epoch translation grids: `outputs/full_run01/grids/epoch_001.png` … `epoch_040.png` (rows: Monet | Monet→photo | reconstruction | photo | photo→Monet | reconstruction).
 
@@ -59,14 +59,62 @@ Loss curves: `outputs/full_run01/loss_curves.png`. Per-epoch translation grids: 
 Every epoch is in `reproducibility/raw_logs/task3_gan/chaitanya/full_run01.log` and `outputs/full_run01/history.json`.
 
 ## Cycle-consistency verification
+- Reconstruction error of the final model: cycle L1 ≈ 0.05 (photo → Monet → photo, 0.052) and 0.045 (Monet → photo →
+  Monet), against ≈ 0.2 between unrelated images (live check in `src/task3_chaitanya.ipynb`). F(G(x)) is about four
+  times closer to x than chance in both directions, and the cycle loss fell steadily throughout training, so the
+  constraint is implemented and optimised correctly.
+- What it does not prove is that the translation preserves content: failure case 2 has a normal cycle error (0.052)
+  but the lowest content similarity of all 7,038 photos (0.357). Together these suggest the generator can hide
+  information in the translation that the inverse generator decodes, a known CycleGAN behaviour (Chu et al., 2017).
+- Reconstructions are slightly softer and less saturated than the inputs.
 
 ## Training stability / convergence
-Facts from the run (analysis to be written):
+Facts from run 1:
 - NaN count: 0. Max gradient norm (pre-step, no clipping): G 1,561.7, D 482.9.
 - D_A (Monet) loss fell below 0.05 at epoch 13 (overfitting warning logged for epochs 13–16), bottomed at 0.031 (epoch 25), rose to 0.048 (epoch 29) during LR decay, ended at 0.032.
 - Visual observations from the grids: dark circular blob artifacts at epoch 1 (mostly gone by epoch 10); green colour cast in photo→Monet at epoch 10, gone at 13, teal cast back at 20, gone by 40; vertical streak texture in skies around epochs 13–20; orange "fire" hallucination in the olive-tree Monet→photo sample at epoch 20.
 
+Analysis: the cycle and identity losses converged smoothly and monotonically, but the adversarial part did not reach an
+equilibrium.
+- *Discriminators winning:* both discriminator losses kept falling while the generators' adversarial losses rose for the
+  whole run.
+- *A brief rebalance:* the one exception is around epochs 25–29, where the Monet discriminator's loss rose to 0.047 as
+  the photo → Monet adversarial loss dipped (0.862 → 0.797).
+- *Spikes:* small spikes appear throughout, but none diverge and there were no NaNs.
+- *Visual oscillation:* colour casts appeared at epoch 10, cleared at 13 and returned at 20, so the generator–discriminator
+  game was oscillating even when the epoch-mean losses looked smooth.
+
+So the run was stable but not converged in the adversarial sense; the learning-rate decay is what made it settle.
+
 ## Visual quality assessment
+From the fixed-sample grids (`outputs/full_run01/grids/epoch_040.png`, final model `outputs/full_run18/grids/epoch_123.png`):
+- *Run 1, photo → Monet:* the brushwork and warm palette are convincing and structure is preserved (hills, figures,
+  river). Skies are over-textured: the storm sky turns into pink-orange streaks and the sun gets a purple halo.
+- *Run 1, Monet → photo:* mostly smoothing; brushwork is removed but the result looks like a blurred painting, not a
+  photograph.
+- *Final, Monet → photo:* much more photographic, with higher contrast and clean blue skies, but it invents lighting
+  (the misty river becomes an orange sunset), which follows from dropping the identity loss; textures are still airbrushed.
+- *Final, photo → Monet:* the palette is closer to real Monet (muted blue-green). Vertical streak artifacts remain in
+  the skies, the sun washes out, and the "NT" watermark survives.
+- *Both:* reconstructions are good, if slightly soft.
+
+**Corner artifact.** Almost every output has a small dark blob in the top-left corner. I measured how many of the 16
+generated tiles in each run's last grid have a top-left 5×5 corner more than 40 grey levels darker than the area beside it:
+
+| Run (last grid) | Tiles with the blob |
+|---|---|
+| Run 1, epoch 40 | 1 of 16 |
+| Run 2 (first run with DiffAugment), epoch 40 | 6 of 16 |
+| Run 2b, epoch 80 | 11 of 16 |
+| Runs 5–18 | 11–15 of 16 (15 of 16 in runs 7, 12, 16, 18) |
+
+So it arrived with DiffAugment. My implementation shifts images by up to 32 pixels (12.5%) with fill, so the original
+corner is often shifted out or replaced, and the discriminator rarely sees the true corner and cannot penalise what the
+generator puts there. Why the generator wants a dark spot at all is a hypothesis, not a measured fact: possibly the
+InstanceNorm "droplet" effect described for StyleGAN2 (a strong localised spike lets the generator manipulate the
+normalisation statistics), with the top-left corner favoured because stride-2 convolutions align their sampling grid
+to it. Two tests would settle it: inpaint the corners and re-score to measure the cost, and train with
+reflection-padded translation to see whether it disappears.
 
 ## Evaluation metrics
 All metrics: `full_metrics_report.csv` (definitions in the docstring of `evaluate_local.py`). Feature-based metrics use Inception-v3 (torchmetrics) for evaluation only.
@@ -108,8 +156,8 @@ Config `configs/full_run02.yaml`: identical to run 1 except `diffaugment_monet_d
 
 | Choice | Value | Why |
 |---|---|---|
-| DiffAugment | on, both discriminators | |
-| Model selection | best official score among 5-epoch snapshots | |
+| DiffAugment | on, both discriminators | A Monet-discriminator loss below 0.05 at epoch 13 meant it had memorised the 300 paintings, so its feedback stopped being informative. DiffAugment applies the same differentiable augmentation to real and fake images, so the discriminator cannot memorise and the generator is not taught to produce augmented-looking images. Both discriminators, to keep the setup symmetric. Result: D_A stayed between 0.078 and 0.214 and the score improved from −53.87 to −51.47. It also appears to have caused the corner blob (see Visual quality). |
+| Model selection | best official score among 5-epoch snapshots | GAN loss values do not track output quality, so the official score, the number the leaderboard uses, is the only reliable selection signal, and scoring every 5 epochs was cheap. Caveats: selecting on the same images I am scored on biases the reported score upward, and the epoch 35 vs 40 difference (0.25) is within snapshot noise. |
 
 Official score of every snapshot (`outputs/full_run02/snapshot_scores.csv`; run 1 in `outputs/full_run01/snapshot_scores_official.json`):
 
@@ -176,8 +224,8 @@ Config `configs/full_run02b.yaml`: resumes full_run02's epoch-40 state (generato
 
 | Choice | Value | Why |
 |---|---|---|
-| Continue instead of retraining | resume run 2 at epoch 40 | |
-| Restart LR | 1e-4 (half of the original 2e-4), linear decay to 0 | |
+| Continue instead of retraining | resume run 2 at epoch 40 | The score was still improving at epoch 40. Continuing reused 7.8 h of training and tested the idea for about half the cost of a fresh 80-epoch run. Trade-off: it is not identical to a clean 80-epoch schedule (the Adam state carried over, but the image buffers restarted empty). |
+| Restart LR | 1e-4 (half of the original 2e-4), linear decay to 0 | Restarting at the full 2e-4 could have pushed the weights out of the good solution they had reached; half the rate is large enough to keep improving and small enough not to undo progress (the warm-restart idea). It gained about 1.3 points (−51.47 → −50.16). |
 
 | Epoch | FID B2A | FID A2B | FID | MiFID | Official score |
 |---|---|---|---|---|---|
@@ -192,7 +240,7 @@ Config `configs/full_run02b.yaml`: resumes full_run02's epoch-40 state (generato
 
 Training facts: epochs 41–80 took ≈ 8.3 h at 9.4–9.5 it/s (`train_summary.json` reports 58,039 s cumulative including run 2's 40 epochs). NaN count 0; max grad norm G 1,824.5 / D 381.5 (cumulative). End of epoch 80: cycle 0.069 / 0.075, identity 0.046 / 0.068, D_A 0.058, D_B 0.114.
 
-Local metrics of the submitted epoch-70 generators (run_id `full_run02b` in `full_metrics_report.csv`):
+Local metrics of the epoch-70 generators (the `full_run02b` row of `full_metrics_report.csv` was later replaced by the weight-averaged model, epochs 55–80, which scored −49.73):
 
 | Metric | A2B (Monet → photo) | B2A (photo → Monet) |
 |---|---|---|
@@ -209,11 +257,49 @@ Kaggle: FID 99.9142, MiFID 0.4033 → public score −50.1587 (2026-10-03). The 
 
 Reference point measured with the official script: two disjoint sets of 300 **real** photos give FID 77.2–80.5 and MiFID 0.425–0.436 (score ≈ −39 to −40), i.e. the practical ceiling of this metric at N = 300.
 
+## Runs 3–4 — self-attention and spectral normalisation
+The colour casts and sky streaks looked like global inconsistencies, which a convolutional generator with local
+receptive fields struggles to fix, so I tried SAGAN self-attention for long-range interactions.
+- *Run 3* (attention in G and D, spectral norm in the discriminators only): the discriminators dominated from epoch 1,
+  the generators got little useful gradient and produced blob artifacts (−83.28 at epoch 10); stopped at epoch 23.
+- *Run 4* (spectral norm in both): rebalanced, but it trailed run 2 at the same epoch (−61.82 vs −57.29 at epoch 10).
+
+At this data scale the extra capacity did not pay for its cost. Since I stopped run 4 at epoch 13, the result is
+inconclusive rather than negative. The global-consistency problem was later handled more cheaply with a second,
+coarser discriminator scale (run 10).
+
+## Comparison with teammates
+Official script, same protocol: my submitted model −48.20 (FID 96.01 / MiFID 0.400) vs Aswin's v3 at epoch 90 −55.90
+(FID 111.39 / MiFID 0.421). Both use a ResNet-9 generator with nearest-neighbour resize-convolution and 70×70
+PatchGANs; Aswin's v3 adds R1 (γ 0.5), DiffAugment at p = 0.8, EMA 0.999, gradient clipping and λ_identity 2.5 decaying
+to 0.5, and was trained for 90 of 150 planned epochs. No single factor explains a 7.7-point gap and I cannot separate
+them without ablations. My candidates:
+- *Schedule and selection:* his epoch 90 of 150 was still before the learning-rate decay, which consistently improved my
+  scores; my final model also went through EMA, weight averaging and per-direction selection on the official score.
+- *Content constraints:* my later runs cut λ_cycle to 2 and λ_identity to 0. The metric rewards only matching the Monet
+  distribution, so looser constraints let outputs move further toward it, while he kept λ_identity ≥ 2.5 for most of training.
+- *Over-regularised discriminator:* R1 plus DiffAugment at p = 0.8 may have weakened his discriminator, giving less stylisation.
+
+Runs 5 onward were designed with Claude (marked in `DESIGN_LOG.md`). My own runs 1–2b reached −50.16, which already
+beats −55.90, so most of the gap predates those changes. Part of my score also carries the optimistic bias of
+selecting on the evaluated images.
+
 ## Hardware disclosure
 - GPU: NVIDIA GeForce RTX 4090 (24 GB); CPU: AMD Ryzen 9 7950X; PyTorch 2.11.0+cu128.
 - Training time: 26,494 s. Peak memory: 19,154 MB allocated (see note above).
 
 ## Shortcomings
+In order of importance:
+1. **Only 300 Monet paintings.** This is the root cause of most problems: discriminator overfitting, the DiffAugment
+   side effect (corner blob), MiFID's memorisation penalty, and the fact that the reference set is the training set.
+2. **FID noise on 300 images.** The last few gains (≈ 0.02) are below the snapshot-to-snapshot noise, and repeated
+   selection on the evaluated images inflates the score, so the final leaderboard improvements are not real.
+3. **Monet → photo stuck at FID 97.8.** It is now the limiting direction, and three specialisation attempts (runs 13,
+   15, 17) made it worse.
+4. **Per-direction generators.** The submitted pair comes from different training states, so it is not one jointly
+   trained CycleGAN. The deployed pair's cycle error is still low (0.045 / 0.052), but this needs disclosing.
+5. **The −42.17 non-official entry.** Procedural: it is disclosed, a corrected score was submitted, and it matters only
+   because Kaggle displays a team's best score.
 
 ## Evidence
 - Config: `configs/full.yaml`
