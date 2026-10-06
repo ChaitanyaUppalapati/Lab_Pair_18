@@ -135,9 +135,24 @@ All metrics: `full_metrics_report.csv` (definitions in the docstring of `evaluat
 Training: 26,494 s (7 h 22 min), 10.63 it/s (21.3 images/sec, one image per domain per iteration). Peak GPU memory allocated: 19,154 MB (steady state ≈ 3.2 GB; the peak most likely comes from cuDNN autotuning trying memory-hungry algorithms).
 
 ## Human audit (30 fixed samples, 2 raters, blinded)
-- Rubric:
-- Scores:
-- Cohen's kappa / % agreement:
+- **Samples:** 30 fixed inputs chosen with a fixed seed (266) from the sorted file lists: 20 photo → Monet (the Kaggle
+  direction) and 10 Monet → photo, translated by the submitted generators (`checkpoints/full_run18/epoch_123_ema/`).
+  Items were shuffled and shown under anonymous IDs (S01–S30) with no file names, run names or scores; the answer key
+  (`outputs/human_audit/key.csv`) was not opened until both raters had submitted. Tool: `src/human_audit.py`.
+- **Raters:** rater 1 Chaitanya, rater 2 Aswin, each rating alone.
+- **Rubric (integers 1–5):** *style*: does the output convincingly look like the target domain (5 = indistinguishable,
+  1 = not at all); *content*: is the input's scene and layout preserved (5 = fully, 1 = unrecognisable);
+  *artifacts*: 5 = none visible, 1 = severe (blotches, checkerboard, colour blow-outs, smears).
+
+| Criterion | Mean (both raters) | Rater 1 / rater 2 mean | Photo → Monet / Monet → photo | Cohen's κ (unweighted / quadratic) | Exact agreement | Within 1 point |
+|---|---|---|---|---|---|---|
+| Style | 4.28 | 4.50 / 4.07 | 4.42 / 4.00 | −0.16 / −0.15 | 27% | 83% |
+| Content | 4.28 | 4.80 / 3.77 | 4.33 / 4.20 | −0.06 / −0.01 | 23% | 60% |
+| Artifacts | 3.85 | 3.87 / 3.83 | 3.67 / 4.20 | 0.28 / 0.23 | 50% | 83% |
+
+Score distributions (counts of 2 / 3 / 4 / 5; nobody used 1): style rater 1 0/2/11/17, rater 2 2/5/12/11; content
+rater 1 0/2/2/26, rater 2 3/9/10/8; artifacts rater 1 2/5/18/5, rater 2 3/8/10/9. Ratings:
+`outputs/human_audit/rater_1.csv`, `rater_2.csv`; results: `outputs/human_audit/audit_results.json`.
 
 ## Kaggle
 Official protocol: `src/official_eval.py`, a port of the instructor's `Part3_Evaluation_Script.ipynb` (first 300 images per folder, both directions, FID and MiFID averaged over A2B and B2A).
@@ -269,19 +284,19 @@ inconclusive rather than negative. The global-consistency problem was later hand
 coarser discriminator scale (run 10).
 
 ## Comparison with teammates
-Official script, same protocol: my submitted model −48.20 (FID 96.01 / MiFID 0.400) vs Aswin's v3 at epoch 90 −55.90
-(FID 111.39 / MiFID 0.421). Both use a ResNet-9 generator with nearest-neighbour resize-convolution and 70×70
-PatchGANs; Aswin's v3 adds R1 (γ 0.5), DiffAugment at p = 0.8, EMA 0.999, gradient clipping and λ_identity 2.5 decaying
-to 0.5, and was trained for 90 of 150 planned epochs. No single factor explains a 7.7-point gap and I cannot separate
-them without ablations. My candidates:
-- *Schedule and selection:* his epoch 90 of 150 was still before the learning-rate decay, which consistently improved my
-  scores; my final model also went through EMA, weight averaging and per-direction selection on the official score.
+Official script, same protocol: my submitted model −48.20 (FID 96.01 / MiFID 0.400) vs Aswin's canonical V2 run −52.76
+(FID 105.11 / MiFID 0.414; per direction: photo → Monet 100.67, Monet → photo 109.56). Both use a ResNet-9 generator
+with nearest-neighbour resize-convolution and a 70×70 PatchGAN. Aswin's V2: spectral-normalised single-scale
+discriminators, λ_cycle 10, λ_identity 2.5 decaying to 0 over the first half, Adam G 2e-4 / D 1e-4, AMP, gradient
+clipping, EMA 0.999 and no DiffAugment; 150 epochs with decay from epoch 75, with epoch 130 selected by validation FID.
+No single factor explains a 4.6-point gap and I cannot separate them without ablations. My candidates:
+- *Selection:* my final model went through EMA, weight averaging and per-direction selection on the official score;
+  his checkpoint was selected by a validation FID on held-out images.
 - *Content constraints:* my later runs cut λ_cycle to 2 and λ_identity to 0. The metric rewards only matching the Monet
-  distribution, so looser constraints let outputs move further toward it, while he kept λ_identity ≥ 2.5 for most of training.
-- *Over-regularised discriminator:* R1 plus DiffAugment at p = 0.8 may have weakened his discriminator, giving less stylisation.
+  distribution, so looser constraints let outputs move further toward it, while he kept λ_cycle at 10.
 
-Runs 5 onward were designed with Claude (marked in `DESIGN_LOG.md`). My own runs 1–2b reached −50.16, which already
-beats −55.90, so most of the gap predates those changes. Part of my score also carries the optimistic bias of
+Runs 5 onward were designed with Claude (marked in `DESIGN_LOG.md`). My own runs 2–2b reached −51.47 / −50.16, which
+already beat −52.76, so most of the gap predates those changes. Part of my score also carries the optimistic bias of
 selecting on the evaluated images.
 
 ## Hardware disclosure

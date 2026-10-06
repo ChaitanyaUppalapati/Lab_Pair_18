@@ -149,39 +149,41 @@ Naming follows Kaggle: A = Monet, B = photo. Kaggle score = −(FID + MiFID)/2 w
 
 ### Architectures and hyperparameters
 
-|  | Chaitanya run 1 (own design) | Chaitanya submitted model (runs 2 → 18) | Aswin v3 (submitted) |
+|  | Chaitanya run 1 (own design) | Chaitanya submitted model (runs 2 → 18) | Aswin V2 (canonical run) |
 |---|---|---|---|
 | Generator | ResNet-9, 64 filters, nearest-neighbour upsample + conv, InstanceNorm, reflection padding | same | ResNet-9, 64 filters, nearest-neighbour resize-conv, InstanceNorm, reflection padding |
-| Discriminator | 70×70 PatchGAN (1 scale) | G_A2B trained with 1-scale D; G_B2A with 2-scale PatchGAN (runs 10+) | 70×70 PatchGAN, 1 scale (notebook config; results.md says 2-scale spectral-norm — Aswin to reconcile) |
+| Discriminator | 70×70 PatchGAN (1 scale) | G_A2B trained with 1-scale D; G_B2A with 2-scale PatchGAN (runs 10+) | 70×70 PatchGAN, 1 scale, spectral norm |
 | Loss | LSGAN, D loss × 0.5 | same | LSGAN |
-| λ_cycle / λ_identity | 10 / 5 | 2 / 0 (10/5 → 5/0.5 → 2/0, runs 6–7) | 10 / 2.5 decaying to 0.5 |
-| Augmentation | resize 286 → crop 256, h-flip | + DiffAugment (translation + cutout) on both D; G_B2A fine-tuned at 256 (no zoom) | resize 287 → crop 256, h-flip; DiffAugment p 0.8; R1 (γ 0.5) |
-| Optimiser / LR | Adam 2e-4 (0.5, 0.999); constant 20 ep + linear decay 20 ep | warm restarts 1e-4 … 1.5e-5 → 0 on top of run 1's schedule (126 epochs total for G_B2A) | Adam G 2e-4 / D 1e-4 (0.5, 0.999); 150 ep, decay from 75; checkpoint epoch 90 submitted |
+| λ_cycle / λ_identity | 10 / 5 | 2 / 0 (10/5 → 5/0.5 → 2/0, runs 6–7) | 10 / 2.5 decaying to 0 over the first half |
+| Augmentation | resize 286 → crop 256, h-flip | + DiffAugment (translation + cutout) on both D; G_B2A fine-tuned at 256 (no zoom) | resize 287 → crop 256, h-flip (no DiffAugment) |
+| Optimiser / LR | Adam 2e-4 (0.5, 0.999); constant 20 ep + linear decay 20 ep | warm restarts 1e-4 … 1.5e-5 → 0 on top of run 1's schedule (126 epochs total for G_B2A) | Adam G 2e-4 / D 1e-4 (0.5, 0.999); 150 ep, decay from 75; epoch 130 selected by validation FID |
 | Stabilisers | 50-image pool | 50-image pool, generator EMA 0.9999, per-direction weight averaging (soups) | 50-image pool, AMP, grad clip 10, EMA 0.999 |
 | Batch / precision | 1 / fp32 | 1 / fp32 | 1 / AMP |
 
 ### Metrics
 
-| Metric | C run 1 A2B | C run 1 B2A | C final A2B | C final B2A | A v3 A2B | A v3 B2A |
+| Metric | C run 1 A2B | C run 1 B2A | C final A2B | C final B2A | A V2 A2B | A V2 B2A |
 |---|---|---|---|---|---|---|
-| FID (official script, 300 images) | 109.7178 | 104.9353 | 97.8062 | 94.2060 | 119.646 | 103.126 |
-| MiFID (official script) | 0.4230 | 0.4067 | 0.4067 | 0.3928 | 0.4348 | 0.4077 |
-| FID (torchmetrics, all images) | 87.4868 | 91.4580 | 81.8938 | 75.5026 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| KID mean ± std | 0.0244 / 0.0026 | 0.0193 / 0.0030 | 0.0211 / 0.0023 | 0.0108 / 0.0023 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Generative precision / recall | 0.6833 / 0.4300 | 0.4067 / 0.7300 | 0.7367 / 0.4000 | 0.5967 / 0.6900 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Density / coverage | 0.7253 / 0.7600 | 0.2633 / 0.5867 | 0.7973 / 0.8633 | 0.6113 / 0.8400 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Cycle-reconstruction L1 | 0.0458 | 0.0500 | 0.0445 | 0.0523 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| LPIPS (input vs translation) | 0.3598 | 0.4174 | 0.4114 | 0.4412 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Content cosine similarity | 0.7821 | 0.7405 | 0.7390 | 0.7209 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Final G / D loss | 4.1191 / 0.0635 | 4.1191 / 0.0319 | 1.8488 / 0.0515 | 1.8488 / 0.1054 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Cycle / identity loss | 0.0794 / 0.0823 | 0.0915 / 0.0682 | 0.0884 / 0.1028 | 0.1059 / 0.1542 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Max gradient norm / NaN count | G=1561.698; D=482.869 / 0.0000 | G=1561.698; D=482.869 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Human audit style / content / artifacts | pending / pending / pending | pending / pending / pending | pending / pending / pending | pending / pending / pending | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Inter-rater κ / % agreement | pending / pending | pending / pending | pending / pending | pending / pending | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Parameters (one G) | 11,378,179 | 11,378,179 | 11,378,179 | 11,378,179 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Training time (s) | 26,494.3954 | 26,494.3954 | 114,522 | 114,522 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Images/s | 215.6112 | 300.4061 | 204.2399 | 303.0060 | pending (v3 not evaluated) | pending (v3 not evaluated) |
-| Peak memory (MB) | 19,153.6875 | 19,153.6875 | 18,700.9800 | 18,700.9800 | pending (v3 not evaluated) | pending (v3 not evaluated) |
+| FID (official script, 300 images) | 109.7178 | 104.9353 | 97.8062 | 94.2060 | 109.561 | 100.668 |
+| MiFID (official script) | 0.4230 | 0.4067 | 0.4067 | 0.3928 | 0.4220 | 0.4054 |
+| FID (torchmetrics, all images) | 87.4868 | 91.4580 | 81.8938 | 75.5026 | 92.5037 | 90.7133 |
+| KID mean ± std | 0.0244 / 0.0026 | 0.0193 / 0.0030 | 0.0211 / 0.0023 | 0.0108 / 0.0023 | 0.0238 / 0.0041 | 0.0129 / 0.0034 |
+| Generative precision / recall | 0.6833 / 0.4300 | 0.4067 / 0.7300 | 0.7367 / 0.4000 | 0.5967 / 0.6900 | 0.5267 / 0.3120 | 0.4250 / 0.5833 |
+| Density / coverage | 0.7253 / 0.7600 | 0.2633 / 0.5867 | 0.7973 / 0.8633 | 0.6113 / 0.8400 | — / — | — / — |
+| Cycle-reconstruction L1 | 0.0458 | 0.0500 | 0.0445 | 0.0523 | 0.1101 | 0.1231 |
+| LPIPS (input vs translation) | 0.3598 | 0.4174 | 0.4114 | 0.4412 | 0.4159 | 0.4630 |
+| Content cosine similarity | 0.7821 | 0.7405 | 0.7390 | 0.7209 | 0.7716 | 0.7487 |
+| Final G / D loss | 4.1191 / 0.0635 | 4.1191 / 0.0319 | 1.8488 / 0.0515 | 1.8488 / 0.1054 | 3.2142 / — | 3.2142 / — |
+| Cycle / identity loss | 0.0794 / 0.0823 | 0.0915 / 0.0682 | 0.0884 / 0.1028 | 0.1059 / 0.1542 | 0.2292 / 0.4630 | 0.2292 / 0.4630 |
+| Max gradient norm / NaN count | G=1561.698; D=482.869 / 0.0000 | G=1561.698; D=482.869 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | — / 0 | — / 0 |
+| Human audit style / content / artifacts | — / — / — | — / — / — | 4.0000 / 4.2000 / 4.2000 | 4.4200 / 4.3300 / 3.6700 | — / — / — | — / — / — |
+| Inter-rater κ / % agreement | — / — | — / — | style -0.15; content -0.01; artifacts 0.23 (quadratic-weighted, all 30 items) / style 27%; content 23%; artifacts 50% (exact) | style -0.15; content -0.01; artifacts 0.23 (quadratic-weighted, all 30 items) / style 27%; content 23%; artifacts 50% (exact) | — / — | — / — |
+| Parameters (one G) | 11,378,179 | 11,378,179 | 11,378,179 | 11,378,179 | 28,299,912 | 28,299,912 |
+| Training time (s) | 26,494.3954 | 26,494.3954 | 114,522 | 114,522 | 9,567.6866 | 9,567.6866 |
+| Images/s | 215.6112 | 300.4061 | 204.2399 | 303.0060 | 83.1968 | 81.6342 |
+| Peak memory (MB) | 19,153.6875 | 19,153.6875 | 18,700.9800 | 18,700.9800 | 3,988.7456 | 3,988.7456 |
+
+Aswin's local metrics come from his `full_metrics_report.csv` (his own evaluation: 300 vs 1,000 images, so not on the same sample sizes as Chaitanya's all-image FID); his loss values are at the selected epoch 130. Human audit: only Chaitanya's submitted model was audited (both members rated it).
 
 Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs/full_run18/snapshot_scores.csv` (epoch_123_ema: FID A2B 97.81, B2A 94.21). Run-1 columns use the per-snapshot rescoring of epoch 40 (mean FID 107.33); the submitted run-1 entry, scored from the final-model export, was FID 107.25 / MiFID 0.4148 → −53.83.
 
@@ -190,7 +192,7 @@ Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs
 | Member | Submission FID | Submission MiFID | Score −(FID+MiFID)/2 | Public LB | Private LB | Rank |
 |---|---|---|---|---|---|---|
 | Chaitanya (team submission) | 96.0061 | 0.3998 | -48.2029 | −48.2029 | TODO (after competition close) | TODO (≈16 of 44 once the non-official −42.1653 entry is removed) |
-| Aswin | 111.3861 | 0.4212 | -55.9036 | not submitted | — | — |
+| Aswin | 105.1144 | 0.4137 | -52.7641 | not submitted | — | — |
 
 Note: an earlier team entry of −42.1653 was computed with a non-official protocol before the evaluation script was available; the host was asked to invalidate it (see `task3_gan/member_chaitanya/results.md`, Kaggle section).
 
@@ -201,11 +203,11 @@ TODO(team): strengths, weaknesses, limitations, what the team would try next.
 ### Evidence
 
 - Chaitanya: design log with every change and its official score `task3_gan/member_chaitanya/DESIGN_LOG.md`; loss curves `task3_gan/member_chaitanya/outputs/full_run*/loss_curves.png`; sample grids `outputs/full_run*/grids/`; official scores per snapshot `outputs/full_run*/snapshot_scores.csv`; raw logs `reproducibility/raw_logs/task3_gan/chaitanya/`; manifests `reproducibility/manifests/task3_gan/chaitanya/`; submitted checkpoint `checkpoints/full_run18/epoch_123_ema/`; notebook `task3_gan/member_chaitanya/src/task3_chaitanya.ipynb`.
-- Aswin: `task3_gan/member_aswin/src/task3_cyclegan_aswin_v3.ipynb`, `src/Part3_Evaluation_Script_evaluated.ipynb`, checkpoint `aswin_cyclegan_v3_improved/epoch_090.pt`.
+- Aswin: `task3_gan/member_aswin/src/task3_cyclegan_aswin_v2.ipynb`, `src/Part3_Evaluation_Script_evaluated.ipynb`, checkpoint `checkpoints/aswin_cyclegan_v2/best_model.pt` (epoch 130), plots `outputs/plots/aswin_cyclegan_v2_*.png`.
 
 ### Failure analysis and human audit
 
-- Chaitanya: `task3_gan/member_chaitanya/failure_analysis.md` (paste the 3 image strips); human audit `task3_gan/member_chaitanya/outputs/human_audit/` (pending ratings).
+- Chaitanya: `task3_gan/member_chaitanya/failure_analysis.md` (paste the 3 image strips); human audit `task3_gan/member_chaitanya/outputs/human_audit/` (30 items, 2 raters; results in `audit_results.json` and Task 3 `results.md`).
 - Aswin: `task3_gan/member_aswin/failure_analysis.md`.
 
 ## References

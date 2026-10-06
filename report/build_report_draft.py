@@ -187,18 +187,33 @@ off = json.loads((REPO / "task3_gan/member_chaitanya/outputs/official_eval.json"
 add(["## Task 3 — CycleGAN Monet ↔ photo (Kaggle)", "",
      "Naming follows Kaggle: A = Monet, B = photo. Kaggle score = −(FID + MiFID)/2 with the instructor's script "
      "(first 300 images per folder, both directions).", "", "### Architectures and hyperparameters", ""])
-add(table(["", "Chaitanya run 1 (own design)", "Chaitanya submitted model (runs 2 → 18)", "Aswin v3 (submitted)"], [
+add(table(["", "Chaitanya run 1 (own design)", "Chaitanya submitted model (runs 2 → 18)", "Aswin V2 (canonical run)"], [
     ["Generator", "ResNet-9, 64 filters, nearest-neighbour upsample + conv, InstanceNorm, reflection padding", "same", "ResNet-9, 64 filters, nearest-neighbour resize-conv, InstanceNorm, reflection padding"],
-    ["Discriminator", "70×70 PatchGAN (1 scale)", "G_A2B trained with 1-scale D; G_B2A with 2-scale PatchGAN (runs 10+)", "70×70 PatchGAN, 1 scale (notebook config; results.md says 2-scale spectral-norm — Aswin to reconcile)"],
+    ["Discriminator", "70×70 PatchGAN (1 scale)", "G_A2B trained with 1-scale D; G_B2A with 2-scale PatchGAN (runs 10+)", "70×70 PatchGAN, 1 scale, spectral norm"],
     ["Loss", "LSGAN, D loss × 0.5", "same", "LSGAN"],
-    ["λ_cycle / λ_identity", "10 / 5", "2 / 0 (10/5 → 5/0.5 → 2/0, runs 6–7)", "10 / 2.5 decaying to 0.5"],
-    ["Augmentation", "resize 286 → crop 256, h-flip", "+ DiffAugment (translation + cutout) on both D; G_B2A fine-tuned at 256 (no zoom)", "resize 287 → crop 256, h-flip; DiffAugment p 0.8; R1 (γ 0.5)"],
-    ["Optimiser / LR", "Adam 2e-4 (0.5, 0.999); constant 20 ep + linear decay 20 ep", "warm restarts 1e-4 … 1.5e-5 → 0 on top of run 1's schedule (126 epochs total for G_B2A)", "Adam G 2e-4 / D 1e-4 (0.5, 0.999); 150 ep, decay from 75; checkpoint epoch 90 submitted"],
+    ["λ_cycle / λ_identity", "10 / 5", "2 / 0 (10/5 → 5/0.5 → 2/0, runs 6–7)", "10 / 2.5 decaying to 0 over the first half"],
+    ["Augmentation", "resize 286 → crop 256, h-flip", "+ DiffAugment (translation + cutout) on both D; G_B2A fine-tuned at 256 (no zoom)", "resize 287 → crop 256, h-flip (no DiffAugment)"],
+    ["Optimiser / LR", "Adam 2e-4 (0.5, 0.999); constant 20 ep + linear decay 20 ep", "warm restarts 1e-4 … 1.5e-5 → 0 on top of run 1's schedule (126 epochs total for G_B2A)", "Adam G 2e-4 / D 1e-4 (0.5, 0.999); 150 ep, decay from 75; epoch 130 selected by validation FID"],
     ["Stabilisers", "50-image pool", "50-image pool, generator EMA 0.9999, per-direction weight averaging (soups)", "50-image pool, AMP, grad clip 10, EMA 0.999"],
     ["Batch / precision", "1 / fp32", "1 / fp32", "1 / AMP"],
 ]))
 add(["", "### Metrics", ""])
-aswin_off = {"B2A": ("103.126", "0.4077"), "A2B": ("119.646", "0.4348")}
+aswin_off = {"B2A": ("100.668", "0.4054"), "A2B": ("109.561", "0.4220")}  # task3_gan/member_aswin/results.md
+a3 = {r["direction"][:3]: r for r in rows("task3_gan/member_aswin/full_metrics_report.csv")}
+A3MAP = {"fid": "fid", "kid_mean": "kid_mean", "kid_std": "kid_std", "gen_precision": "generative_precision",
+         "gen_recall": "generative_recall", "cycle_l1": "cycle_reconstruction_l1", "lpips": "lpips",
+         "content_cosine_sim": "content_cosine", "final_g_loss": "generator_loss_at_checkpoint",
+         "cycle_loss": "cycle_loss_at_checkpoint", "identity_loss": "identity_loss_at_checkpoint",
+         "nan_count": "nan_count", "param_count": "parameter_count", "train_time_s": "training_time_seconds",
+         "images_per_sec": "generation_images_per_second", "peak_memory_mb": "peak_memory_mb"}
+def aswin_val(d, k):
+    keys = k if isinstance(k, tuple) else (k,)
+    out = []
+    for x in keys:
+        col = A3MAP.get(x)
+        v = a3[d].get(col) if col and d in a3 else None
+        out.append(f(v, 0 if x in ("param_count", "nan_count") else 4) if v not in (None, "") else "—")
+    return " / ".join(out)
 mt = [("FID (official script, 300 images)", None),
       ("MiFID (official script)", None),
       ("FID (torchmetrics, all images)", "fid"), ("KID mean ± std", ("kid_mean", "kid_std")),
@@ -218,7 +233,7 @@ for lab, k in mt:
             o = off if run == "full_run18" else min(json.loads((REPO / "task3_gan/member_chaitanya/outputs/full_run01/snapshot_scores_official.json").read_text()), key=lambda e: e["FID"])
             vals.append(f(o[("FID_" if lab.startswith("FID") else "MiFID_") + d]))
         elif isinstance(k, tuple):
-            vals.append(" / ".join(f(r.get(x)) if r.get(x) not in ("", None) else "pending" for x in k))
+            vals.append(" / ".join(f(r.get(x)) if r.get(x) not in ("", None) else "—" for x in k))
         else:
             vals.append(f(r.get(k)) if k != "param_count" else f(r.get(k), 0))
     if lab.startswith("FID (official"):
@@ -226,9 +241,12 @@ for lab, k in mt:
     elif lab.startswith("MiFID"):
         vals += [aswin_off["A2B"][1], aswin_off["B2A"][1]]
     else:
-        vals += ["pending (v3 not evaluated)"] * 2
+        vals += [aswin_val("A2B", k), aswin_val("B2A", k)]
     body.append([lab] + vals)
-add(transpose(["C run 1 A2B", "C run 1 B2A", "C final A2B", "C final B2A", "A v3 A2B", "A v3 B2A"], body))
+add(transpose(["C run 1 A2B", "C run 1 B2A", "C final A2B", "C final B2A", "A V2 A2B", "A V2 B2A"], body))
+add(["", "Aswin's local metrics come from his `full_metrics_report.csv` (his own evaluation: 300 vs 1,000 images, so "
+     "not on the same sample sizes as Chaitanya's all-image FID); his loss values are at the selected epoch 130. "
+     "Human audit: only Chaitanya's submitted model was audited (both members rated it)."])
 sub = (REPO / "task3_gan/member_chaitanya/submission.csv").read_text().strip().splitlines()[-1].split(",")
 asub = (REPO / "task3_gan/member_aswin/submission.csv").read_text().strip().splitlines()[-1].split(",")
 add(["", "Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs/full_run18/snapshot_scores.csv` "
@@ -248,11 +266,11 @@ add(["", "Note: an earlier team entry of −42.1653 was computed with a non-offi
      "official scores per snapshot `outputs/full_run*/snapshot_scores.csv`; raw logs `reproducibility/raw_logs/task3_gan/chaitanya/`; "
      "manifests `reproducibility/manifests/task3_gan/chaitanya/`; submitted checkpoint `checkpoints/full_run18/epoch_123_ema/`; "
      "notebook `task3_gan/member_chaitanya/src/task3_chaitanya.ipynb`.",
-     "- Aswin: `task3_gan/member_aswin/src/task3_cyclegan_aswin_v3.ipynb`, `src/Part3_Evaluation_Script_evaluated.ipynb`, "
-     "checkpoint `aswin_cyclegan_v3_improved/epoch_090.pt`.", "",
+     "- Aswin: `task3_gan/member_aswin/src/task3_cyclegan_aswin_v2.ipynb`, `src/Part3_Evaluation_Script_evaluated.ipynb`, "
+     "checkpoint `checkpoints/aswin_cyclegan_v2/best_model.pt` (epoch 130), plots `outputs/plots/aswin_cyclegan_v2_*.png`.", "",
      "### Failure analysis and human audit", "",
      "- Chaitanya: `task3_gan/member_chaitanya/failure_analysis.md` (paste the 3 image strips); human audit "
-     "`task3_gan/member_chaitanya/outputs/human_audit/` (pending ratings).",
+     "`task3_gan/member_chaitanya/outputs/human_audit/` (30 items, 2 raters; results in `audit_results.json` and Task 3 `results.md`).",
      "- Aswin: `task3_gan/member_aswin/failure_analysis.md`.", "",
      "## References", "",
      "- Vaswani, A. et al. (2017). Attention Is All You Need. NeurIPS.",
