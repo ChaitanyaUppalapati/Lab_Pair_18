@@ -18,6 +18,17 @@ task2_sentiment/data/*
 task3_gan/data/*
 !task3_gan/data/README.md
 
+# Task 3 large generated artifacts (retain locally; do not send through normal Git)
+task3_gan/member_*/checkpoints/*
+!task3_gan/member_*/checkpoints/.gitkeep
+task3_gan/member_*/outputs/pred_A2B/*
+!task3_gan/member_*/outputs/pred_A2B/.gitkeep
+task3_gan/member_*/outputs/pred_B2A/*
+!task3_gan/member_*/outputs/pred_B2A/.gitkeep
+task3_gan/member_*/images.zip
+task3_gan/member_*/data-*.zip
+task3_gan/member_*_f.zip
+
 # Per-member processed data (regenerable)
 **/data_processed/*
 !**/data_processed/.gitkeep
