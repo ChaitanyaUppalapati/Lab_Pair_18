@@ -97,7 +97,7 @@ def main() -> None:
     parser.add_argument(
         "--checkpoint",
         type=Path,
-        default=member_dir / "checkpoints/aswin_cyclegan_v3_improved/epoch_090.pt",
+        default=member_dir / "checkpoints/aswin_cyclegan_v2/best_model.pt",
     )
     parser.add_argument("--input", type=Path, default=task_dir / "data/monet_jpg")
     parser.add_argument("--output", type=Path, default=member_dir / "outputs/pred_A2B")
