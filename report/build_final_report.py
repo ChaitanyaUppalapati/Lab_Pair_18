@@ -520,7 +520,7 @@ def build_story() -> list:
             "assistance: Chaitanya's code was written with an AI assistant from Chaitanya's design decisions, and Task 3 decisions from run 5 "
             "onward are marked as AI-assisted in DESIGN_LOG.md. Aswin's code was written with AI coding assistants (OpenAI Codex and Claude) "
             "from Aswin's design decisions; Aswin chose the architectures and hyperparameters, ran the training, and reviewed the outputs. "
-            "This report was compiled with AI assistance from the repository evidence. Both members rated the 30-sample Task 3 human audit. Both members own "
+            "This report was compiled with AI assistance from the repository evidence. Both members rated the blinded 60-item Task 3 human audit (30 fixed inputs translated by both final models). Both members own "
             "the submitted artifacts and remain responsible for explaining their individual choices and results. This report was synthesized "
             "from the recorded evidence and should be reviewed by both members before submission."
         )
