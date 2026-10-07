@@ -2,16 +2,17 @@
 
 ## Status
 
-The V2 GPU run completed all 150 epochs on an NVIDIA GeForce RTX 4090. The executed notebook is `src/task3_cyclegan_aswin_v2.ipynb`; its configuration and outputs match `checkpoints/aswin_cyclegan_v2/`, the training log/history, generated images, and `full_metrics_report.csv`. Validation selected `best_model.pt` at epoch 130. The supplied two-direction evaluation script has been rerun on those generated outputs. The two-rater human audit and actual Kaggle leaderboard submission remain pending.
+The V2 GPU run completed all 150 epochs on an NVIDIA GeForce RTX 4090. The executed notebook is `src/task3_cyclegan_aswin_v2.ipynb`; its configuration and outputs match `checkpoints/aswin_cyclegan_v2/`, the training log/history, generated images, and `full_metrics_report.csv`. Validation selected `best_model.pt` at epoch 130. The supplied two-direction evaluation script has been rerun on those generated outputs. The team's Kaggle submission uses Chaitanya's model (team rank 15th); V2 was scored with the official script but not submitted. The V2 human audit is being rated in the team's blinded round-2 sheet.
 
 ## Independent architecture
 
 - Generator A→B and B→A: 9-block ResNet, 64 base filters, two strided downsampling stages, instance normalization, reflection padding, and nearest-neighbor resize-convolution upsampling.
-- Discriminator A and B: single-scale spectral-normalized 70×70 PatchGAN discriminators.
+- Discriminator A and B: single-scale 70×70 PatchGAN discriminators with instance normalization (no spectral normalization).
 - Objective: least-squares adversarial loss, cycle L1 weight 10, and identity L1 weight 2.5, with the identity weight decaying to zero over the first half of training.
-- Stability: 50-image replay buffers, AMP, gradient clipping, exponential-moving-average generators, and linear learning-rate decay.
+- Stability: 50-image replay buffers, AMP, gradient clipping (10), exponential-moving-average generators (decay 0.999), and linear learning-rate decay from epoch 75.
+- Augmentation: random horizontal flip only. The discriminators see un-augmented images (no DiffAugment).
 
-Chaitanya's architecture and hyperparameters were blank when this design was created. Recheck both completed configurations before the full run and coordinate a change if they become materially identical.
+The design was fixed before Chaitanya's configuration was known. The completed models differ: Chaitanya's selected model uses lambda_cycle 2, lambda_identity 0, DiffAugment, and a two-scale photo-to-Monet discriminator.
 
 ## Data and preprocessing
 
@@ -43,16 +44,34 @@ Evidence is preserved in `src/Part3_Evaluation_Script_evaluated.ipynb`, and the 
 
 ## Visual quality assessment
 
-Describe recurring style-transfer strengths, content preservation, color changes, texture artifacts, and failure patterns from fixed, non-cherry-picked outputs.
+Observations come from the fixed qualitative grid (`outputs/plots/aswin_cyclegan_v2_qualitative_grid.png`) and the 30 fixed audit inputs (`outputs/audit/team_audit/`), not from selected favourable examples.
+
+- **Photo → Monet:** scene layout is preserved closely (rocks, waterfalls, mountains, and buildings stay in place), and the outputs gain visible brushstroke texture. The strong cycle weight keeps the translation conservative, so many outputs look like textured photos rather than paintings.
+- **Colour shift:** the generator pushes most scenes toward a cool blue-green palette. A red forest turns blue, and warm sunset coasts lose their orange tones.
+- **Skies and dark scenes:** smooth skies become streaky or speckled. A night sky becomes grainy and brighter than the input, which is the clearest out-of-distribution failure in the grid.
+- **Monet → photo:** outputs keep much of the painted texture and mostly change contrast and colour (darker water, deeper blues). Realistic photographic detail is rarely produced, which matches the higher A2B FID (109.6 vs 100.7).
+- **Watermarks and text** in source photos are carried through rather than removed.
+- **Cycle reconstructions** keep structure but are blurrier than the inputs and sometimes shift colour (a haystack reconstruction turns yellower).
 
 ## Human audit
 
-Report the 30-sample, two-rater style/content/artifact means and inter-rater agreement only after both raters independently complete `human_audit_30.csv`.
+The 30 fixed audit outputs from `best_model.pt` (epoch 130) are in `outputs/audit/team_audit/` (20 photo → Monet, 10 Monet → photo). They are mixed with Chaitanya's submitted model in the team's blinded 60-item round-2 sheet (`task3_gan/member_chaitanya/outputs/human_audit/`). Style, content, and artifact means and Cohen's kappa will be recorded in `human_audit_30.csv` once both raters finish.
 
 ## Kaggle evidence
 
-Record submission date, checkpoint ID/hash, public score, private score, and leaderboard rank from the actual team submission.
+- Team submission: Chaitanya's model (run 18, EMA epoch 123), public score −48.2029, **team rank 15th**.
+- V2 (`best_model.pt`, epoch 130) official-script score: −(105.1144 + 0.4137)/2 = **−52.7641**. V2 was not submitted, so it has no leaderboard entry of its own.
+- Private leaderboard score: available after the competition closes.
 
 ## Limitations and future work
 
-Discuss findings supported by the completed run. Possible controlled follow-ups include discriminator-scale ablation, loss-weight tuning, longer schedules, and higher-resolution fine-tuning.
+- **No discriminator augmentation.** With only 300 Monet paintings, an un-augmented discriminator can memorise the training set. DiffAugment was the largest single gain in Chaitanya's runs (−53.87 → −51.47).
+- **Strong content constraint.** lambda_cycle 10 keeps outputs close to the inputs, which helps content preservation but limits how far outputs move toward the Monet distribution. Chaitanya's lambda_cycle 2 / identity 0 runs scored better on FID.
+- **Selection signal.** The best checkpoint was chosen by a validation FID on 120 images, which is noisy (189.6 at epoch 130 vs 192.0 at epoch 150).
+- **Non-finite gradients.** 70 steps were skipped under AMP. No NaN loss occurred, but the cause was not investigated.
+
+Next experiments, one factor at a time: add DiffAugment to both discriminators; sweep lambda_cycle over {10, 5, 2}; then test a two-scale discriminator with the same schedule.
+
+## AI use
+
+Code for this task was written with AI coding assistants (OpenAI Codex and Claude) from Aswin's design decisions. Aswin chose the architecture and hyperparameters, ran the training, and reviewed the outputs.
