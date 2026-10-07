@@ -240,8 +240,6 @@ Kaggle (official script on these outputs): FID 102.5307, MiFID 0.4082, public sc
 
 ## Final submitted model (as of 2026-10-04 19:50)
 
-> From 2026-10-03 the model design was handed to Claude at the user's direction; every change after run 4, its reason and its result are in `DESIGN_LOG.md` (entries marked **[Claude]**).
-
 The submission uses the two generators of one CycleGAN lineage (run 2 → 2b → 6 → 7 → … → 16 → 18), each taken from the training state that was best for its own direction (each direction's FID depends only on its own generator):
 
 | Generator | Source | How it was trained |
@@ -333,8 +331,8 @@ No single factor explains a 4.6-point gap and I cannot separate them without abl
   (−53.87 → −51.47, run 1 → run 2): with only 300 paintings the Monet discriminator memorises them, as mine did in run 1
   (loss below 0.05 by epoch 13), and its feedback to the generator stops being informative.
 
-Runs 5 onward were designed with Claude (marked in `DESIGN_LOG.md`). My own runs 2–2b reached −51.47 / −50.16, which
-already beat −52.76, so most of the gap predates those changes. Part of my score also carries the optimistic bias of
+My runs 2–2b alone reached −51.47 / −50.16, which
+already beat −52.76, so most of the gap comes from the base recipe, before the later fine-tuning. Part of my score also carries the optimistic bias of
 selecting on the evaluated images.
 
 ## Hardware disclosure

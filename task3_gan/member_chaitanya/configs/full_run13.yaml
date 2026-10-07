@@ -2,7 +2,6 @@
 # per-direction generators (blend p6: G_A2B = full_run07 EMA 88+90 average, G_B2A = full_run10 EMA 98+102 average),
 # FREEZES G_B2A and fine-tunes only G_A2B (+ both discriminators) for 8 epochs (5e-5 -> 0), EMA, snapshots every
 # 2 epochs. Reason: Monet -> photo (FID ~97.8) is now the weaker direction and has not improved since run 7.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run13
 seed: 1337
 

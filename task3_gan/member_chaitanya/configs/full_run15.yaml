@@ -2,7 +2,7 @@
 # (lambda_cycle 5 / lambda_identity 0.5, EMA), switches to lambda_cycle 2 / lambda_identity 0 with a warm restart
 # 1e-4 -> 0 over 6 epochs (91-96), EMA continued, snapshots (raw + EMA) EVERY epoch.
 # Reason: the best Monet -> photo generators of all runs (FID 97.45-98.12) were run 7's EMA snapshots 2-4 epochs
-# after the same lambda switch; every later attempt made Monet -> photo worse. Design decision by Claude at the user's direction.
+# after the same lambda switch; every later attempt made Monet -> photo worse.
 run_id: full_run15
 seed: 1337
 

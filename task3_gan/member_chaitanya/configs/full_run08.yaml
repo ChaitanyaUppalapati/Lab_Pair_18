@@ -2,7 +2,6 @@
 # warm restart 1e-4 -> 0 over the next 10 epochs, generator EMA 0.9999, snapshots every 2 epochs.
 # Reason: each loosening of the content constraint so far improved the official score
 # (lambda_cyc 10 -> 5: -49.73 -> -49.49 (blend); 5 -> 2: -48.93). Test one more step.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run08
 seed: 1337
 

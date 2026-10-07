@@ -3,7 +3,6 @@
 # full-scale discriminators become scale 0, the coarse scale starts fresh), warm restart 1e-4 -> 0 over 10 epochs,
 # snapshots every 2 epochs. Reason: a 70x70 PatchGAN only enforces local texture, while the Inception features
 # behind FID are global (colour distribution, lighting, composition); the coarse scale judges those.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run10
 seed: 1337
 

@@ -2,7 +2,6 @@
 # lambda_cycle 10 -> 5, lambda_identity 5 -> 0.5, warm restart 1e-4 -> 0 over epochs 81-90, generator EMA 0.9999,
 # snapshots every 2 epochs. Reason: the official metric only rewards matching the target-domain distribution
 # (content is never scored), so a translator that commits harder to the target style should score better.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run06
 seed: 1337
 

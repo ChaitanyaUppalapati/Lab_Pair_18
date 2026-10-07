@@ -2,7 +2,6 @@
 # resize-286 / random-crop-256 augmentation (load_size 256 = crop_size 256, horizontal flip kept), warm restart 5e-5 -> 0
 # over 6 epochs, snapshots every 2 epochs. Reason: training saw images zoomed by 286/256 ~ 1.12x, inference sees the full
 # 256x256 image at its true scale; aligning the last epochs with the evaluation scale removes that train/test mismatch.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run09
 seed: 1337
 

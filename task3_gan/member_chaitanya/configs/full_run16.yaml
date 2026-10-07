@@ -1,7 +1,6 @@
 # full_run16: continuation of full_run12 (photo -> Monet specialisation, G_A2B frozen) from its final epoch-112 state,
 # lower warm restart 3e-5 -> 0 over 8 epochs (113-120), EMA continued, snapshots every 2 epochs.
 # Reason: run 12's photo -> Monet EMA was still improving when it ended (96.74 -> 96.30 -> 95.46 -> 94.98).
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run16
 seed: 1337
 

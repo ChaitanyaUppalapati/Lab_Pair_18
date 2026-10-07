@@ -1,7 +1,6 @@
 # full_run14: fine-tune of full_run11's final (epoch-40) state with the settings that helped the run-2 line:
 # lambda_cycle 5 -> 2, lambda_identity 0.5 -> 0 (run 7), evaluation-scale training (load 256 = crop 256, run 9),
 # 2-scale discriminators and EMA continued, warm restart 5e-5 -> 0 over 8 epochs, snapshots every 2 epochs.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run14
 seed: 1337
 

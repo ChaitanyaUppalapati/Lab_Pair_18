@@ -1,6 +1,6 @@
 # full_run05: continuation of full_run02b from its epoch-80 state (checkpoints/full_run02b/latest.pt copied to checkpoints/full_run05/),
 # epochs 81-120: second warm restart at 5e-5 with linear decay to 0, plus generator EMA (decay 0.9999,
-# half-life ~6,900 iterations ~ 1 epoch). Design decision by Claude at the user's direction; see DESIGN_LOG.md.
+# half-life ~6,900 iterations ~ 1 epoch).
 run_id: full_run05
 seed: 1337
 

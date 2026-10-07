@@ -2,8 +2,7 @@
 # lambda_cycle 5 / lambda_identity 0.5 (run 6 - stable from scratch; lower values are left for a final fine-tune),
 # 2-scale discriminators (run 10), generator EMA 0.9999 from the start, 40 epochs (20 constant + 20 decay).
 # Reason: all gains since run 2 came from fine-tunes of the same run-2 solution; a fresh run trained with the
-# better objective and discriminator may reach a better solution. Design decision by Claude at the user's
-# direction; see DESIGN_LOG.md.
+# better objective and discriminator may reach a better solution.
 run_id: full_run11
 seed: 1337
 

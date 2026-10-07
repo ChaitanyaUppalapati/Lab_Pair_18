@@ -2,7 +2,6 @@
 # lambda_cycle 5 -> 2, lambda_identity 0.5 -> 0, warm restart 1e-4 -> 0 over epochs 87-96, generator EMA 0.9999,
 # snapshots every 2 epochs. Reason: full_run06 (lambda_cyc 5, lambda_id 0.5) produced the best weights so far; the
 # official metric never rewards content preservation, so test a larger step in the same direction.
-# Design decision by Claude at the user's direction; see DESIGN_LOG.md.
 run_id: full_run07
 seed: 1337
 

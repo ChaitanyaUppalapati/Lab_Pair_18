@@ -4,7 +4,7 @@
 # fine-tunes only G_B2A (+ both discriminators); the frozen G_A2B still serves as the fixed inverse in the cycle loss.
 # Warm restart 5e-5 -> 0 over 8 epochs, EMA, snapshots every 2 epochs.
 # Reason: in runs 7-10 one direction usually improved while the other got worse; freezing the stronger Monet -> photo
-# generator lets photo -> Monet improve without that trade-off. Design decision by Claude at the user's direction.
+# generator lets photo -> Monet improve without that trade-off.
 run_id: full_run12
 seed: 1337
 

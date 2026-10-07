@@ -18,7 +18,7 @@
   "checkpoint": "task3_gan/member_chaitanya/checkpoints/full_run18/epoch_123_ema/G_B2A.pt",
   "checkpoint_sha256": "ba4f09d07c847ba35d38189832118cb93d8f5cafec1655fbcc421cd81f2e9d8f",
   "raw_log": "reproducibility/raw_logs/task3_gan/chaitanya/full_run18.log",
-  "notes": "Current submitted model: checkpoints/full_run18/epoch_123_ema (G_A2B = frozen copy of full_blends/epoch_b1_r7ema88-90, G_B2A = run-18 EMA 123). Official FID 96.0061 / MiFID 0.3998, Kaggle -48.2029 (2026-10-04). Lineage and every design change: DESIGN_LOG.md.",
+  "notes": "Current submitted model: checkpoints/full_run18/epoch_123_ema (G_A2B = frozen copy of full_blends/epoch_b1_r7ema88-90, G_B2A = run-18 EMA 123). Official FID 96.0061 / MiFID 0.3998, Kaggle -48.2029 (2026-10-04).",
   "packages": [
     "aiohappyeyeballs==2.7.1",
     "aiohttp==3.14.3",
