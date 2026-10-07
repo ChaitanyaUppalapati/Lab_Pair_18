@@ -86,4 +86,4 @@ Next experiments, one factor at a time: add DiffAugment to both discriminators; 
 
 ## AI use
 
-Code for this task was written with AI coding assistants (OpenAI Codex and Claude) from Aswin's design decisions. Aswin chose the architecture and hyperparameters, ran the training, and reviewed the outputs.
+Aswin designed this model, chose the architecture and hyperparameters, ran the training and evaluation, and analysed the results. AI assistants (OpenAI Codex and Claude) were used in a supporting role for debugging, boilerplate code, and drafting documentation; all of it was reviewed by Aswin.

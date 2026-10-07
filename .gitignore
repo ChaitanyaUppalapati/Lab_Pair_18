@@ -47,3 +47,6 @@ Thumbs.db
 # Task 2 checkpoints (regenerable from configs + seeds; sha256 recorded in reproducibility/manifests)
 task2_sentiment/member_*/checkpoints/*
 !task2_sentiment/member_*/checkpoints/.gitkeep
+
+# Local report build scripts (not part of the submission)
+report/build_*.py
