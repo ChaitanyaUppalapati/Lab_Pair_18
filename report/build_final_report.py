@@ -934,9 +934,7 @@ def build_story() -> list:
         P(
             "Each strip is input | translation | reconstruction and was selected by a fixed metric-based ranking, not by visual cherry-picking. "
             "The cases show why low cycle error is necessary but not sufficient: the model can preserve reconstructable structure while hiding or "
-            "discarding color and semantic details. Aswin's repository includes fixed audit samples but its failure_analysis.md has not yet been completed; "
-            "the visible V2 grid suggests strong palette transfer with occasional saturation, texture smearing, and scene-detail loss, "
-            "although raters scored V2 higher on artifacts than the submitted model (Section 3.7)."
+            "discarding color and semantic details. Aswin's failure_analysis.md records eight training and evaluation issues with their fixes (AMP non-finite gradients skipped with zero NaN losses, best-checkpoint selection at epoch 130, provenance checks on the prediction folders). Visually, V2 shows a cool blue-green colour bias, grainy dark scenes, and conservative translation, although raters scored V2 higher on artifacts than the submitted model (Section 3.7)."
         )
     )
     story.append(P("3.7 Blinded human audit (30 fixed inputs x 2 models, 2 raters)", "H2"))
