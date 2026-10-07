@@ -1,0 +1,36 @@
+{
+  "member": "aswin",
+  "task": "task3_gan",
+  "run_id": "aswin_cyclegan_v2",
+  "python": "3.10 (conda container; path /opt/conda/lib/python3.10 in notebook warnings)",
+  "os": "Linux container (GPU lab machine)",
+  "hardware": {
+    "gpus": [
+      "NVIDIA GeForce RTX 4090"
+    ],
+    "cuda_available": true,
+    "precision": "AMP (fp16 autocast + GradScaler)"
+  },
+  "config": "task3_gan/member_aswin/configs/aswin_cyclegan_v2.json",
+  "frozen_config": "task3_gan/member_aswin/checkpoints/aswin_cyclegan_v2/config.json",
+  "checkpoint": "task3_gan/member_aswin/checkpoints/aswin_cyclegan_v2/best_model.pt",
+  "checkpoint_epoch": 130,
+  "checkpoint_sha256": "25e33d3efba47df13279e9be188ac7bbc06f9d5942133cdd2d7662cb1858d812",
+  "final_checkpoint": "task3_gan/member_aswin/checkpoints/aswin_cyclegan_v2/final_model.pt",
+  "final_checkpoint_sha256": "86c49ed998e6ee147b1424d1de1ecf27784c649a01bad897c2b7c2c3ba5509d1",
+  "raw_log": "reproducibility/raw_logs/task3_gan/aswin/aswin_cyclegan_v2.jsonl",
+  "executed_notebook": "task3_gan/member_aswin/src/task3_cyclegan_aswin_v2.ipynb",
+  "evaluation_notebook": "task3_gan/member_aswin/src/Part3_Evaluation_Script_evaluated.ipynb",
+  "metrics": [
+    "task3_gan/member_aswin/full_metrics_report.csv",
+    "task3_gan/member_aswin/submission.csv",
+    "task3_gan/member_aswin/human_audit_30.csv"
+  ],
+  "result_mapping": {
+    "official FID 105.1144 / MiFID 0.4137 (score -52.7641)": "best_model.pt EMA_A2B + EMA_B2A, outputs/pred_A2B, outputs/pred_B2A",
+    "Kaggle public -52.7640 (submitted 2026-10-06)": "best_model.pt EMA_B2A, 7,038 images in images.zip",
+    "human audit (style 4.70 / content 4.65 / artifacts 4.68)": "best_model.pt, outputs/audit/team_audit/"
+  },
+  "packages": "Exact versions were not captured at run time. The notebook's dependency cell installs torchmetrics[image], torch-fidelity, lpips, pandas, seaborn, scikit-learn, and kaggle when missing; torch/torchvision come from the container image.",
+  "notes": "Manifest written after the run from the checkpoint, config, and notebook outputs; checkpoint hashes computed from the local files."
+}
