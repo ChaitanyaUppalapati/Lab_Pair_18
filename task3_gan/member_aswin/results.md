@@ -2,7 +2,7 @@
 
 ## Status
 
-The V2 GPU run completed all 150 epochs on an NVIDIA GeForce RTX 4090. The executed notebook is `src/task3_cyclegan_aswin_v2.ipynb`; its configuration and outputs match `checkpoints/aswin_cyclegan_v2/`, the training log/history, generated images, and `full_metrics_report.csv`. Validation selected `best_model.pt` at epoch 130. The supplied two-direction evaluation script has been rerun on those generated outputs. The team's Kaggle submission uses Chaitanya's model (team rank 15th); V2 was scored with the official script but not submitted. The V2 human audit is being rated in the team's blinded round-2 sheet.
+The V2 GPU run completed all 150 epochs on an NVIDIA GeForce RTX 4090. The executed notebook is `src/task3_cyclegan_aswin_v2.ipynb`; its configuration and outputs match `checkpoints/aswin_cyclegan_v2/`, the training log/history, generated images, and `full_metrics_report.csv`. Validation selected `best_model.pt` at epoch 130. The supplied two-direction evaluation script has been rerun on those generated outputs. V2 was submitted to Kaggle under the team on 2026-10-06 (public −52.7640); the team's rank (15th) is set by its best submission, Chaitanya's model. The blinded two-rater human audit is complete.
 
 ## Independent architecture
 
@@ -55,12 +55,22 @@ Observations come from the fixed qualitative grid (`outputs/plots/aswin_cyclegan
 
 ## Human audit
 
-The 30 fixed audit outputs from `best_model.pt` (epoch 130) are in `outputs/audit/team_audit/` (20 photo → Monet, 10 Monet → photo). They are mixed with Chaitanya's submitted model in the team's blinded 60-item round-2 sheet (`task3_gan/member_chaitanya/outputs/human_audit/`). Style, content, and artifact means and Cohen's kappa will be recorded in `human_audit_30.csv` once both raters finish.
+The 30 fixed audit outputs from `best_model.pt` (epoch 130) are in `outputs/audit/team_audit/` (20 photo → Monet, 10 Monet → photo, inputs fixed with seed 266). They were shuffled together with Chaitanya's submitted model's outputs for the same inputs into one blinded 60-item sheet, and both members rated every item on a 1–5 scale (5 = best; for artifacts, none visible). Ratings and statistics: `task3_gan/member_chaitanya/outputs/human_audit/` (`key.csv`, `rater_1.csv`, `rater_2.csv`, `audit_results.json`).
+
+V2 (30 items):
+
+| Criterion | Mean | Rater 1 / rater 2 | Photo → Monet / Monet → photo | Cohen's κ (unweighted / quadratic) | Exact agreement | Within 1 point |
+|---|---:|---:|---:|---:|---:|---:|
+| Style | 4.70 | 4.67 / 4.73 | 4.72 / 4.65 | 0.09 / 0.25 | 63% | 97% |
+| Content | 4.65 | 4.80 / 4.50 | 4.62 / 4.70 | 0.27 / 0.27 | 63% | 100% |
+| Artifacts | 4.68 | 4.77 / 4.60 | 4.62 / 4.80 | 0.01 / −0.09 | 57% | 93% |
+
+Paired against Chaitanya's submitted model on the same inputs (Wilcoxon signed-rank): style and content are not significantly different (p = 0.26, 0.74), but V2 is rated cleaner on artifacts (4.68 vs 4.32; higher on 19 of 30 inputs; p = 0.002). Human raters therefore prefer V2 on artifacts even though its FID is about 9 points worse. Agreement is low in kappa terms because most scores are 4–5, leaving little variance, although 93–100% of ratings are within one point.
 
 ## Kaggle evidence
 
-- Team submission: Chaitanya's model (run 18, EMA epoch 123), public score −48.2029, **team rank 15th**.
-- V2 (`best_model.pt`, epoch 130) official-script score: −(105.1144 + 0.4137)/2 = **−52.7641**. V2 was not submitted, so it has no leaderboard entry of its own.
+- Team best submission: Chaitanya's model (run 18, EMA epoch 123), public score −48.2029, **team rank 15th**.
+- V2 (`best_model.pt`, epoch 130): official-script score −(105.1144 + 0.4137)/2 = −52.7641; submitted under the team on 2026-10-06, Kaggle public score **−52.7640**.
 - Private leaderboard score: available after the competition closes.
 
 ## Limitations and future work

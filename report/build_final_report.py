@@ -504,7 +504,7 @@ def build_story() -> list:
     story.append(
         P(
             "No metric, human rating, private leaderboard score, or rank is inferred when supporting evidence is absent. "
-            "The human audit of Aswin's V2 outputs and the private leaderboard fields are therefore identified as completion items."
+            "The private leaderboard fields are therefore left open until the competition closes."
         )
     )
     story.append(PageBreak())
@@ -863,7 +863,7 @@ def build_story() -> list:
     official_rows = [
         ["Member", "A2B FID / MiFID", "B2A FID / MiFID", "Submission FID", "Submission MiFID", "Score", "Leaderboard evidence"],
         ["Chaitanya", f"{c3_official['FID_A2B']:.3f} / {c3_official['MiFID_A2B']:.4f}", f"{c3_official['FID_B2A']:.3f} / {c3_official['MiFID_B2A']:.4f}", f"{c3_official['FID']:.4f}", f"{c3_official['MiFID']:.4f}", "-48.2029", "Team submission; public -48.2029; team rank 15th"],
-        ["Aswin", "109.561 / 0.4220", "100.668 / 0.4054", f"{aswin_fid:.4f}", f"{aswin_mifid:.4f}", f"{aswin_score:.4f}", "Scored with the official script; not submitted (team entry is Chaitanya's model)"],
+        ["Aswin", "109.561 / 0.4220", "100.668 / 0.4054", f"{aswin_fid:.4f}", f"{aswin_mifid:.4f}", f"{aswin_score:.4f}", "Submitted under the team 2026-10-06; public -52.7640"],
     ]
     story.append(styled_table(official_rows, [0.72 * inch, 0.92 * inch, 0.92 * inch, 0.77 * inch, 0.77 * inch, 0.68 * inch, 1.8 * inch], font_size=6.5))
     story.append(Spacer(1, 6))
@@ -935,48 +935,63 @@ def build_story() -> list:
             "Each strip is input | translation | reconstruction and was selected by a fixed metric-based ranking, not by visual cherry-picking. "
             "The cases show why low cycle error is necessary but not sufficient: the model can preserve reconstructable structure while hiding or "
             "discarding color and semantic details. Aswin's repository includes fixed audit samples but its failure_analysis.md has not yet been completed; "
-            "the visible V2 grid suggests strong palette transfer with occasional saturation, texture smearing, and scene-detail loss; the "
-            "V2 human audit on the same 30 inputs will quantify these."
+            "the visible V2 grid suggests strong palette transfer with occasional saturation, texture smearing, and scene-detail loss, "
+            "although raters scored V2 higher on artifacts than the submitted model (Section 3.7)."
         )
     )
-    story.append(P("3.7 Blinded human audit (30 fixed samples, 2 raters)", "H2"))
-    with (ROOT / "task3_gan/member_chaitanya/outputs/human_audit/round1_own_model_only/audit_results.json").open(encoding="utf-8") as stream:
-        audit = json.load(stream)["chaitanya_submitted"]
+    story.append(P("3.7 Blinded human audit (30 fixed inputs x 2 models, 2 raters)", "H2"))
+    audit_root = ROOT / "task3_gan/member_chaitanya/outputs/human_audit"
+    with (audit_root / "audit_results.json").open(encoding="utf-8") as stream:
+        audit_all = json.load(stream)
     story.append(
         P(
-            "The fixed sample is 20 photo-to-Monet and 10 Monet-to-photo images (listed in human_audit/inputs.txt; round 1 results archived in human_audit/round1_own_model_only/). Both members rated each "
-            "input/output pair independently on a 1-5 scale for style, content preservation, and artifacts (5 = no visible artifacts), "
-            "with the model identity hidden behind item IDs (key.csv)."
+            "30 inputs were fixed with seed 266 (20 photo-to-Monet, 10 Monet-to-photo; human_audit/inputs.txt). Each input was translated by "
+            "both final models (Chaitanya run 18 EMA 123; Aswin V2 epoch 130), giving 60 items that were shuffled and shown under anonymous IDs "
+            "with no model names. Both members rated every item independently on a 1-5 scale for style, content preservation, and artifacts "
+            "(5 = no visible artifacts). The answer key (key.csv) was opened only after both raters had submitted."
         )
     )
-    audit_rows = [["Criterion", "Mean", "Rater 1 / Rater 2", "B2A / A2B mean", "Cohen's kappa (linear / quadratic)", "Exact / within-1 agreement"]]
+    audit_rows = [["Model / criterion", "Mean", "Rater 1 / Rater 2", "B2A / A2B mean", "Cohen's kappa (unweighted / quadratic)", "Exact / within-1 agreement"]]
+    for key, label in [("chaitanya_submitted", "Chaitanya"), ("aswin_v2", "Aswin V2")]:
+        for name in ["style", "content", "artifacts"]:
+            a = audit_all[key][name]
+            audit_rows.append([
+                f"{label}: {name}", num(a["mean"], 2), f"{num(a['rater_1_mean'], 2)} / {num(a['rater_2_mean'], 2)}",
+                f"{num(a['mean_B2A'], 2)} / {num(a['mean_A2B'], 2)}", f"{num(a['kappa'], 3)} / {num(a['kappa_quadratic'], 3)}",
+                f"{a['pct_exact_agreement']:.1f}% / {a['pct_within_1']:.1f}%",
+            ])
     for name in ["style", "content", "artifacts"]:
-        a = audit[name]
-        audit_rows.append([
-            name.capitalize(), num(a["mean"], 2), f"{num(a['rater_1_mean'], 2)} / {num(a['rater_2_mean'], 2)}",
-            f"{num(a['mean_B2A'], 2)} / {num(a['mean_A2B'], 2)}", f"{num(a['kappa'], 3)} / {num(a['kappa_quadratic'], 3)}",
-            f"{a['pct_exact_agreement']:.1f}% / {a['pct_within_1']:.1f}%",
-        ])
-    story.append(styled_table(audit_rows, [0.85 * inch, 0.55 * inch, 1.05 * inch, 1.0 * inch, 1.65 * inch, 1.55 * inch], font_size=6.9))
+        a = audit_all["pooled_all_60_items"][name]
+        audit_rows.append([f"All 60 items: {name}", "-", "-", "-", f"{num(a['kappa'], 3)} / {num(a['kappa_quadratic'], 3)}", f"{a['pct_exact_agreement']:.1f}% / {a['pct_within_1']:.1f}%"])
+    story.append(styled_table(audit_rows, [1.25 * inch, 0.5 * inch, 1.0 * inch, 0.95 * inch, 1.6 * inch, 1.4 * inch], font_size=6.7))
+    story.append(Spacer(1, 5))
+    paired = [["Paired by input", "Mean diff (Chaitanya - Aswin)", "Chaitanya higher / Aswin higher / tie", "Wilcoxon p"]]
+    for name in ["style", "content", "artifacts"]:
+        a = audit_all["paired_by_input"][name]
+        paired.append([name.capitalize(), num(a["mean_diff_chaitanya_minus_aswin"], 2), f"{a['inputs_chaitanya_higher']} / {a['inputs_aswin_higher']} / {a['ties']}", num(a["wilcoxon_p"], 3)])
+    story.append(styled_table(paired, [1.25 * inch, 1.6 * inch, 2.1 * inch, 1.0 * inch], font_size=6.9))
     story.append(
         P(
-            "Raters agree that the outputs are stylistically convincing and largely content-preserving (means above 4), but kappa is near or below "
-            "zero for style and content: with most scores at 4-5 the ratings have little variance, so chance-corrected agreement is low even "
-            "though 83% of style ratings are within one point. Rater 2 was systematically stricter on content (3.77 vs 4.80). Artifacts show "
-            "fair agreement (kappa 0.28) and are the weakest criterion for photo-to-Monet (3.68). A shared rubric with anchor images would "
-            "reduce rater bias. The same 30 inputs from Aswin's V2 model are exported to "
-            "task3_gan/member_aswin/outputs/audit/team_audit/; they are being rated in a blinded round-2 sheet "
-            "that mixes 60 items from both models, and were not yet scored when this report was built."
+            "Both models score above 4.5 on style and content, and the paired differences there are not significant (p 0.26 and 0.74). The "
+            "one significant difference is artifacts: Aswin V2 is rated cleaner on 19 of 30 inputs (4.68 vs 4.32, p = 0.002). This is the "
+            "opposite of the FID ranking, which favours Chaitanya's model by 9 points: the looser cycle constraint that moves outputs closer "
+            "to the Monet distribution also introduces visible artifacts. Inter-rater agreement is low (pooled quadratic kappa 0.25 style, "
+            "0.02 content, -0.20 artifacts) even though 83-98% of ratings fall within one point; with most scores at 4-5 there is little "
+            "variance for kappa to credit. A shared rubric with anchor images is the clearest fix. A first round that rated only Chaitanya's "
+            "model was superseded because the rater could identify their own model (archived in human_audit/round1_own_model_only/)."
         )
     )
-    audit_dir = ROOT / "task3_gan/member_chaitanya/outputs/human_audit/round1_own_model_only/images"
-    pairs = [("S01", "S01 (B2A)"), ("S03", "S03 (B2A)"), ("S04", "S04 (A2B)")]
-    cells = [[scaled_image(audit_dir / f"{sid}_{kind}.jpg", 1.05 * inch, 1.05 * inch) for sid, _ in pairs for kind in ("in", "out")]]
-    cells.append([P(f"{label} {kind}", "Caption") for _, label in pairs for kind in ("input", "output")])
-    audit_imgs = Table(cells, colWidths=[1.12 * inch] * 6)
+    audit_dir = audit_root / "images"
+    examples = [("ca62c55ebe (photo->Monet)", "S05", "S01"), ("d1d9748a64 (Monet->photo)", "S08", "S09")]
+    img_row, cap_row = [], []
+    for label, c_item, a_item in examples:
+        for path, cap in [(f"{a_item}_in.jpg", f"{label} input"), (f"{c_item}_out.jpg", "Chaitanya output"), (f"{a_item}_out.jpg", "Aswin V2 output")]:
+            img_row.append(scaled_image(audit_dir / path, 1.05 * inch, 1.05 * inch))
+            cap_row.append(P(cap, "Caption"))
+    audit_imgs = Table([img_row, cap_row], colWidths=[1.12 * inch] * 6)
     audit_imgs.setStyle(TableStyle([("ALIGN", (0, 0), (-1, -1), "CENTER"), ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story.append(audit_imgs)
-    story.append(P("task3_gan/member_chaitanya/outputs/human_audit/round1_own_model_only/images/ (first three items in key order; ratings in rater_1.csv, rater_2.csv)", "CodePath"))
+    story.append(P("task3_gan/member_chaitanya/outputs/human_audit/images/ (items S01, S05, S08, S09; model mapping in key.csv; ratings in rater_1.csv, rater_2.csv)", "CodePath"))
     story.append(P("3.8 Joint analysis and shortcomings", "H2"))
     story.append(
         P(
@@ -989,16 +1004,15 @@ def build_story() -> list:
             "with only 300 paintings the Monet discriminator can memorise the training set, which DiffAugment counters (DiffAugment was "
             "Chaitanya's largest single gain, -53.87 to -51.47). Both factors plausibly explain V2's weaker official distribution match, but "
             "they were not ablated separately. Future work should "
-            "pre-register a held-out model-selection subset, ablate one factor at a time, add full two-rater auditing, and test a discriminator-scale "
+            "pre-register a held-out model-selection subset, ablate one factor at a time, rate with a shared anchored rubric, and test a discriminator-scale "
             "ablation with identical schedules."
         )
     )
     story.append(
         callout(
-            "Completion required before final submission",
-            "The two-rater audit of Chaitanya's submitted model is complete (Section 3.7). Still open: the audit of Aswin's V2 outputs on the same "
-            "30 inputs (round 2) and the team's private leaderboard scores (available after the competition closes). "
-            "Replace this note with the recorded values; do not submit estimated ones.",
+            "Open item: private leaderboard",
+            "Both submissions and the blinded two-model human audit are recorded. The private leaderboard scores become available only "
+            "after the competition closes; add them here then.",
             "amber",
         )
     )
@@ -1010,7 +1024,7 @@ def build_story() -> list:
             ("Chaitanya metrics", "task3_gan/member_chaitanya/full_metrics_report.csv"),
             ("Chaitanya design lineage", "task3_gan/member_chaitanya/DESIGN_LOG.md"),
             ("Chaitanya checkpoint", "task3_gan/member_chaitanya/checkpoints/full_run18/epoch_123_ema/ (local, not in Git; source in outputs/pred_source.txt)"),
-            ("Human audit", "task3_gan/member_chaitanya/outputs/human_audit/round1_own_model_only/ (key.csv, rater_1.csv, rater_2.csv, audit_results.json); round 2 sheet in human_audit/"),
+            ("Human audit", "task3_gan/member_chaitanya/outputs/human_audit/ (key.csv, rater_1.csv, rater_2.csv, audit_results.json); superseded round 1 in round1_own_model_only/"),
             ("Aswin official evaluation", "task3_gan/member_aswin/src/Part3_Evaluation_Script_evaluated.ipynb and submission.csv"),
             ("Aswin metrics", "task3_gan/member_aswin/full_metrics_report.csv"),
             ("Aswin checkpoint", "task3_gan/member_aswin/checkpoints/aswin_cyclegan_v2/best_model.pt (epoch 130)"),
@@ -1028,7 +1042,7 @@ def build_story() -> list:
         ["Raw logs and manifests", "Committed under reproducibility/raw_logs and reproducibility/manifests where available; Aswin run logs are also retained in member output folders."],
         ["Smoke-test entry points", "Top-level README documents smoke-test commands and artifact locations."],
         ["Personal paths / secrets", "Final report uses repository-relative evidence paths; no credential is embedded."],
-        ["Known incomplete evidence", "Human audit of Aswin V2 (round 2 in progress); private leaderboard results."],
+        ["Known incomplete evidence", "Private leaderboard results (after competition close)."],
     ]
     story.append(styled_table(repro, [1.7 * inch, 4.95 * inch], font_size=7.2))
     story.append(P("4.1 Threats to validity", "H2"))
