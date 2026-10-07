@@ -55,7 +55,9 @@ Observations come from the fixed qualitative grid (`outputs/plots/aswin_cyclegan
 
 ## Human audit
 
-The 30 fixed audit outputs from `best_model.pt` (epoch 130) are in `outputs/audit/team_audit/` (20 photo → Monet, 10 Monet → photo, inputs fixed with seed 266). They were shuffled together with Chaitanya's submitted model's outputs for the same inputs into one blinded 60-item sheet, and both members rated every item on a 1–5 scale (5 = best; for artifacts, none visible). Ratings and statistics: `task3_gan/member_chaitanya/outputs/human_audit/` (`key.csv`, `rater_1.csv`, `rater_2.csv`, `audit_results.json`).
+The 30 fixed audit outputs from `best_model.pt` (epoch 130) are in `outputs/audit/team_audit/` (20 photo → Monet, 10 Monet → photo, inputs fixed with seed 266). They were shuffled together with Chaitanya's submitted model's outputs for the same inputs into one blinded 60-item sheet, and both members rated every item on a 1–5 scale (5 = best; for artifacts, none visible). Ratings and statistics: `task3_gan/member_chaitanya/outputs/human_audit/` (`key.csv`, `rater_1.csv`, `rater_2.csv`, `audit_results.json`, `aswin_v2` entry).
+
+`human_audit_30.csv` holds both raters' scores for the 30 V2 items, with each row's source image, direction, and blinded item ID, and `full_metrics_report.csv` holds the per-direction means and agreement. The earlier `outputs/audit/sample_*.jpg` images (30 notebook-sampled photo → Monet outputs) were not used in the audit.
 
 V2 (30 items):
 
