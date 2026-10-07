@@ -176,6 +176,13 @@ signed-rank over the 30 inputs):
 | Content | -0.03 | 9 / 11 / 10 | 0.735 |
 | Artifacts | -0.37 | 3 / 19 / 8 | 0.002 |
 
+**Interpretation.** Style and content are statistically tied: on most inputs the two models' outputs look nearly
+identical. The one significant difference is artifacts, where Aswin's model scores higher, and the dark top-left
+corner that DiffAugment introduced in my runs explains it: on the audit images 26 of my 30 outputs have the corner
+blob (corner more than 40 grey levels darker than its neighbourhood) against 0 of Aswin's, whose V2 does not use
+DiffAugment. So the human audit and FID disagree for a concrete reason: FID barely registers a small corner defect,
+while a human rater sees it immediately.
+
 Ratings: `outputs/human_audit/rater_1.csv`, `rater_2.csv`; all statistics: `outputs/human_audit/audit_results.json`.
 
 *Round 1 (first pass, superseded):* the same 30 inputs, my model only, not mixed with another model. Means style 4.28,
