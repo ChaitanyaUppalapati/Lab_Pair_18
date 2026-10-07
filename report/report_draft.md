@@ -176,14 +176,14 @@ Naming follows Kaggle: A = Monet, B = photo. Kaggle score = −(FID + MiFID)/2 w
 | Final G / D loss | 4.1191 / 0.0635 | 4.1191 / 0.0319 | 1.8488 / 0.0515 | 1.8488 / 0.1054 | 3.2142 / — | 3.2142 / — |
 | Cycle / identity loss | 0.0794 / 0.0823 | 0.0915 / 0.0682 | 0.0884 / 0.1028 | 0.1059 / 0.1542 | 0.2292 / 0.4630 | 0.2292 / 0.4630 |
 | Max gradient norm / NaN count | G=1561.698; D=482.869 / 0.0000 | G=1561.698; D=482.869 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | G=1824.527; D=381.466 / 0.0000 | — / 0 | — / 0 |
-| Human audit style / content / artifacts | — / — / — | — / — / — | 4.0000 / 4.2000 / 4.2000 | 4.4200 / 4.3300 / 3.6700 | — / — / — | — / — / — |
-| Inter-rater κ / % agreement | — / — | — / — | style -0.15; content -0.01; artifacts 0.23 (quadratic-weighted, all 30 items) / style 27%; content 23%; artifacts 50% (exact) | style -0.15; content -0.01; artifacts 0.23 (quadratic-weighted, all 30 items) / style 27%; content 23%; artifacts 50% (exact) | — / — | — / — |
+| Human audit style / content / artifacts | — / — / — | — / — / — | 4.2500 / 4.6000 / 4.5500 | 4.7200 / 4.6200 / 4.2000 | 4.65 / 4.70 / 4.80 | 4.72 / 4.62 / 4.62 |
+| Inter-rater κ / % agreement | — / — | — / — | style 0.26; content -0.20; artifacts -0.28 (quadratic-weighted, all 30 items) / style 50%; content 40%; artifacts 23% (exact) | style 0.26; content -0.20; artifacts -0.28 (quadratic-weighted, all 30 items) / style 50%; content 40%; artifacts 23% (exact) | style 0.25; content 0.27; artifacts -0.09 / style 63%; content 63%; artifacts 57% | style 0.25; content 0.27; artifacts -0.09 / style 63%; content 63%; artifacts 57% |
 | Parameters (one G) | 11,378,179 | 11,378,179 | 11,378,179 | 11,378,179 | 28,299,912 | 28,299,912 |
 | Training time (s) | 26,494.3954 | 26,494.3954 | 114,522 | 114,522 | 9,567.6866 | 9,567.6866 |
 | Images/s | 215.6112 | 300.4061 | 204.2399 | 303.0060 | 83.1968 | 81.6342 |
 | Peak memory (MB) | 19,153.6875 | 19,153.6875 | 18,700.9800 | 18,700.9800 | 3,988.7456 | 3,988.7456 |
 
-Aswin's local metrics come from his `full_metrics_report.csv` (his own evaluation: 300 vs 1,000 images, so not on the same sample sizes as Chaitanya's all-image FID); his loss values are at the selected epoch 130. Human audit: only Chaitanya's submitted model was audited (both members rated it).
+Aswin's local metrics come from his `full_metrics_report.csv` (his own evaluation: 300 vs 1,000 images, so not on the same sample sizes as Chaitanya's all-image FID); his loss values are at the selected epoch 130. Human audit: one blinded 60-item sheet (the same 30 inputs translated by both final models, shuffled), rated by both members; κ is quadratic-weighted per model; paired comparison and pooled agreement in `task3_gan/member_chaitanya/outputs/human_audit/audit_results.json`.
 
 Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs/full_run18/snapshot_scores.csv` (epoch_123_ema: FID A2B 97.81, B2A 94.21). Run-1 columns use the per-snapshot rescoring of epoch 40 (mean FID 107.33); the submitted run-1 entry, scored from the final-model export, was FID 107.25 / MiFID 0.4148 → −53.83.
 
@@ -192,7 +192,7 @@ Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs
 | Member | Submission FID | Submission MiFID | Score −(FID+MiFID)/2 | Public LB | Private LB | Rank |
 |---|---|---|---|---|---|---|
 | Chaitanya (team submission) | 96.0061 | 0.3998 | -48.2029 | −48.2029 | TODO (after competition close) | TODO (≈16 of 44 once the non-official −42.1653 entry is removed) |
-| Aswin | 105.1144 | 0.4137 | -52.7641 | not submitted | — | — |
+| Aswin (V2, submitted under the team 2026-10-06) | 105.1144 | 0.4137 | -52.7641 | −52.7640 | TODO (after competition close) | — (the team's leaderboard position is set by its best submission) |
 
 Note: an earlier team entry of −42.1653 was computed with a non-official protocol before the evaluation script was available; the host was asked to invalidate it (see `task3_gan/member_chaitanya/results.md`, Kaggle section).
 

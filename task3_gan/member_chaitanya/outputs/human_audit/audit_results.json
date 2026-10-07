@@ -1,0 +1,118 @@
+{
+  "aswin_v2": {
+    "n_items": 30,
+    "style": {
+      "mean": 4.7,
+      "rater_1_mean": 4.666666666666667,
+      "rater_2_mean": 4.733333333333333,
+      "kappa": 0.08839779005524862,
+      "kappa_quadratic": 0.25,
+      "pct_exact_agreement": 63.33333333333333,
+      "pct_within_1": 96.66666666666667,
+      "mean_B2A": 4.725,
+      "mean_A2B": 4.65
+    },
+    "content": {
+      "mean": 4.65,
+      "rater_1_mean": 4.8,
+      "rater_2_mean": 4.5,
+      "kappa": 0.2666666666666667,
+      "kappa_quadratic": 0.2666666666666667,
+      "pct_exact_agreement": 63.33333333333333,
+      "pct_within_1": 100.0,
+      "mean_B2A": 4.625,
+      "mean_A2B": 4.7
+    },
+    "artifacts": {
+      "mean": 4.683333333333334,
+      "rater_1_mean": 4.766666666666667,
+      "rater_2_mean": 4.6,
+      "kappa": 0.007633587786259666,
+      "kappa_quadratic": -0.09195402298850586,
+      "pct_exact_agreement": 56.666666666666664,
+      "pct_within_1": 93.33333333333333,
+      "mean_B2A": 4.625,
+      "mean_A2B": 4.8
+    }
+  },
+  "chaitanya_submitted": {
+    "n_items": 30,
+    "style": {
+      "mean": 4.566666666666666,
+      "rater_1_mean": 4.733333333333333,
+      "rater_2_mean": 4.4,
+      "kappa": 0.16666666666666663,
+      "kappa_quadratic": 0.2622950819672131,
+      "pct_exact_agreement": 50.0,
+      "pct_within_1": 96.66666666666667,
+      "mean_B2A": 4.725,
+      "mean_A2B": 4.25
+    },
+    "content": {
+      "mean": 4.616666666666666,
+      "rater_1_mean": 4.766666666666667,
+      "rater_2_mean": 4.466666666666667,
+      "kappa": -0.18161925601750561,
+      "kappa_quadratic": -0.19771863117870736,
+      "pct_exact_agreement": 40.0,
+      "pct_within_1": 96.66666666666667,
+      "mean_B2A": 4.625,
+      "mean_A2B": 4.6
+    },
+    "artifacts": {
+      "mean": 4.316666666666666,
+      "rater_1_mean": 4.066666666666666,
+      "rater_2_mean": 4.566666666666666,
+      "kappa": -0.18353344768439106,
+      "kappa_quadratic": -0.2794918330308529,
+      "pct_exact_agreement": 23.333333333333332,
+      "pct_within_1": 73.33333333333333,
+      "mean_B2A": 4.2,
+      "mean_A2B": 4.55
+    }
+  },
+  "pooled_all_60_items": {
+    "style": {
+      "kappa": 0.11864406779661008,
+      "kappa_quadratic": 0.24528301886792447,
+      "pct_exact_agreement": 56.666666666666664,
+      "pct_within_1": 96.66666666666667
+    },
+    "content": {
+      "kappa": 0.04026475455046874,
+      "kappa_quadratic": 0.017400204708290623,
+      "pct_exact_agreement": 51.66666666666667,
+      "pct_within_1": 98.33333333333333
+    },
+    "artifacts": {
+      "kappa": -0.09644670050761417,
+      "kappa_quadratic": -0.20364741641337392,
+      "pct_exact_agreement": 40.0,
+      "pct_within_1": 83.33333333333334
+    }
+  },
+  "paired_by_input": {
+    "style": {
+      "mean_diff_chaitanya_minus_aswin": -0.13333333333333333,
+      "inputs_chaitanya_higher": 9,
+      "inputs_aswin_higher": 12,
+      "ties": 9,
+      "wilcoxon_p": 0.25903905435221686
+    },
+    "content": {
+      "mean_diff_chaitanya_minus_aswin": -0.03333333333333333,
+      "inputs_chaitanya_higher": 9,
+      "inputs_aswin_higher": 11,
+      "ties": 10,
+      "wilcoxon_p": 0.7351275958692387
+    },
+    "artifacts": {
+      "mean_diff_chaitanya_minus_aswin": -0.36666666666666664,
+      "inputs_chaitanya_higher": 3,
+      "inputs_aswin_higher": 19,
+      "ties": 8,
+      "wilcoxon_p": 0.001862788321412008
+    }
+  },
+  "design": "round 2: 60 items = 30 fixed inputs x 2 models (chaitanya_submitted, aswin_v2), shuffled, blinded; 2 raters"
+}

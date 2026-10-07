@@ -206,8 +206,16 @@ A3MAP = {"fid": "fid", "kid_mean": "kid_mean", "kid_std": "kid_std", "gen_precis
          "cycle_loss": "cycle_loss_at_checkpoint", "identity_loss": "identity_loss_at_checkpoint",
          "nan_count": "nan_count", "param_count": "parameter_count", "train_time_s": "training_time_seconds",
          "images_per_sec": "generation_images_per_second", "peak_memory_mb": "peak_memory_mb"}
+AUDIT = json.loads((REPO / "task3_gan/member_chaitanya/outputs/human_audit/audit_results.json").read_text())
 def aswin_val(d, k):
     keys = k if isinstance(k, tuple) else (k,)
+    if keys[0] == "human_style":
+        a = AUDIT["aswin_v2"]
+        return " / ".join(f"{a[c]['mean_' + d]:.2f}" for c in ("style", "content", "artifacts"))
+    if keys[0] == "inter_rater_kappa":
+        a = AUDIT["aswin_v2"]
+        return ("; ".join(f"{c} {a[c]['kappa_quadratic']:.2f}" for c in ("style", "content", "artifacts")) + " / "
+                + "; ".join(f"{c} {a[c]['pct_exact_agreement']:.0f}%" for c in ("style", "content", "artifacts")))
     out = []
     for x in keys:
         col = A3MAP.get(x)
@@ -246,7 +254,9 @@ for lab, k in mt:
 add(transpose(["C run 1 A2B", "C run 1 B2A", "C final A2B", "C final B2A", "A V2 A2B", "A V2 B2A"], body))
 add(["", "Aswin's local metrics come from his `full_metrics_report.csv` (his own evaluation: 300 vs 1,000 images, so "
      "not on the same sample sizes as Chaitanya's all-image FID); his loss values are at the selected epoch 130. "
-     "Human audit: only Chaitanya's submitted model was audited (both members rated it)."])
+     "Human audit: one blinded 60-item sheet (the same 30 inputs translated by both final models, shuffled), "
+     "rated by both members; κ is quadratic-weighted per model; paired comparison and pooled agreement in "
+     "`task3_gan/member_chaitanya/outputs/human_audit/audit_results.json`."])
 sub = (REPO / "task3_gan/member_chaitanya/submission.csv").read_text().strip().splitlines()[-1].split(",")
 asub = (REPO / "task3_gan/member_aswin/submission.csv").read_text().strip().splitlines()[-1].split(",")
 add(["", "Official per-direction values for Chaitanya: `task3_gan/member_chaitanya/outputs/full_run18/snapshot_scores.csv` "
@@ -255,7 +265,8 @@ add(["", "Official per-direction values for Chaitanya: `task3_gan/member_chaitan
 add(table(["Member", "Submission FID", "Submission MiFID", "Score −(FID+MiFID)/2", "Public LB", "Private LB", "Rank"], [
     ["Chaitanya (team submission)", f(sub[1]), f(sub[2]), f(-(float(sub[1]) + float(sub[2])) / 2), "−48.2029",
      "TODO (after competition close)", "TODO (≈16 of 44 once the non-official −42.1653 entry is removed)"],
-    ["Aswin", f(asub[1]), f(asub[2]), f(-(float(asub[1]) + float(asub[2])) / 2), "not submitted", "—", "—"],
+    ["Aswin (V2, submitted under the team 2026-10-06)", f(asub[1]), f(asub[2]), f(-(float(asub[1]) + float(asub[2])) / 2), "−52.7640",
+     "TODO (after competition close)", "— (the team's leaderboard position is set by its best submission)"],
 ]))
 add(["", "Note: an earlier team entry of −42.1653 was computed with a non-official protocol before the evaluation script "
      "was available; the host was asked to invalidate it (see `task3_gan/member_chaitanya/results.md`, Kaggle section).",

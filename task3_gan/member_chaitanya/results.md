@@ -135,24 +135,52 @@ All metrics: `full_metrics_report.csv` (definitions in the docstring of `evaluat
 Training: 26,494 s (7 h 22 min), 10.63 it/s (21.3 images/sec, one image per domain per iteration). Peak GPU memory allocated: 19,154 MB (steady state ≈ 3.2 GB; the peak most likely comes from cuDNN autotuning trying memory-hungry algorithms).
 
 ## Human audit (30 fixed samples, 2 raters, blinded)
-- **Samples:** 30 fixed inputs chosen with a fixed seed (266) from the sorted file lists: 20 photo → Monet (the Kaggle
-  direction) and 10 Monet → photo, translated by the submitted generators (`checkpoints/full_run18/epoch_123_ema/`).
-  Items were shuffled and shown under anonymous IDs (S01–S30) with no file names, run names or scores; the answer key
-  (`outputs/human_audit/round1_own_model_only/key.csv`) was not opened until both raters had submitted. Tool: `src/human_audit.py`.
+- **Design (final, round 2):** 30 fixed inputs chosen with a fixed seed (266) from the sorted file lists: 20 photo →
+  Monet (the Kaggle direction) and 10 Monet → photo. Each input was translated by **two** models, my submitted
+  generators (`checkpoints/full_run18/epoch_123_ema/`) and Aswin's V2 (`best_model.pt`, epoch 130), giving 60 items.
+  The items were shuffled and shown under anonymous IDs (S01–S60) with no file names, model or run names, or scores,
+  so neither rater knew which model produced an output. The answer key (`outputs/human_audit/key.csv`) was opened
+  only after both raters had submitted. Tool: `src/human_audit.py` and a web rating sheet.
 - **Raters:** rater 1 Chaitanya, rater 2 Aswin, each rating alone.
 - **Rubric (integers 1–5):** *style*: does the output convincingly look like the target domain (5 = indistinguishable,
   1 = not at all); *content*: is the input's scene and layout preserved (5 = fully, 1 = unrecognisable);
   *artifacts*: 5 = none visible, 1 = severe (blotches, checkerboard, colour blow-outs, smears).
 
+**My submitted model** (30 items):
+
 | Criterion | Mean (both raters) | Rater 1 / rater 2 mean | Photo → Monet / Monet → photo | Cohen's κ (unweighted / quadratic) | Exact agreement | Within 1 point |
 |---|---|---|---|---|---|---|
-| Style | 4.28 | 4.50 / 4.07 | 4.42 / 4.00 | −0.16 / −0.15 | 27% | 83% |
-| Content | 4.28 | 4.80 / 3.77 | 4.33 / 4.20 | −0.06 / −0.01 | 23% | 60% |
-| Artifacts | 3.85 | 3.87 / 3.83 | 3.67 / 4.20 | 0.28 / 0.23 | 50% | 83% |
+| Style | 4.57 | 4.73 / 4.40 | 4.72 / 4.25 | 0.17 / 0.26 | 50% | 97% |
+| Content | 4.62 | 4.77 / 4.47 | 4.62 / 4.60 | -0.18 / -0.20 | 40% | 97% |
+| Artifacts | 4.32 | 4.07 / 4.57 | 4.20 / 4.55 | -0.18 / -0.28 | 23% | 73% |
 
-Score distributions (counts of 2 / 3 / 4 / 5; nobody used 1): style rater 1 0/2/11/17, rater 2 2/5/12/11; content
-rater 1 0/2/2/26, rater 2 3/9/10/8; artifacts rater 1 2/5/18/5, rater 2 3/8/10/9. Ratings:
-`outputs/human_audit/round1_own_model_only/rater_1.csv`, `rater_2.csv`; results: `outputs/human_audit/round1_own_model_only/audit_results.json`.
+**Aswin's V2** (30 items, same inputs):
+
+| Criterion | Mean (both raters) | Rater 1 / rater 2 mean | Photo → Monet / Monet → photo | Cohen's κ (unweighted / quadratic) | Exact agreement | Within 1 point |
+|---|---|---|---|---|---|---|
+| Style | 4.70 | 4.67 / 4.73 | 4.72 / 4.65 | 0.09 / 0.25 | 63% | 97% |
+| Content | 4.65 | 4.80 / 4.50 | 4.62 / 4.70 | 0.27 / 0.27 | 63% | 100% |
+| Artifacts | 4.68 | 4.77 / 4.60 | 4.62 / 4.80 | 0.01 / -0.09 | 57% | 93% |
+
+**Agreement over all 60 items** (Cohen's κ unweighted / quadratic; exact; within 1): style
+0.12 / 0.25, 57%, 97%; content
+0.04 / 0.02, 52%, 98%; artifacts
+-0.10 / -0.20, 40%, 83%.
+
+**Paired comparison on the same inputs** (score per output = mean of both raters; my model minus Aswin's; Wilcoxon
+signed-rank over the 30 inputs):
+
+| Criterion | Mean difference | Inputs where mine is higher / his is higher / tie | Wilcoxon p |
+|---|---|---|---|
+| Style | -0.13 | 9 / 12 / 9 | 0.259 |
+| Content | -0.03 | 9 / 11 / 10 | 0.735 |
+| Artifacts | -0.37 | 3 / 19 / 8 | 0.002 |
+
+Ratings: `outputs/human_audit/rater_1.csv`, `rater_2.csv`; all statistics: `outputs/human_audit/audit_results.json`.
+
+*Round 1 (first pass, superseded):* the same 30 inputs, my model only, not mixed with another model. Means style 4.28,
+content 4.28, artifacts 3.85; quadratic κ −0.15 / −0.01 / 0.23. Files in `outputs/human_audit/round1_own_model_only/`.
+I replaced it with the mixed design because rating only my own model, knowing it was mine, could bias my scores.
 
 ## Kaggle
 Official protocol: `src/official_eval.py`, a port of the instructor's `Part3_Evaluation_Script.ipynb` (first 300 images per folder, both directions, FID and MiFID averaged over A2B and B2A).
